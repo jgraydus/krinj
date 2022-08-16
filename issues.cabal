@@ -1,0 +1,34 @@
+cabal-version:      2.4
+name:               server
+version:            0.1.0.0
+
+executable server
+    main-is:          Main.hs
+    other-modules:
+        Application,
+        ContentTypes,
+        Site
+    build-depends:
+        aeson,
+        base ^>=4.16.1.0,
+        bytestring,
+        containers,
+        http-media,
+        http-types,
+        mtl,
+        mongoDB,
+        neat-interpolation,
+        servant,
+        servant-server,
+        text,
+        wai,
+        warp
+    hs-source-dirs:   app
+    default-language: Haskell2010
+    default-extensions:
+        DataKinds,
+        LambdaCase,
+        MultiParamTypeClasses,
+        OverloadedStrings,
+        QuasiQuotes,
+        TypeOperators
