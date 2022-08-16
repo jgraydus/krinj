@@ -3,7 +3,9 @@ module Site (
 ) where
 
 import ContentTypes
+import Control.Monad.IO.Class (liftIO)
 import Data.Text (Text)
+import JsBundle
 import NeatInterpolation
 import Servant
 import Servant.Server
@@ -30,5 +32,5 @@ index_ = pure $ [text|
 type Bundle = "bundle.js" :> Get '[JavaScript] Text
 
 bundle_ :: Handler Text
-bundle_ = error "NOT IMPLEMENTED YET"
+bundle_ = liftIO jsBundle
 

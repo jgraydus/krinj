@@ -7,6 +7,7 @@ executable server
     other-modules:
         Application,
         ContentTypes,
+        JsBundle,
         Site
     build-depends:
         aeson,
