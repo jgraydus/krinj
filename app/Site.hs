@@ -1,5 +1,5 @@
 module Site (
-    Index, index_, Bundle, bundle_
+    SiteAPI, siteAPIServer
 ) where
 
 import ContentTypes
@@ -33,4 +33,10 @@ type Bundle = "bundle.js" :> Get '[JavaScript] Text
 
 bundle_ :: Handler Text
 bundle_ = liftIO jsBundle
+
+
+type SiteAPI = Index :<|> Bundle
+
+siteAPIServer :: Server SiteAPI
+siteAPIServer = index_ :<|> bundle_
 

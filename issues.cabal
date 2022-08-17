@@ -5,21 +5,26 @@ version:            0.1.0.0
 executable server
     main-is:          Main.hs
     other-modules:
+        ApiV1,
         Application,
         ContentTypes,
+        GenerateJsBindings,
         JsBundle,
+        ObjectId,
         Site
     build-depends:
         aeson,
         base ^>=4.16.1.0,
+        bson,
         bytestring,
         containers,
         http-media,
         http-types,
         mtl,
-        mongoDB,
+        mongoDB ==2.7.1.1,
         neat-interpolation,
         servant,
+        servant-js,
         servant-server,
         text,
         wai,
@@ -28,8 +33,12 @@ executable server
     default-language: Haskell2010
     default-extensions:
         DataKinds,
+        DeriveGeneric,
         LambdaCase,
         MultiParamTypeClasses,
+        NamedFieldPuns,
         OverloadedStrings,
         QuasiQuotes,
+        TypeApplications,
         TypeOperators
+

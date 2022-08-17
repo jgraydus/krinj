@@ -1,5 +1,6 @@
 dist-newstyle/
 client/build/
 client/node_modules/
+client/src/generated/
 env/data/
 *.swp
