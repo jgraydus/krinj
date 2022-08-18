@@ -1,7 +1,9 @@
 module Language where
 
+import Control.Monad.IO.Class (liftIO, MonadIO)
 import Control.Exception (SomeException)
 import Control.Monad.Free (foldFree, Free, liftF)
+import Data.Bson (genObjectId)
 import Model
 import ObjectId
 
@@ -35,16 +37,34 @@ log msg = liftF $ Log msg id
 err :: SomeException -> App a
 err e = liftF $ Err e
 
-
-interpret :: AppL a -> IO a
+interpret :: MonadIO m => AppL a -> m a
 interpret = \case
-  CreateIssue                 next -> error "not implemented"
-  DeleteIssue issueId         next -> error "not implemented"
-  GetIssue issueId            next -> error "not implemented"
-  UpdateIssue issueId updates next -> error "not implemented"
+
+  CreateIssue                 next -> do
+    -- TODO implement
+    issueId <- liftIO $ genObjectId
+    let issue = Issue { issueId }
+    liftIO $ putStrLn ("CREATE: " <> show issue)
+    return $ next issue
+    
+  DeleteIssue issueId         next -> do
+    -- TODO implement
+    liftIO $ putStrLn ("DELETE: " <> show issueId)
+    return $ next ()
+
+  GetIssue issueId            next -> do
+    -- TODO implement
+    liftIO $ putStrLn ("GET: " <> show issueId)
+    return $ next $ Issue { issueId }
+
+  UpdateIssue issueId updates next -> do
+    -- TODO implement
+    liftIO $ putStrLn ("UDPATE: " <> show issueId)
+    return $ next $ Issue { issueId }
+
   Log msg                     next -> error "not implemented"
   Err e                            -> error "not implemented"
 
-runApp :: App a -> IO a
+runApp :: MonadIO m => App a -> m a
 runApp = foldFree interpret
 

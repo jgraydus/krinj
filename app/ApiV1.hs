@@ -6,6 +6,7 @@ import Data.Aeson
 import qualified Data.Aeson as Aeson
 import Data.Bson (genObjectId)
 import Data.Text (pack, Text)
+import qualified Language as L
 import Model
 import Network.Wai (Request)
 import ObjectId
@@ -20,12 +21,7 @@ import Servant.Server.Experimental.Auth
 type CreateIssue = "create" :> Post '[JSON] Issue
 
 createIssue :: Handler Issue
-createIssue = do
-  -- TODO implement
-  issueId <- liftIO $ genObjectId
-  let issue = Issue { issueId }
-  liftIO $ putStrLn ("CREATE: " <> show issue)
-  return issue
+createIssue = L.runApp L.createIssue
 
 ------------------------------------------
 -- Delete issue
@@ -33,10 +29,7 @@ createIssue = do
 type DeleteIssue = "delete" :> Capture "issueId" IssueId :> Delete '[JSON] ()
 
 deleteIssue :: IssueId -> Handler ()
-deleteIssue issueId = do
-  -- TODO implement
-  liftIO $ putStrLn ("DELETE: " <> show issueId)
-  return ()
+deleteIssue issueId = L.runApp (L.deleteIssue issueId)
 
 ------------------------------------------
 -- Get issue
@@ -44,10 +37,7 @@ deleteIssue issueId = do
 type GetIssue = Capture "issueId" IssueId :> Get '[JSON] Issue
 
 getIssue :: IssueId -> Handler Issue
-getIssue issueId = do
-  -- TODO implement
-  liftIO $ putStrLn ("GET: " <> show issueId)
-  return $ Issue { issueId }
+getIssue issueId = L.runApp (L.getIssue issueId)
 
 ------------------------------------------
 -- Update issue
@@ -55,10 +45,7 @@ getIssue issueId = do
 type UpdateIssue = Capture "issueId" IssueId :> ReqBody '[JSON] [IssueUpdate] :> Patch '[JSON] Issue
 
 updateIssue :: IssueId -> [IssueUpdate] -> Handler Issue
-updateIssue issueId issueUpdates = do
-  -- TODO implement
-  liftIO $ putStrLn ("UDPATE: " <> show issueId)
-  return $ Issue { issueId }
+updateIssue issueId issueUpdates = L.runApp (L.updateIssue issueId issueUpdates)
 
 ------------------------------------------
 -- API definition and composite handler
