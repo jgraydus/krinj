@@ -2,11 +2,8 @@ module Language where
 
 import Control.Exception (SomeException)
 import Control.Monad.Free (foldFree, Free, liftF)
+import Model
 import ObjectId
-
-data Issue
-type IssueId = ObjectId
-data IssueUpdate
 
 data AppL a where
   CreateIssue :: (Issue -> a) -> AppL a

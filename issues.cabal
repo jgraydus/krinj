@@ -12,6 +12,7 @@ executable server
         GenerateJsBindings,
         JsBundle,
         Language,
+        Model,
         ObjectId,
         Site
     build-depends:

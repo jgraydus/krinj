@@ -6,7 +6,7 @@ import Data.Aeson
 import qualified Data.Aeson as Aeson
 import Data.Bson (genObjectId)
 import Data.Text (pack, Text)
-import GHC.Generics
+import Model
 import Network.Wai (Request)
 import ObjectId
 import Servant
@@ -14,15 +14,8 @@ import Servant.API.Experimental.Auth
 import Servant.Server
 import Servant.Server.Experimental.Auth
 
-type IssueId = ObjectId
-
-data Issue = Issue
-  { issueId :: IssueId 
-  } deriving (Generic, Show)
-
-instance ToJSON Issue
-
 ------------------------------------------
+-- Create issue
 
 type CreateIssue = "create" :> Post '[JSON] Issue
 
@@ -35,6 +28,7 @@ createIssue = do
   return issue
 
 ------------------------------------------
+-- Delete issue
 
 type DeleteIssue = "delete" :> Capture "issueId" IssueId :> Delete '[JSON] ()
 
@@ -45,6 +39,7 @@ deleteIssue issueId = do
   return ()
 
 ------------------------------------------
+-- Get issue
 
 type GetIssue = Capture "issueId" IssueId :> Get '[JSON] Issue
 
@@ -55,10 +50,21 @@ getIssue issueId = do
   return $ Issue { issueId }
 
 ------------------------------------------
+-- Update issue
 
+type UpdateIssue = Capture "issueId" IssueId :> ReqBody '[JSON] [IssueUpdate] :> Patch '[JSON] Issue
 
-type API_V1 = JwtAuth :> "v1" :> "issues" :> (CreateIssue :<|> DeleteIssue :<|> GetIssue)
+updateIssue :: IssueId -> [IssueUpdate] -> Handler Issue
+updateIssue issueId issueUpdates = do
+  -- TODO implement
+  liftIO $ putStrLn ("UDPATE: " <> show issueId)
+  return $ Issue { issueId }
+
+------------------------------------------
+-- API definition and composite handler
+
+type API_V1 = JwtAuth :> "v1" :> "issues" :> (CreateIssue :<|> DeleteIssue :<|> GetIssue :<|> UpdateIssue)
 
 apiV1Server :: Server API_V1
-apiV1Server user = createIssue :<|> deleteIssue :<|> getIssue
+apiV1Server user = createIssue :<|> deleteIssue :<|> getIssue :<|> updateIssue
 
