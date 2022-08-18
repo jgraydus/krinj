@@ -3,6 +3,7 @@ module Application (
 ) where
 
 import ApiV1
+import Auth
 import ContentTypes
 import Network.Wai (Application)
 import Site
@@ -15,5 +16,5 @@ api :: Server API
 api = siteAPIServer :<|> apiV1Server
 
 app :: Application
-app = serve (Proxy :: Proxy API) api
+app = serveWithContext (Proxy :: Proxy API) authContext api
 
