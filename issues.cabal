@@ -26,6 +26,7 @@ executable server
         free,
         http-media,
         http-types,
+        jose-jwt,
         json-config,
         lens,
         mtl,
@@ -37,6 +38,7 @@ executable server
         servant-js,
         servant-server,
         text,
+        uuid,
         wai,
         warp
     hs-source-dirs:   app

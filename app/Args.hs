@@ -10,7 +10,7 @@ import Options.Applicative
 data Mode = DEV | PROD
   deriving (Read, Show)
 
-data Command = HttpServer | GenerateJsBindings
+data Command = HttpServer | GenerateJsBindings | MakeAuthTokenForTesting
   deriving (Read, Show)
 
 data Options = Options
@@ -31,7 +31,7 @@ commandParser = option auto
   (  long "command"
   <> metavar "COMMAND"
   <> value HttpServer
-  <> help "command to execute: HttpServer or GenerateJsBindings" )
+  <> help "command to execute: HttpServer, GenerateJsBindings, or MakeAuthTokenForTesting" )
 
 configDirParser :: Parser FilePath
 configDirParser = strOption

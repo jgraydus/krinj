@@ -2,10 +2,14 @@ module Main where
 
 import           Application
 import           Args
+import           Auth
 import           Config
-import           Data.Text (Text)
+import           Data.Text (Text, unpack)
+import           Data.Text.Encoding (decodeUtf8)
+import qualified Data.UUID.V4 as UUID
 import           GenerateJsBindings
 import           JsonConfig
+import           Model
 import qualified Network.Wai.Handler.Warp as Warp
 import           System.Exit (ExitCode(..), exitWith)
 
@@ -33,7 +37,7 @@ main = do
         Right ApplicationConfig {..} -> do
           let HttpConfig {..} = _applicationConfigHttp
           putStrLn $ "server listening on port " <> (show _httpConfigPort)
-          Warp.run _httpConfigPort app
+          Warp.run _httpConfigPort (app _applicationConfigJwtKey)
           exitWith ExitSuccess
 
     -- generate javascript code to make http requests to the end points
@@ -42,4 +46,19 @@ main = do
       writeJSCode
       putStrLn "DONE"
       exitWith ExitSuccess
+
+    -- generate a user with a random uuid and print out an auth token for that user
+    MakeAuthTokenForTesting -> do
+      config <- readConfig _optionsConfigDir (env _optionsMode)
+
+      case config of
+        Left errorMessage -> do
+          putStrLn errorMessage
+          exitWith (ExitFailure 1)
+
+        Right ApplicationConfig {..} -> do 
+          userId <- UUID.nextRandom
+          let user = User userId
+          let token = makeAuthToken _applicationConfigJwtKey user
+          putStrLn $ (unpack . decodeUtf8) token
 

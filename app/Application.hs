@@ -4,6 +4,7 @@ module Application (
 
 import ApiV1
 import Auth
+import Config
 import ContentTypes
 import Network.Wai (Application)
 import Site
@@ -15,6 +16,6 @@ type API = SiteAPI :<|> API_V1
 api :: Server API
 api = siteAPIServer :<|> apiV1Server
 
-app :: Application
-app = serveWithContext (Proxy :: Proxy API) authContext api
+app :: JwtKey -> Application
+app key = serveWithContext (Proxy :: Proxy API) (authContext key) api
 

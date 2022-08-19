@@ -7,9 +7,12 @@ import GHC.Generics (Generic)
 removeRecordPrefix :: String -> String -> String
 removeRecordPrefix prefix = fmap toLower . drop (length prefix)
 
+type HostString = String
+type PortNumber = Int
+
 data MongoConfig = MongoConfig
-  { _mongoHost :: String
-  , _mongoPort :: Int
+  { _mongoHost :: HostString
+  , _mongoPort :: PortNumber
   } deriving (Generic, Show)
 
 instance FromJSON MongoConfig where
@@ -17,8 +20,8 @@ instance FromJSON MongoConfig where
     defaultOptions { fieldLabelModifier = removeRecordPrefix "_mongo" }
 
 data HttpConfig = HttpConfig
-  { _httpConfigHost :: String
-  , _httpConfigPort :: Int
+  { _httpConfigHost :: HostString
+  , _httpConfigPort :: PortNumber
   } deriving (Generic, Show)
 
 instance FromJSON HttpConfig where
@@ -30,10 +33,13 @@ data LogLevel = TRACE | DEBUG | INFO | WARN | ERROR
 
 instance FromJSON LogLevel
 
+type JwtKey = String
+
 data ApplicationConfig = ApplicationConfig
   { _applicationConfigMongo :: MongoConfig
   , _applicationConfigHttp :: HttpConfig
   , _applicationConfigLogLevel :: LogLevel
+  , _applicationConfigJwtKey :: JwtKey
   } deriving (Generic, Show)
 
 instance FromJSON ApplicationConfig where

@@ -7,5 +7,6 @@
         "host": "localhost",
         "port": 8080
     },
-    "loglevel": "DEBUG"
+    "loglevel": "DEBUG",
+    "jwtkey": "this is a secret key"
 }
