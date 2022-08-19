@@ -1,0 +1,6 @@
+#!/bin/sh
+
+curl -v \
+  localhost:8080/v1/issues/62fc3c42f04a0ef31586886c \
+  -H "x-bearer-token: eyJhbGciOiJIUzI1NiJ9.eyJfdXNlcklkIjoiYTJhYjIwMzctMjYxNC00MmYxLWI3MjMtZThiN2JlZGQ4NWYyIn0.5j9d5E_9ypS1W4kQNGjWVAfVbR2Fh_2sQA484-BGyiY"
+
