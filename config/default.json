@@ -1,0 +1,12 @@
+{
+    "mongo": {
+        "host": "{{MONGO_HOST}}",
+        "port": {{MONGO_PORT || 27017}}
+    },
+    "http": {
+        "host": "{{HTTP_HOST}}",
+        "port": {{HTTP_PORT || 80}}
+    },
+    "loglevel": "{{LOG_LEVEL}}"
+}
+
