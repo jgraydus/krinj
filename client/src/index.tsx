@@ -9,11 +9,13 @@ const api = makeApi(bearerToken);
 
 console.log(api)
 
-const doStuff = () => {
-  api.getV1IssuesByIssueId('62fc3c42f04a0ef31586886c');
-  api.deleteV1IssuesDeleteByIssueId('62fc3c42f04a0ef31586886c');
-  api.postV1IssuesCreate();
-  api.patchV1IssuesByIssueId('62fc3c42f04a0ef31586886c', []);
+const doStuff = async () => {
+  let issue = await api.postV1IssuesCreate();
+  console.log(issue);
+  await api.patchV1IssuesByIssueId(issue.issueId, []);
+  let issue2 = await api.getV1IssuesByIssueId(issue.issueId);
+  console.log(issue2);
+  await api.deleteV1IssuesDeleteByIssueId(issue.issueId);
 }
 
 
