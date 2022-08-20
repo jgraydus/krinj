@@ -12,7 +12,7 @@ console.log(api)
 const doStuff = async () => {
   let issue = await api.postV1IssuesCreate();
   console.log(issue);
-  await api.patchV1IssuesByIssueId(issue.issueId, []);
+  await api.patchV1IssuesByIssueId(issue.issueId, [{ tag: 'Title', contents: 'Foo' }]);
   let issue2 = await api.getV1IssuesByIssueId(issue.issueId);
   console.log(issue2);
   await api.deleteV1IssuesDeleteByIssueId(issue.issueId);

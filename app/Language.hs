@@ -5,7 +5,7 @@ import Control.Monad.IO.Class (liftIO, MonadIO)
 import Control.Monad.Except (MonadError)
 import Control.Exception (SomeException)
 import Control.Monad.Free (foldFree, Free, liftF)
-import Data.Bson ((=:), Document, genObjectId, lookup)
+import Data.Bson ((=:), Document, genObjectId, lookup, merge, Value(UTC))
 import Data.ByteString.Lazy (fromStrict)
 import Data.Maybe (fromMaybe)
 import Data.Text.Encoding (encodeUtf8)
@@ -101,11 +101,12 @@ interpret db user = \case
 
   UpdateIssue issueId updates next -> do
     liftIO $ putStrLn ("UDPATE: " <> show issueId)
+    now <- liftIO getCurrentTime
     result <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup issueId db
       case docMaybe of
         Just doc -> do
-          let updatedDoc = doc -- TODO do updates
+          let updatedDoc = merge (issueUpdatesToDocument updates <> ["updatedAt" =: UTC now]) doc
           StmMap.insert updatedDoc issueId db
           return $ Right updatedDoc
         Nothing  -> return $ Left err404
@@ -120,18 +121,4 @@ interpret db user = \case
 
 runApp :: (MonadIO m, MonadError ServerError m) => DB -> User -> App a -> m a
 runApp db user = foldFree (interpret db user)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

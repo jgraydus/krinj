@@ -3,7 +3,7 @@ module Model where
 import           Prelude hiding (lookup, String)
 import           Data.Aeson hiding (Null, String)
 import           Data.AesonBson (bsonifyError)
-import           Data.Bson ((=:), Document, lookup, Val, Value(..))
+import           Data.Bson ((=:), Document, Field, lookup, Val, Value(..))
 import qualified Data.Bson as Bson
 import           Data.ByteString.Lazy (fromStrict, toStrict)
 import           Data.Maybe (fromMaybe)
@@ -12,6 +12,20 @@ import           Data.Time.Clock (UTCTime)
 import           Data.UUID
 import           GHC.Generics
 import           ObjectId
+
+toBsonUuid :: UUID -> Bson.UUID
+toBsonUuid = Bson.UUID . toStrict . toByteString
+
+fromBsonUuid :: Bson.UUID -> Either Text UUID
+fromBsonUuid (Bson.UUID bs) =
+  case (fromByteString . fromStrict) bs of
+    Nothing -> Left "failed to convert UUID"
+    Just x -> Right x
+
+lookup' :: Val a => Text -> Document -> Either Text a
+lookup' label doc = case lookup label doc of
+  Nothing -> Left $ "failed to find field [" <> label <> "]"
+  Just x  -> Right x
 
 --------------------------------------------------
 data User = User
@@ -38,20 +52,6 @@ data Issue = Issue
 
 instance ToJSON Issue
 
-data IssueUpdate = IssueUpdate
-  deriving (Generic, Show)
-
-instance FromJSON IssueUpdate
-
-toBsonUuid :: UUID -> Bson.UUID
-toBsonUuid = Bson.UUID . toStrict . toByteString
-
-fromBsonUuid :: Bson.UUID -> Either Text UUID
-fromBsonUuid (Bson.UUID bs) =
-  case (fromByteString . fromStrict) bs of
-    Nothing -> Left "failed to convert UUID"
-    Just x -> Right x
-
 issueToDocument :: Issue -> Document
 issueToDocument Issue {..} =
   [ "issueId" =: ObjId issueId
@@ -65,11 +65,6 @@ issueToDocument Issue {..} =
   , "updatedAt" =: UTC updatedAt
   ]
 
-lookup' :: Val a => Text -> Document -> Either Text a
-lookup' label doc = case lookup label doc of
-  Nothing -> Left $ "failed to find field [" <> label <> "]"
-  Just x  -> Right x
-
 documentToIssue :: Document -> Either Text Issue
 documentToIssue doc =
   Issue
@@ -82,4 +77,26 @@ documentToIssue doc =
   <*> (lookup' "createdBy" doc >>= fromBsonUuid)
   <*> lookup' "createdAt" doc
   <*> lookup' "updatedAt" doc
+
+data IssueUpdate =
+    Title Text
+  | Description Text
+  | Owner UUID
+  | Assignee (Maybe UUID)
+  | State Text
+  deriving (Generic, Show)
+
+instance ToJSON IssueUpdate
+instance FromJSON IssueUpdate
+
+issueUpdateToField :: IssueUpdate -> Field
+issueUpdateToField = \case
+  Title txt -> "title" =: String txt
+  Description desc -> "description" =: String desc
+  Owner uuid -> "owner" =: (Uuid . toBsonUuid) uuid
+  Assignee ass -> "assignee" =: (fromMaybe Null $ (Uuid . toBsonUuid) <$> ass)
+  State state -> "state" =: String state
+
+issueUpdatesToDocument :: [IssueUpdate] -> Document
+issueUpdatesToDocument = fmap issueUpdateToField
 
