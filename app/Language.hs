@@ -71,7 +71,7 @@ interpret db user = \case
           , createdAt = now
           , updatedAt = now
           }
-    liftIO $ putStrLn ("CREATE: " <> show issue)
+    liftIO $ putStrLn ("CREATE: " <> show issueId)
     let doc = issueToDocument issue <> ["isDeleted" =: False]
     liftIO $ atomically $ StmMap.insert doc issueId db
     return $ next issue
