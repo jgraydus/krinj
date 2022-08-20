@@ -1,12 +1,22 @@
 module Language where
 
+import Prelude hiding (lookup)
 import Control.Monad.IO.Class (liftIO, MonadIO)
+import Control.Monad.Except (MonadError)
 import Control.Exception (SomeException)
 import Control.Monad.Free (foldFree, Free, liftF)
-import Data.Bson (genObjectId)
+import Data.Bson ((=:), Document, genObjectId, lookup)
+import Data.ByteString.Lazy (fromStrict)
+import Data.Maybe (fromMaybe)
+import Data.Text.Encoding (encodeUtf8)
+import Data.Time.Clock (getCurrentTime)
 import Data.UUID (UUID)
+import GHC.Conc (atomically)
 import Model
 import ObjectId
+import Servant (throwError)
+import Servant.Server (err404, err500, errBody, ServerError)
+import qualified StmContainers.Map as StmMap
 
 data AppL a where
   CreateIssue :: (Issue -> a) -> AppL a
@@ -38,34 +48,90 @@ log msg = liftF $ Log msg id
 err :: SomeException -> App a
 err e = liftF $ Err e
 
-interpret :: MonadIO m => User -> AppL a -> m a
-interpret user = \case
+type DB = StmMap.Map ObjectId Document
 
-  CreateIssue                 next -> do
-    -- TODO implement
-    issueId <- liftIO $ genObjectId
-    let issue = Issue { issueId }
+isDeleted :: Document -> Bool
+isDeleted doc = fromMaybe False $ lookup "isDeleted" doc
+
+interpret :: (MonadIO m, MonadError ServerError m) => DB -> User -> AppL a -> m a
+interpret db user = \case
+
+  CreateIssue next -> do
+    issueId <- liftIO genObjectId
+    now <- liftIO getCurrentTime
+    let issue =
+          Issue
+          { issueId
+          , title = ""
+          , description = ""
+          , owner = _userId user 
+          , assignee = Nothing
+          , state = ""
+          , createdBy = _userId user
+          , createdAt = now
+          , updatedAt = now
+          }
     liftIO $ putStrLn ("CREATE: " <> show issue)
+    let doc = issueToDocument issue <> ["isDeleted" =: False]
+    liftIO $ atomically $ StmMap.insert doc issueId db
     return $ next issue
     
-  DeleteIssue issueId         next -> do
-    -- TODO implement
+  DeleteIssue issueId next -> do
     liftIO $ putStrLn ("DELETE: " <> show issueId)
-    return $ next ()
+    errMaybe <- liftIO $ atomically $ do
+      docMaybe <- StmMap.lookup issueId db
+      case docMaybe of
+        Just doc -> do
+          StmMap.insert (doc <> ["isDeleted" =: True]) issueId db
+          return Nothing
+        Nothing -> return $ Just err404
+    case errMaybe of
+      Just err -> throwError err
+      Nothing -> return $ next () 
 
-  GetIssue issueId            next -> do
-    -- TODO implement
+  GetIssue issueId next -> do
     liftIO $ putStrLn ("GET: " <> show issueId)
-    return $ next $ Issue { issueId }
+    docMaybe <- liftIO $ atomically $ StmMap.lookup issueId db
+    case docMaybe of
+      Just doc | not (isDeleted doc)-> do
+        case documentToIssue doc of
+          Right issue -> return $ next issue 
+          Left err    -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) err }
+      _ -> throwError err404
 
   UpdateIssue issueId updates next -> do
-    -- TODO implement
     liftIO $ putStrLn ("UDPATE: " <> show issueId)
-    return $ next $ Issue { issueId }
+    result <- liftIO $ atomically $ do
+      docMaybe <- StmMap.lookup issueId db
+      case docMaybe of
+        Just doc -> do
+          let updatedDoc = doc -- TODO do updates
+          StmMap.insert updatedDoc issueId db
+          return $ Right updatedDoc
+        Nothing  -> return $ Left err404
+    case result of
+      Left err -> throwError err
+      Right doc -> case documentToIssue doc of
+        Right issue -> return $ next issue
+        Left err -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) err }
 
   Log msg                     next -> error "not implemented"
   Err e                            -> error "not implemented"
 
-runApp :: MonadIO m => User -> App a -> m a
-runApp user = foldFree (interpret user)
+runApp :: (MonadIO m, MonadError ServerError m) => DB -> User -> App a -> m a
+runApp db user = foldFree (interpret db user)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

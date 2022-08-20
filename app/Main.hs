@@ -11,6 +11,7 @@ import           GenerateJsBindings
 import           JsonConfig
 import           Model
 import qualified Network.Wai.Handler.Warp as Warp
+import qualified StmContainers.Map as StmMap
 import           System.Exit (ExitCode(..), exitWith)
 
 env :: Mode -> String
@@ -37,7 +38,8 @@ main = do
         Right ApplicationConfig {..} -> do
           let HttpConfig {..} = _applicationConfigHttp
           putStrLn $ "server listening on port " <> (show _httpConfigPort)
-          Warp.run _httpConfigPort (app _applicationConfigJwtKey)
+          db <- StmMap.newIO
+          Warp.run _httpConfigPort (app _applicationConfigJwtKey db)
           exitWith ExitSuccess
 
     -- generate javascript code to make http requests to the end points

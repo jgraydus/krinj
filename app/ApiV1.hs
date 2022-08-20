@@ -20,42 +20,42 @@ import Servant.Server.Experimental.Auth
 
 type CreateIssue = "create" :> Post '[JSON] Issue
 
-createIssue :: User -> Handler Issue
-createIssue user = L.runApp user L.createIssue
+createIssue :: L.DB -> User -> Handler Issue
+createIssue db user = L.runApp db user L.createIssue
 
 ------------------------------------------
 -- Delete issue
 
 type DeleteIssue = "delete" :> Capture "issueId" IssueId :> Delete '[JSON] ()
 
-deleteIssue :: User -> IssueId -> Handler ()
-deleteIssue user issueId = L.runApp user (L.deleteIssue issueId)
+deleteIssue :: L.DB -> User -> IssueId -> Handler ()
+deleteIssue db user issueId = L.runApp db user (L.deleteIssue issueId)
 
 ------------------------------------------
 -- Get issue
 
 type GetIssue = Capture "issueId" IssueId :> Get '[JSON] Issue
 
-getIssue :: User -> IssueId -> Handler Issue
-getIssue user issueId = L.runApp user (L.getIssue issueId)
+getIssue :: L.DB -> User -> IssueId -> Handler Issue
+getIssue db user issueId = L.runApp db user (L.getIssue issueId)
 
 ------------------------------------------
 -- Update issue
 
 type UpdateIssue = Capture "issueId" IssueId :> ReqBody '[JSON] [IssueUpdate] :> Patch '[JSON] Issue
 
-updateIssue :: User -> IssueId -> [IssueUpdate] -> Handler Issue
-updateIssue user issueId issueUpdates = L.runApp user (L.updateIssue issueId issueUpdates)
+updateIssue :: L.DB -> User -> IssueId -> [IssueUpdate] -> Handler Issue
+updateIssue db user issueId issueUpdates = L.runApp db user (L.updateIssue issueId issueUpdates)
 
 ------------------------------------------
 -- API definition and composite handler
 
 type API_V1 = JwtAuth :> "v1" :> "issues" :> (CreateIssue :<|> DeleteIssue :<|> GetIssue :<|> UpdateIssue)
 
-apiV1Server :: Server API_V1
-apiV1Server user =
-  createIssue user
-  :<|> deleteIssue user
-  :<|> getIssue user
-  :<|> updateIssue user
+apiV1Server :: L.DB -> Server API_V1
+apiV1Server db user =
+  createIssue db user
+  :<|> deleteIssue db user
+  :<|> getIssue db user
+  :<|> updateIssue db user
 

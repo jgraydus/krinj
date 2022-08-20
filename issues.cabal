@@ -19,11 +19,13 @@ executable server
         Site
     build-depends:
         aeson,
+        AesonBson,
         base ^>=4.16.1.0,
         bson,
         bytestring,
         containers,
         free,
+        hashable,
         http-media,
         http-types,
         jose-jwt,
@@ -37,7 +39,9 @@ executable server
         servant-foreign,
         servant-js,
         servant-server,
+        stm-containers,
         text,
+        time,
         uuid,
         wai,
         warp
@@ -56,6 +60,7 @@ executable server
         OverloadedStrings,
         PolyKinds,
         QuasiQuotes,
+        RankNTypes,
         RecordWildCards,
         ScopedTypeVariables,
         StandaloneDeriving,
