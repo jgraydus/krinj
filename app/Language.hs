@@ -4,6 +4,7 @@ import Control.Monad.IO.Class (liftIO, MonadIO)
 import Control.Exception (SomeException)
 import Control.Monad.Free (foldFree, Free, liftF)
 import Data.Bson (genObjectId)
+import Data.UUID (UUID)
 import Model
 import ObjectId
 
@@ -37,8 +38,8 @@ log msg = liftF $ Log msg id
 err :: SomeException -> App a
 err e = liftF $ Err e
 
-interpret :: MonadIO m => AppL a -> m a
-interpret = \case
+interpret :: MonadIO m => User -> AppL a -> m a
+interpret user = \case
 
   CreateIssue                 next -> do
     -- TODO implement
@@ -65,6 +66,6 @@ interpret = \case
   Log msg                     next -> error "not implemented"
   Err e                            -> error "not implemented"
 
-runApp :: MonadIO m => App a -> m a
-runApp = foldFree interpret
+runApp :: MonadIO m => User -> App a -> m a
+runApp user = foldFree (interpret user)
 
