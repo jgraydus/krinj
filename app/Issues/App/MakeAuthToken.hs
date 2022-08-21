@@ -1,10 +1,9 @@
 module Issues.App.MakeAuthToken where
 
-import           JsonConfig (readConfig)
 import           System.Exit (ExitCode(..), exitWith)
 
 import           Issues.Lib.Auth (makeAuthToken)
-import           Issues.Lib.Config (ApplicationConfig(..))
+import           Issues.Lib.Config (ApplicationConfig(..), readConfig)
 import           Issues.Lib.Model (makeUserForTest)
 import           Issues.Lib.Web.Options (env, Options(..), parseOptions)
 

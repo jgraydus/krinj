@@ -6,34 +6,7 @@ common shared-properties
     default-language: Haskell2010
     ghc-options: -Wall
     build-depends:
-        aeson,
-        AesonBson,
-        base ^>=4.16.1.0,
-        bson,
-        bytestring,
-        containers,
-        free,
-        hashable,
-        http-media,
-        http-types,
-        jose-jwt,
-        json-config,
-        lens,
-        list-t,
-        mtl,
-        mongoDB ==2.7.1.1,
-        neat-interpolation,
-        optparse-applicative,
-        servant,
-        servant-foreign,
-        servant-js,
-        servant-server,
-        stm-containers,
-        text,
-        time,
-        uuid,
-        wai,
-        warp
+        base ^>=4.16.1.0
     default-extensions:
         DataKinds,
         DeriveFunctor,
@@ -72,15 +45,46 @@ library
         Issues.Lib.Web.JsBundle,
         Issues.Lib.Web.Options,
         Issues.Lib.Web.Site
+    build-depends:
+        aeson,
+        AesonBson,
+        bson,
+        bytestring,
+        containers,
+        free,
+        hashable,
+        http-media,
+        http-types,
+        jose-jwt,
+        json-config,
+        lens,
+        list-t,
+        mtl,
+        mongoDB ==2.7.1.1,
+        neat-interpolation,
+        optparse-applicative,
+        servant,
+        servant-foreign,
+        servant-js,
+        servant-server,
+        stm-containers,
+        text,
+        time,
+        uuid,
+        wai
 
+-- http server - backend of the issues application
 executable web
     import: shared-properties
     build-depends:
-        issues
+        issues,
+        stm-containers,
+        warp
     hs-source-dirs: app
     main-is:        Issues/App/Web.hs
     ghc-options:    -Wall -threaded -main-is Issues.App.Web
 
+-- code generator - produces javascript functions to make requests to backend rest end points
 executable generate-js-bindings
     import: shared-properties
     build-depends:
@@ -89,6 +93,7 @@ executable generate-js-bindings
     main-is:        Issues/App/GenerateJsBindings.hs
     ghc-options:    -Wall -threaded -main-is Issues.App.GenerateJsBindings
 
+-- utility for testing - prints out a valid auth token for a randomly generated user id
 executable make-auth-token
     import: shared-properties
     build-depends:

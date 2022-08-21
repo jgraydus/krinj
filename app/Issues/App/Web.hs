@@ -1,12 +1,11 @@
 module Issues.App.Web where
 
-import           JsonConfig
 import qualified Network.Wai.Handler.Warp as Warp
 import qualified StmContainers.Map as StmMap
 import           System.Exit (ExitCode(..), exitWith)
 
 import           Issues.Lib.Language
-import           Issues.Lib.Config
+import           Issues.Lib.Config (ApplicationConfig(..), HttpConfig(..), readConfig)
 import           Issues.Lib.Web.Application
 import           Issues.Lib.Web.Options
 

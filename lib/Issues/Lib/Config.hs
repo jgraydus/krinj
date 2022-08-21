@@ -1,8 +1,9 @@
 module Issues.Lib.Config where
 
-import Data.Aeson
-import Data.Char (toLower)
-import GHC.Generics (Generic)
+import           Data.Aeson
+import           Data.Char (toLower)
+import           GHC.Generics (Generic)
+import qualified JsonConfig as JsonConfig
 
 removeRecordPrefix :: String -> String -> String
 removeRecordPrefix prefix = fmap toLower . drop (length prefix)
@@ -45,4 +46,7 @@ data ApplicationConfig = ApplicationConfig
 instance FromJSON ApplicationConfig where
   parseJSON = genericParseJSON
     defaultOptions { fieldLabelModifier = removeRecordPrefix "_applicationConfig" }
+
+readConfig :: FilePath -> String -> IO (Either String ApplicationConfig)
+readConfig = JsonConfig.readConfig
 
