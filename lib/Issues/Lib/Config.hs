@@ -47,6 +47,7 @@ instance FromJSON ApplicationConfig where
   parseJSON = genericParseJSON
     defaultOptions { fieldLabelModifier = removeRecordPrefix "_applicationConfig" }
 
+-- | parse the config files found in the given directory
 readConfig :: FilePath -> String -> IO (Either String ApplicationConfig)
 readConfig = JsonConfig.readConfig
 

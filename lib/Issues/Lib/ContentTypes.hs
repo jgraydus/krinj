@@ -8,6 +8,10 @@ import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Media ((//), (/:))
 import Servant.API.ContentTypes (Accept(..),MimeRender(..))
 
+-- this module defines types and typeclass instances to enable
+-- specifying servant endpoints that return HTML and javascript
+
+-----------------------------------------------------------------------
 data HTML
 
 instance Accept HTML where
@@ -16,7 +20,7 @@ instance Accept HTML where
 instance MimeRender HTML Text where
   mimeRender _ = BSL.fromStrict . encodeUtf8
 
-
+-----------------------------------------------------------------------
 data JavaScript
 
 instance Accept JavaScript where

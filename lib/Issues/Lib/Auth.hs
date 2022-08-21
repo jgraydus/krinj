@@ -1,4 +1,8 @@
-module Issues.Lib.Auth where
+module Issues.Lib.Auth (
+   authContext,
+   JwtAuth,
+   makeAuthToken
+) where
 
 import           Control.Monad.Except (MonadError)
 import           Control.Monad.IO.Class (MonadIO)
@@ -37,17 +41,6 @@ authHandler key = mkAuthHandler handler
       token <- getAuthToken req
       readAuthToken key token
 
-authContext :: JwtKey -> Context (AuthHandler Request User ': '[])
-authContext key = authHandler key :. EmptyContext
-
-makeAuthToken :: JwtKey -> User -> ByteString
-makeAuthToken key user = runIdentity $ do
-  let k = (encodeUtf8 . pack) key
-      bs = (toStrict . encode) user
-  case hmacEncode HS256 k bs of
-    Right (Jwt jwt) -> return jwt
-    Left e -> error (show e)
- 
 readAuthToken :: (MonadIO m, MonadError ServerError m) => JwtKey -> ByteString -> m User
 readAuthToken key token = do
   let k = (encodeUtf8 . pack) key
@@ -57,4 +50,17 @@ readAuthToken key token = do
         Just user -> return user
         Nothing -> throwError $ err401 { errBody = "failed to parse token" }
     Left e -> throwError $ err401 { errBody = (fromStrict . encodeUtf8 . pack . show) e }
+
+-- | context for authenticated routes. extracts User from x-bearer-token header
+authContext :: JwtKey -> Context (AuthHandler Request User ': '[])
+authContext key = authHandler key :. EmptyContext
+
+-- | generate an auth token given a key and user
+makeAuthToken :: JwtKey -> User -> ByteString
+makeAuthToken key user = runIdentity $ do
+  let k = (encodeUtf8 . pack) key
+      bs = (toStrict . encode) user
+  case hmacEncode HS256 k bs of
+    Right (Jwt jwt) -> return jwt
+    Left e -> error (show e)
 

@@ -50,6 +50,8 @@ axiosImport =
   "axios.defaults.headers.put['Content-Type'] = 'application/json'\n" <>
   "axios.defaults.headers.patch['Content-Type'] = 'application/json'\n\n"
 
+-- | generate javascript code which defines functions for making requests
+--   to the backend rest endpoints
 writeJSCode :: IO ()
 writeJSCode = do
   let js = jsForAPI api (axiosWith axiosOptions commonOptions)
