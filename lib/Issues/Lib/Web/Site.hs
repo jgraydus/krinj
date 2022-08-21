@@ -8,11 +8,12 @@ import NeatInterpolation
 import Servant
 
 import Issues.Lib.ContentTypes
+import Issues.Lib.Language.RunTime
 import Issues.Lib.Web.JsBundle
 
 type Index = Get '[HTML] Text
 
-index_ :: Handler Text
+index_ :: AppHandler Text
 index_ = pure $ [text|
   <!doctype HTML>
   <html lang="en">
@@ -31,12 +32,12 @@ index_ = pure $ [text|
 
 type Bundle = "bundle.js" :> Get '[JavaScript] Text
 
-bundle_ :: Handler Text
+bundle_ :: AppHandler Text
 bundle_ = liftIO jsBundle
 
 
 type SiteAPI = Index :<|> Bundle
 
-siteAPIServer :: Server SiteAPI
+siteAPIServer :: ServerT SiteAPI AppHandler
 siteAPIServer = index_ :<|> bundle_
 

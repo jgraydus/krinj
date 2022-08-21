@@ -3,8 +3,8 @@ module Issues.Lib.Web.JsBundle (
 ) where
 
 import qualified Data.ByteString as BS
-import Data.Text (Text)
-import Data.Text.Encoding (decodeUtf8)
+import           Data.Text (Text)
+import           Data.Text.Encoding (decodeUtf8)
 
 jsBundleFilePath :: FilePath
 jsBundleFilePath = "client/build/bundle.js"

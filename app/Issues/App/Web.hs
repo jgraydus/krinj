@@ -1,10 +1,9 @@
 module Issues.App.Web where
 
 import qualified Network.Wai.Handler.Warp as Warp
-import qualified StmContainers.Map as StmMap
 import           System.Exit (ExitCode(..), exitWith)
 
-import           Issues.Lib.Language
+import           Issues.Lib.Language.Interpreter.InMemory (makeRunTime)
 import           Issues.Lib.Config (ApplicationConfig(..), HttpConfig(..), readConfig)
 import           Issues.Lib.Web.Application
 import           Issues.Lib.Web.Options
@@ -25,7 +24,7 @@ main = do
     Right ApplicationConfig {..} -> do
       let HttpConfig {..} = _applicationConfigHttp
       putStrLn $ "server listening on port " <> (show _httpConfigPort)
-      db <- DB <$> StmMap.newIO <*> StmMap.newIO <*> StmMap.newIO
-      Warp.run _httpConfigPort (app _applicationConfigJwtKey db)
+      rt <- makeRunTime
+      Warp.run _httpConfigPort (app _applicationConfigJwtKey rt)
       exitWith ExitSuccess
 
