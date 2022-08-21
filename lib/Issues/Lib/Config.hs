@@ -31,8 +31,6 @@ instance FromJSON HttpConfig where
   parseJSON = genericParseJSON
     defaultOptions { fieldLabelModifier = removeRecordPrefix "_httpConfig" }
 
-instance FromJSON LogLevel
-
 type JwtKey = String
 
 data ApplicationConfig = ApplicationConfig
