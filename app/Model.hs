@@ -143,6 +143,7 @@ data IssueUpdate =
   | State Text
   deriving (Generic, Show)
 
+instance ToJSON IssueUpdate
 instance FromJSON IssueUpdate
 
 issueUpdateToField :: IssueUpdate -> Field
@@ -190,7 +191,9 @@ documentToComment doc =
   <*> lookup' "createdAt" doc
   <*> lookup' "updatedAt" doc
 
-data CommentUpdate = Content Text
+data CommentUpdate =
+    Content Text 
+  | Dummy
   deriving (Generic, Show)
 
 instance FromJSON CommentUpdate

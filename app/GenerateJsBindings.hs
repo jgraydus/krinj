@@ -40,7 +40,11 @@ outFilePath :: FilePath
 outFilePath = "client/src/generated/bindings.js"
 
 axiosImport :: Text
-axiosImport = "import axios from 'axios'\n\n"
+axiosImport =
+  "import axios from 'axios'\n" <>
+  "axios.defaults.headers.post['Content-Type'] = 'application/json'\n" <>
+  "axios.defaults.headers.put['Content-Type'] = 'application/json'\n" <>
+  "axios.defaults.headers.patch['Content-Type'] = 'application/json'\n\n"
 
 writeJSCode :: IO ()
 writeJSCode = do

@@ -22,7 +22,7 @@ import           Servant.Server.Experimental.Auth
 type CreateProject = "create" :> Post '[JSON] Project
 
 createProject :: L.DB -> User -> Handler Project
-createProject db user = error "not implemented yet"
+createProject db user = L.runApp db user L.createProject
 
 ------------------------------------------
 -- Delete Project
@@ -30,7 +30,7 @@ createProject db user = error "not implemented yet"
 type DeleteProject = "delete" :> Capture "projectId" ProjectId :> Delete '[JSON] ()
 
 deleteProject :: L.DB -> User -> ProjectId -> Handler ()
-deleteProject db user projectId = error "not implemented yet"
+deleteProject db user projectId = L.runApp db user (L.deleteProject projectId)
 
 ------------------------------------------
 -- Get Project
@@ -38,7 +38,7 @@ deleteProject db user projectId = error "not implemented yet"
 type GetProject = Capture "projectId" ProjectId :> Get '[JSON] Project
 
 getProject :: L.DB -> User -> ProjectId -> Handler Project
-getProject db user projectId = error "not implemented yet"
+getProject db user projectId = L.runApp db user (L.getProject projectId)
 
 ------------------------------------------
 -- Update Project
@@ -46,7 +46,7 @@ getProject db user projectId = error "not implemented yet"
 type UpdateProject = Capture "projectId" ProjectId :> ReqBody '[JSON] [ProjectUpdate] :> Patch '[JSON] Project
 
 updateProject :: L.DB -> User -> ProjectId -> [ProjectUpdate] -> Handler Project
-updateProject db user projectId updates = error "not implemented"
+updateProject db user projectId updates = L.runApp db user (L.updateProject projectId updates)
 
 ------------------------------------------------------------------------------------
 ------------------------------------------

@@ -4,4 +4,6 @@ curl -v \
   localhost:8080/v1/issues/create \
   -X POST \
   -H "x-bearer-token: eyJhbGciOiJIUzI1NiJ9.eyJfdXNlcklkIjoiYTJhYjIwMzctMjYxNC00MmYxLWI3MjMtZThiN2JlZGQ4NWYyIn0.5j9d5E_9ypS1W4kQNGjWVAfVbR2Fh_2sQA484-BGyiY"
+  -d "6301a561fb793a677d000000"
+  -H "content-type: application/json"
 
