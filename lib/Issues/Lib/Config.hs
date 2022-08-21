@@ -5,6 +5,8 @@ import           Data.Char (toLower)
 import           GHC.Generics (Generic)
 import qualified JsonConfig as JsonConfig
 
+import           Issues.Lib.Logger (LogLevel(..))
+
 removeRecordPrefix :: String -> String -> String
 removeRecordPrefix prefix = fmap toLower . drop (length prefix)
 
@@ -28,9 +30,6 @@ data HttpConfig = HttpConfig
 instance FromJSON HttpConfig where
   parseJSON = genericParseJSON
     defaultOptions { fieldLabelModifier = removeRecordPrefix "_httpConfig" }
-
-data LogLevel = TRACE | DEBUG | INFO | WARN | ERROR
-  deriving (Generic, Show)
 
 instance FromJSON LogLevel
 

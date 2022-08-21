@@ -1,6 +1,6 @@
 module Issues.Lib.Language.Interpreter.InMemory where
 
-import           Prelude hiding (lookup)
+import           Prelude hiding (log, lookup)
 
 import           Control.Monad.Except (MonadError)
 import           Control.Monad.Free (foldFree)
@@ -15,10 +15,12 @@ import           GHC.Conc (atomically)
 import qualified StmContainers.Map as StmMap
 import           Servant (throwError)
 import           Servant.Server (err400, err404, err500, errBody, ServerError)
+import           System.Log.FastLogger (toLogStr)
 
 import           Issues.Lib.Language.AppL
 import           Issues.Lib.Model
 import           Issues.Lib.Language.RunTime
+import           Issues.Lib.Logger (Logger, LogLevel(..))
 import           Issues.Lib.ObjectId
 
 data DB = DB
@@ -36,8 +38,8 @@ isDeleted doc = fromMaybe False $ lookup "isDeleted" doc
 values :: MonadIO m => StmMap.Map k v -> m [v]
 values = liftIO . atomically . (fmap . fmap) snd . ListT.toList . StmMap.listT
 
-interpret :: (MonadIO m, MonadError ServerError m) => DB -> User -> AppL a -> m a
-interpret db user = \case
+interpret :: (MonadIO m, MonadError ServerError m) => DB -> Logger -> User -> AppL a -> m a
+interpret db log user = \case
   -- projects
   CreateProject next -> do
     projectId <- liftIO genObjectId
@@ -52,13 +54,13 @@ interpret db user = \case
           , createdAt = now
           , updatedAt = now
           }
-    liftIO $ putStrLn ("CREATE project: " <> show projectId)
+    liftIO $ log INFO (toLogStr $ "CREATE project: " <> show projectId)
     let doc = projectToDocument project <> ["isDeleted" =: False]
     liftIO $ atomically $ StmMap.insert doc projectId (_projects db)
     return $ next project
 
   DeleteProject projectId next -> do
-    liftIO $ putStrLn ("DELETE project: " <> show projectId)
+    liftIO $ log INFO (toLogStr $ "DELETE project: " <> show projectId)
     errMaybe <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup projectId (_projects db)
       case docMaybe of
@@ -71,7 +73,7 @@ interpret db user = \case
       Nothing -> return $ next ()
 
   GetProject projectId next -> do
-    liftIO $ putStrLn ("GET project: " <> show projectId)
+    liftIO $ log INFO (toLogStr $ "GET project: " <> show projectId)
     docMaybe <- liftIO $ atomically $ StmMap.lookup projectId (_projects db)
     case docMaybe of
       Just doc | not (isDeleted doc)-> do
@@ -81,7 +83,7 @@ interpret db user = \case
       _ -> throwError err404
 
   UpdateProject projectId updates next -> do
-    liftIO $ putStrLn ("UDPATE project: " <> show projectId)
+    liftIO $ log INFO (toLogStr $ "UDPATE project: " <> show projectId)
     now <- liftIO getCurrentTime
     result <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup projectId (_projects db)
@@ -114,13 +116,13 @@ interpret db user = \case
           , createdAt = now
           , updatedAt = now
           }
-    liftIO $ putStrLn ("CREATE issue: " <> show issueId)
+    liftIO $ log INFO (toLogStr $ "CREATE issue: " <> show issueId)
     let doc = issueToDocument issue <> ["isDeleted" =: False]
     liftIO $ atomically $ StmMap.insert doc issueId (_issues db)
     return $ next issue
     
   DeleteIssue issueId next -> do
-    liftIO $ putStrLn ("DELETE issue: " <> show issueId)
+    liftIO $ log INFO (toLogStr $ "DELETE issue: " <> show issueId)
     errMaybe <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup issueId (_issues db)
       case docMaybe of
@@ -133,7 +135,7 @@ interpret db user = \case
       Nothing -> return $ next () 
 
   GetIssue issueId next -> do
-    liftIO $ putStrLn ("GET issue: " <> show issueId)
+    liftIO $ log INFO (toLogStr $ "GET issue: " <> show issueId)
     docMaybe <- liftIO $ atomically $ StmMap.lookup issueId (_issues db)
     case docMaybe of
       Just doc | not (isDeleted doc)-> do
@@ -143,7 +145,7 @@ interpret db user = \case
       _ -> throwError err404
 
   UpdateIssue issueId updates next -> do
-    liftIO $ putStrLn ("UDPATE issue: " <> show issueId)
+    liftIO $ log INFO (toLogStr $ "UDPATE issue: " <> show issueId)
     now <- liftIO getCurrentTime
     result <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup issueId (_issues db)
@@ -172,13 +174,13 @@ interpret db user = \case
           , createdAt = now
           , updatedAt = now
           }
-    liftIO $ putStrLn ("CREATE comment: " <> show commentId)
+    liftIO $ log INFO (toLogStr $ "CREATE comment: " <> show commentId)
     let doc = commentToDocument comment <> ["isDeleted" =: False]
     liftIO $ atomically $ StmMap.insert doc commentId (_comments db)
     return $ next comment
     
   DeleteComment commentId next -> do
-    liftIO $ putStrLn ("DELETE comment: " <> show commentId)
+    liftIO $ log INFO (toLogStr $ "DELETE comment: " <> show commentId)
     errMaybe <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup commentId (_comments db)
       case docMaybe of
@@ -193,7 +195,7 @@ interpret db user = \case
   GetComments Nothing _ -> throwError $ err400 { errBody = (fromStrict . encodeUtf8) "issueId required" }
 
   GetComments (Just issueId) next -> do
-    liftIO $ putStrLn ("GET comments: " <> show issueId)
+    liftIO $ log INFO (toLogStr $ "GET comments: " <> show issueId)
     allComments <- values (_comments db)
     let conditions doc = not (isDeleted doc) && at "issueId" doc == issueId
         comments :: [Document] = filter conditions allComments
@@ -202,7 +204,7 @@ interpret db user = \case
       Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
 
   UpdateComment commentId updates next -> do
-    liftIO $ putStrLn ("UPDATE comment: " <> show commentId)
+    liftIO $ log INFO (toLogStr $ "UPDATE comment: " <> show commentId)
     now <- liftIO getCurrentTime
     result <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup commentId (_comments db)
@@ -221,8 +223,8 @@ interpret db user = \case
   Log _msg                     _next -> error "not implemented"
   Err _e                             -> error "not implemented"
 
-makeRunTime :: IO RunTime
-makeRunTime = do
+makeRunTime :: Logger -> IO RunTime
+makeRunTime logger = do
   db <- newDB
-  return $ RunTime (\user -> foldFree (interpret db user))
+  return $ RunTime (\user -> foldFree (interpret db logger user))
 
