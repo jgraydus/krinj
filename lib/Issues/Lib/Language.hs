@@ -1,4 +1,4 @@
-module Language where
+module Issues.Lib.Language where
 
 import           Prelude hiding (lookup)
 import           Control.Monad.IO.Class (liftIO, MonadIO)
@@ -10,14 +10,14 @@ import           Data.ByteString.Lazy (fromStrict)
 import           Data.Maybe (fromMaybe)
 import           Data.Text.Encoding (encodeUtf8)
 import           Data.Time.Clock (getCurrentTime)
-import           Data.UUID (UUID)
 import           GHC.Conc (atomically)
 import qualified ListT as ListT
-import           Model
-import           ObjectId
 import           Servant (throwError)
 import           Servant.Server (err400, err404, err500, errBody, ServerError)
 import qualified StmContainers.Map as StmMap
+
+import           Issues.Lib.Model
+import           Issues.Lib.ObjectId
 
 data AppL a where
   -- projects
@@ -132,7 +132,7 @@ interpret db user = \case
           return Nothing
         Nothing -> return $ Just err404
     case errMaybe of
-      Just err -> throwError err
+      Just e -> throwError e
       Nothing -> return $ next ()
 
   GetProject projectId next -> do
@@ -142,7 +142,7 @@ interpret db user = \case
       Just doc | not (isDeleted doc)-> do
         case documentToProject doc of
           Right project -> return $ next project
-          Left err    -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) err }
+          Left e    -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
       _ -> throwError err404
 
   UpdateProject projectId updates next -> do
@@ -157,10 +157,10 @@ interpret db user = \case
           return $ Right updatedDoc
         Nothing  -> return $ Left err404
     case result of
-      Left err -> throwError err
+      Left e -> throwError e
       Right doc -> case documentToProject doc of
         Right issue -> return $ next issue
-        Left err -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) err }
+        Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
 
   -- issues
   CreateIssue projectId next -> do
@@ -194,7 +194,7 @@ interpret db user = \case
           return Nothing
         Nothing -> return $ Just err404
     case errMaybe of
-      Just err -> throwError err
+      Just e -> throwError e
       Nothing -> return $ next () 
 
   GetIssue issueId next -> do
@@ -204,7 +204,7 @@ interpret db user = \case
       Just doc | not (isDeleted doc)-> do
         case documentToIssue doc of
           Right issue -> return $ next issue 
-          Left err    -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) err }
+          Left e      -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
       _ -> throwError err404
 
   UpdateIssue issueId updates next -> do
@@ -219,10 +219,10 @@ interpret db user = \case
           return $ Right updatedDoc
         Nothing  -> return $ Left err404
     case result of
-      Left err -> throwError err
+      Left e -> throwError e
       Right doc -> case documentToIssue doc of
         Right issue -> return $ next issue
-        Left err -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) err }
+        Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
 
   -- comments 
   CreateComment issueId next -> do
@@ -252,7 +252,7 @@ interpret db user = \case
           return Nothing
         Nothing -> return $ Just err404
     case errMaybe of
-      Just err -> throwError err
+      Just e -> throwError e
       Nothing -> return $ next () 
 
   GetComments Nothing _ -> throwError $ err400 { errBody = (fromStrict . encodeUtf8) "issueId required" }
@@ -264,7 +264,7 @@ interpret db user = \case
         comments :: [Document] = filter conditions allComments
     case traverse documentToComment comments of
       Right cs -> return $ next cs
-      Left err -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) err }
+      Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
 
   UpdateComment commentId updates next -> do
     liftIO $ putStrLn ("UPDATE comment: " <> show commentId)
@@ -278,13 +278,13 @@ interpret db user = \case
           return $ Right updatedDoc
         Nothing  -> return $ Left err404
     case result of
-      Left err -> throwError err
+      Left e -> throwError e
       Right doc -> case documentToComment doc of
         Right comment -> return $ next comment
-        Left err -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) err }
+        Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
 
-  Log msg                     next -> error "not implemented"
-  Err e                            -> error "not implemented"
+  Log _msg                     _next -> error "not implemented"
+  Err _e                             -> error "not implemented"
 
 runApp :: (MonadIO m, MonadError ServerError m) => DB -> User -> App a -> m a
 runApp db user = foldFree (interpret db user)

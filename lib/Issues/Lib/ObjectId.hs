@@ -1,4 +1,5 @@
-module ObjectId (
+{-# OPTIONS_GHC -Wno-orphans #-}
+module Issues.Lib.ObjectId (
     ObjectId
 ) where
 

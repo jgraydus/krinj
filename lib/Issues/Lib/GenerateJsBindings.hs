@@ -1,14 +1,18 @@
-module GenerateJsBindings where
+{-# OPTIONS_GHC -Wno-orphans #-}
+module Issues.Lib.GenerateJsBindings (
+    writeJSCode
+) where
 
-import           ApiV1 
-import           Auth
 import           Control.Lens ((&), (<>~))
 import           Data.Proxy
 import           Data.Text (Text)
 import qualified Data.Text.IO as Text
 import           Servant.Foreign
 import           Servant.JS
-import           Servant.JS.Axios
+import           Servant.JS.Axios ()
+
+import           Issues.Lib.Auth
+import           Issues.Lib.Web.ApiV1 
 
 instance HasForeignType lang ftype JwtAuth where
   typeFor l t a = typeFor l t a

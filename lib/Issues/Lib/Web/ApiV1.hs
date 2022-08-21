@@ -1,19 +1,10 @@
-module ApiV1 where
+module Issues.Lib.Web.ApiV1 where
 
-import           Auth
-import           Control.Monad.IO.Class (liftIO)
-import           Data.Aeson
-import qualified Data.Aeson as Aeson
-import           Data.Bson (genObjectId)
-import           Data.Text (pack, Text)
-import qualified Language as L
-import           Model
-import           Network.Wai (Request)
-import           ObjectId
 import           Servant
-import           Servant.API.Experimental.Auth
-import           Servant.Server
-import           Servant.Server.Experimental.Auth
+
+import qualified Issues.Lib.Language as L
+import           Issues.Lib.Auth
+import           Issues.Lib.Model
 
 ------------------------------------------------------------------------------------
 ------------------------------------------

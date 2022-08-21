@@ -1,4 +1,4 @@
-module ContentTypes (
+module Issues.Lib.ContentTypes (
     HTML, JavaScript
 ) where
 

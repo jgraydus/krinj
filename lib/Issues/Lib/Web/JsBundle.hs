@@ -1,6 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
-
-module JsBundle (
+module Issues.Lib.Web.JsBundle (
   jsBundle
 ) where
 

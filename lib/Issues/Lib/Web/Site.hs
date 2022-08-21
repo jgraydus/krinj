@@ -1,14 +1,14 @@
-module Site (
+module Issues.Lib.Web.Site (
     SiteAPI, siteAPIServer
 ) where
 
-import ContentTypes
 import Control.Monad.IO.Class (liftIO)
 import Data.Text (Text)
-import JsBundle
 import NeatInterpolation
 import Servant
-import Servant.Server
+
+import Issues.Lib.ContentTypes
+import Issues.Lib.Web.JsBundle
 
 type Index = Get '[HTML] Text
 

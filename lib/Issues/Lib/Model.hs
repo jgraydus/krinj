@@ -1,8 +1,7 @@
-module Model where
+module Issues.Lib.Model where
 
 import           Prelude hiding (lookup, String)
 import           Data.Aeson hiding (Null, String)
-import           Data.AesonBson (bsonifyError)
 import           Data.Bson ((=:), Document, Field, lookup, Val, Value(..))
 import qualified Data.Bson as Bson
 import           Data.ByteString.Lazy (fromStrict, toStrict)
@@ -10,8 +9,9 @@ import           Data.Maybe (fromMaybe)
 import           Data.Text (Text)
 import           Data.Time.Clock (UTCTime)
 import           Data.UUID
+import           Data.UUID.V4 (nextRandom)
 import           GHC.Generics
-import           ObjectId
+import           Issues.Lib.ObjectId
 
 toBsonUuid :: UUID -> Bson.UUID
 toBsonUuid = Bson.UUID . toStrict . toByteString
@@ -34,6 +34,11 @@ data User = User
 
 instance FromJSON User
 instance ToJSON User
+
+makeUserForTest :: IO User
+makeUserForTest = do
+  _userId <- nextRandom
+  return $ User {..}
 
 --------------------------------------------------
 type ProjectId = ObjectId
@@ -201,6 +206,7 @@ instance FromJSON CommentUpdate
 commentUpdateToField :: CommentUpdate -> Field
 commentUpdateToField = \case
   Content content -> "content" =: String content
+  Dummy           -> error "do not use the Dummy constructor"
 
 commentUpdatesToDocument :: [CommentUpdate] -> Document
 commentUpdatesToDocument = fmap commentUpdateToField

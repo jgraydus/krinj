@@ -1,5 +1,5 @@
-module Args (
-    Command(..),
+module Issues.Lib.Web.Options (
+    env,
     Mode(..),
     Options(..),
     parseOptions
@@ -10,12 +10,12 @@ import Options.Applicative
 data Mode = DEV | PROD
   deriving (Read, Show)
 
-data Command = HttpServer | GenerateJsBindings | MakeAuthTokenForTesting
-  deriving (Read, Show)
+env :: Mode -> String
+env DEV  = "localhost"
+env PROD = "prod"
 
 data Options = Options
   { _optionsMode :: Mode
-  , _optionsCommand :: Command
   , _optionsConfigDir :: FilePath
   } deriving (Show)
 
@@ -26,13 +26,6 @@ envParser = option auto
   <> value DEV
   <> help "execution mode: DEV or PROD" )
 
-commandParser :: Parser Command
-commandParser = option auto
-  (  long "command"
-  <> metavar "COMMAND"
-  <> value HttpServer
-  <> help "command to execute: HttpServer, GenerateJsBindings, or MakeAuthTokenForTesting" )
-
 configDirParser :: Parser FilePath
 configDirParser = strOption
   (  long "config-directory"
@@ -41,7 +34,7 @@ configDirParser = strOption
   <> help "directory containing application configuration files" )
 
 parser :: Parser Options
-parser = Options <$> envParser <*> commandParser <*> configDirParser
+parser = Options <$> envParser <*> configDirParser
 
 parseOptions :: IO Options
 parseOptions = execParser (info parser mempty)

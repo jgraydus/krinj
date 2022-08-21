@@ -1,4 +1,4 @@
-module Config where
+module Issues.Lib.Config where
 
 import Data.Aeson
 import Data.Char (toLower)
