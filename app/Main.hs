@@ -9,6 +9,7 @@ import           Data.Text.Encoding (decodeUtf8)
 import qualified Data.UUID.V4 as UUID
 import           GenerateJsBindings
 import           JsonConfig
+import           Language
 import           Model
 import qualified Network.Wai.Handler.Warp as Warp
 import qualified StmContainers.Map as StmMap
@@ -38,7 +39,7 @@ main = do
         Right ApplicationConfig {..} -> do
           let HttpConfig {..} = _applicationConfigHttp
           putStrLn $ "server listening on port " <> (show _httpConfigPort)
-          db <- StmMap.newIO
+          db <- DB <$> StmMap.newIO <*> StmMap.newIO <*> StmMap.newIO
           Warp.run _httpConfigPort (app _applicationConfigJwtKey db)
           exitWith ExitSuccess
 

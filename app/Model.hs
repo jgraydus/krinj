@@ -36,10 +36,65 @@ instance FromJSON User
 instance ToJSON User
 
 --------------------------------------------------
+type ProjectId = ObjectId
+
+data Project = Project
+  { projectId :: ProjectId
+  , title :: Text
+  , description :: Text
+  , owner :: UUID
+  , createdBy :: UUID
+  , createdAt :: UTCTime
+  , updatedAt :: UTCTime
+  } deriving (Generic, Show)
+
+instance ToJSON Project
+
+projectToDocument :: Project -> Document
+projectToDocument Project {..} =
+  [ "projectId" =: ObjId projectId
+  , "title" =: String title
+  , "description" =: String description
+  , "owner" =: (Uuid . toBsonUuid) owner 
+  , "createdBy" =: (Uuid . toBsonUuid) createdBy
+  , "createdAt" =: UTC createdAt
+  , "updatedAt" =: UTC updatedAt
+  ]
+
+documentToProject :: Document -> Either Text Project
+documentToProject doc =
+  Project
+  <$> lookup' "projectId" doc
+  <*> lookup' "title" doc
+  <*> lookup' "description" doc
+  <*> (lookup' "owner" doc >>= fromBsonUuid)
+  <*> (lookup' "createdBy" doc >>= fromBsonUuid)
+  <*> lookup' "createdAt" doc
+  <*> lookup' "updatedAt" doc
+
+data ProjectUpdate =
+    ProjectTitle Text
+  | ProjectDescription Text
+  | ProjectOwner UUID
+  deriving (Generic, Show)
+
+instance FromJSON ProjectUpdate
+
+projectUpdateToField :: ProjectUpdate -> Field
+projectUpdateToField = \case
+  ProjectTitle title -> "title" =: String title
+  ProjectDescription desc -> "description" =: String desc
+  ProjectOwner uuid -> "owner" =: (Uuid . toBsonUuid) uuid
+
+projectUpdatesToDocument :: [ProjectUpdate] -> Document
+projectUpdatesToDocument = fmap projectUpdateToField
+
+--------------------------------------------------
 type IssueId = ObjectId
 
 data Issue = Issue
   { issueId :: IssueId 
+  , projectId :: ProjectId
   , title :: Text
   , description :: Text
   , owner :: UUID
@@ -55,6 +110,7 @@ instance ToJSON Issue
 issueToDocument :: Issue -> Document
 issueToDocument Issue {..} =
   [ "issueId" =: ObjId issueId
+  , "projectId" =: ObjId projectId
   , "title" =: String title
   , "description" =: String description
   , "owner" =: (Uuid . toBsonUuid) owner
@@ -69,6 +125,7 @@ documentToIssue :: Document -> Either Text Issue
 documentToIssue doc =
   Issue
   <$> lookup' "issueId" doc
+  <*> lookup' "projectId" doc
   <*> lookup' "title" doc
   <*> lookup' "description" doc
   <*> (lookup' "owner" doc >>= fromBsonUuid)
@@ -86,7 +143,6 @@ data IssueUpdate =
   | State Text
   deriving (Generic, Show)
 
-instance ToJSON IssueUpdate
 instance FromJSON IssueUpdate
 
 issueUpdateToField :: IssueUpdate -> Field
@@ -99,4 +155,50 @@ issueUpdateToField = \case
 
 issueUpdatesToDocument :: [IssueUpdate] -> Document
 issueUpdatesToDocument = fmap issueUpdateToField
+
+--------------------------------------------------
+type CommentId = ObjectId
+
+data Comment = Comment
+  { commentId :: CommentId
+  , issueId :: IssueId
+  , content :: Text
+  , createdBy :: UUID
+  , createdAt :: UTCTime
+  , updatedAt :: UTCTime
+  } deriving (Generic, Show)
+
+instance ToJSON Comment
+
+commentToDocument :: Comment -> Document
+commentToDocument Comment {..} =
+  [ "commentId" =: ObjId commentId
+  , "issueId" =: ObjId issueId
+  , "content" =: String content
+  , "createdBy" =: (Uuid . toBsonUuid) createdBy
+  , "createdAt" =: UTC createdAt
+  , "updatedAt" =: UTC updatedAt
+  ]
+
+documentToComment :: Document -> Either Text Comment
+documentToComment doc =
+  Comment
+  <$> lookup' "commentId" doc
+  <*> lookup' "issueId" doc
+  <*> lookup' "content" doc
+  <*> (lookup' "createdBy" doc >>= fromBsonUuid)
+  <*> lookup' "createdAt" doc
+  <*> lookup' "updatedAt" doc
+
+data CommentUpdate = Content Text
+  deriving (Generic, Show)
+
+instance FromJSON CommentUpdate
+
+commentUpdateToField :: CommentUpdate -> Field
+commentUpdateToField = \case
+  Content content -> "content" =: String content
+
+commentUpdatesToDocument :: [CommentUpdate] -> Document
+commentUpdatesToDocument = fmap commentUpdateToField
 
