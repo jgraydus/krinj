@@ -17,10 +17,10 @@ import           Issues.Lib.Logger (Logger, LogLevel(INFO), toLogStr)
 import           Issues.Lib.Web.ApiV1 (API_V1, apiV1Server)
 import           Issues.Lib.Web.Site (SiteAPI, siteAPIServer)
 
-type API = SiteAPI :<|> API_V1
+type API = API_V1 :<|> SiteAPI
 
 api :: ServerT API AppHandler
-api = siteAPIServer :<|> apiV1Server
+api =  apiV1Server :<|> siteAPIServer
 
 _app :: JwtKey -> RunTime -> Logger -> Application
 _app key rt logger = serveWithContextT p context nt api

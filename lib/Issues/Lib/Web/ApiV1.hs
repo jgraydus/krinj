@@ -139,7 +139,7 @@ type ProjectsV1API = "projects" :> (CreateProject :<|> DeleteProject :<|> GetPro
 type IssuesV1API = "issues" :> (CreateIssue :<|> DeleteIssue :<|> GetIssue :<|> UpdateIssue)
 type CommentsV1API = "comments" :> (CreateComment :<|> DeleteComment :<|> GetComments :<|> UpdateComment)
 
-type API_V1 = JwtAuth :> "v1" :> (ProjectsV1API :<|> IssuesV1API :<|> CommentsV1API)
+type API_V1 = JwtAuth :> "api" :> "v1" :> (ProjectsV1API :<|> IssuesV1API :<|> CommentsV1API)
 
 apiV1Server :: ServerT API_V1 AppHandler
 apiV1Server user = projectsV1Handler :<|> issuesV1Handler :<|> commentsV1Handler

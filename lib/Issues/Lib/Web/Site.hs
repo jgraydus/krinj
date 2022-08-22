@@ -11,10 +11,13 @@ import Issues.Lib.ContentTypes
 import Issues.Lib.Language.RunTime
 import Issues.Lib.Web.JsBundle
 
-type Index = Get '[HTML] Text
+-- | serve the index.html file. this route will accept any path because
+--   the client does frontend routing (which manipulates the URL). consequently,
+--   this should be the last configured route
+type Index = CaptureAll "ignored" Text :> Get '[HTML] Text
 
-index_ :: AppHandler Text
-index_ = pure $ [text|
+index :: [Text] -> AppHandler Text
+index _ = pure $ [text|
   <!doctype HTML>
   <html lang="en">
     <head>
@@ -29,15 +32,13 @@ index_ = pure $ [text|
   </html>
 |]
 
-
 type Bundle = "bundle.js" :> Get '[JavaScript] Text
 
-bundle_ :: AppHandler Text
-bundle_ = liftIO jsBundle
+bundle :: AppHandler Text
+bundle = liftIO jsBundle
 
-
-type SiteAPI = Index :<|> Bundle
+type SiteAPI = Bundle :<|> Index
 
 siteAPIServer :: ServerT SiteAPI AppHandler
-siteAPIServer = index_ :<|> bundle_
+siteAPIServer = bundle :<|> index
 
