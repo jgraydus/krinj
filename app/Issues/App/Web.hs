@@ -28,8 +28,8 @@ main = do
 
       logger INFO (toLogStr $ "server listening on port " <> show _httpConfigPort)
 
-      rt <- makeRunTime logger
-      Warp.run _httpConfigPort (app _applicationConfigJwtKey rt)
+      rt <- makeRunTime
+      Warp.run _httpConfigPort (app _applicationConfigJwtKey rt logger)
 
       _ <- loggerCleanup
       exitWith ExitSuccess

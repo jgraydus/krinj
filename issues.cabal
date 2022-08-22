@@ -54,6 +54,7 @@ library
         AesonBson,
         bson,
         bytestring,
+        clock,
         containers,
         fast-logger,
         free,

@@ -28,6 +28,6 @@ newLogger threshold = do
   timeCache <- newTimeCache simpleTimeFormat'
   (log, cleanup) <- newTimedFastLogger timeCache (LogStdout 4096)
   let logger logLevel msg = when (logLevel >= threshold) $
-        log (\time -> "[" <> toLogStr logLevel <> "] [" <> toLogStr time <> "] " <> msg <> "\n")
+        log (\time -> "[" <> toLogStr logLevel <> "][" <> toLogStr time <> "]" <> msg <> "\n")
   return (logger, cleanup)
 

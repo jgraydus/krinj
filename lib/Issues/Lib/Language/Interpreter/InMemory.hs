@@ -54,13 +54,13 @@ interpret db log user = \case
           , createdAt = now
           , updatedAt = now
           }
-    liftIO $ log INFO (toLogStr $ "CREATE project: " <> show projectId)
+    liftIO $ log DEBUG (toLogStr $ "CREATE project: " <> show projectId)
     let doc = projectToDocument project <> ["isDeleted" =: False]
     liftIO $ atomically $ StmMap.insert doc projectId (_projects db)
     return $ next project
 
   DeleteProject projectId next -> do
-    liftIO $ log INFO (toLogStr $ "DELETE project: " <> show projectId)
+    liftIO $ log DEBUG (toLogStr $ "DELETE project: " <> show projectId)
     errMaybe <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup projectId (_projects db)
       case docMaybe of
@@ -73,7 +73,7 @@ interpret db log user = \case
       Nothing -> return $ next ()
 
   GetProject projectId next -> do
-    liftIO $ log INFO (toLogStr $ "GET project: " <> show projectId)
+    liftIO $ log DEBUG (toLogStr $ "GET project: " <> show projectId)
     docMaybe <- liftIO $ atomically $ StmMap.lookup projectId (_projects db)
     case docMaybe of
       Just doc | not (isDeleted doc)-> do
@@ -83,7 +83,7 @@ interpret db log user = \case
       _ -> throwError err404
 
   UpdateProject projectId updates next -> do
-    liftIO $ log INFO (toLogStr $ "UDPATE project: " <> show projectId)
+    liftIO $ log DEBUG (toLogStr $ "UDPATE project: " <> show projectId)
     now <- liftIO getCurrentTime
     result <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup projectId (_projects db)
@@ -116,13 +116,13 @@ interpret db log user = \case
           , createdAt = now
           , updatedAt = now
           }
-    liftIO $ log INFO (toLogStr $ "CREATE issue: " <> show issueId)
+    liftIO $ log DEBUG (toLogStr $ "CREATE issue: " <> show issueId)
     let doc = issueToDocument issue <> ["isDeleted" =: False]
     liftIO $ atomically $ StmMap.insert doc issueId (_issues db)
     return $ next issue
     
   DeleteIssue issueId next -> do
-    liftIO $ log INFO (toLogStr $ "DELETE issue: " <> show issueId)
+    liftIO $ log DEBUG (toLogStr $ "DELETE issue: " <> show issueId)
     errMaybe <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup issueId (_issues db)
       case docMaybe of
@@ -135,7 +135,7 @@ interpret db log user = \case
       Nothing -> return $ next () 
 
   GetIssue issueId next -> do
-    liftIO $ log INFO (toLogStr $ "GET issue: " <> show issueId)
+    liftIO $ log DEBUG (toLogStr $ "GET issue: " <> show issueId)
     docMaybe <- liftIO $ atomically $ StmMap.lookup issueId (_issues db)
     case docMaybe of
       Just doc | not (isDeleted doc)-> do
@@ -145,7 +145,7 @@ interpret db log user = \case
       _ -> throwError err404
 
   UpdateIssue issueId updates next -> do
-    liftIO $ log INFO (toLogStr $ "UDPATE issue: " <> show issueId)
+    liftIO $ log DEBUG (toLogStr $ "UDPATE issue: " <> show issueId)
     now <- liftIO getCurrentTime
     result <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup issueId (_issues db)
@@ -174,13 +174,13 @@ interpret db log user = \case
           , createdAt = now
           , updatedAt = now
           }
-    liftIO $ log INFO (toLogStr $ "CREATE comment: " <> show commentId)
+    liftIO $ log DEBUG (toLogStr $ "CREATE comment: " <> show commentId)
     let doc = commentToDocument comment <> ["isDeleted" =: False]
     liftIO $ atomically $ StmMap.insert doc commentId (_comments db)
     return $ next comment
     
   DeleteComment commentId next -> do
-    liftIO $ log INFO (toLogStr $ "DELETE comment: " <> show commentId)
+    liftIO $ log DEBUG (toLogStr $ "DELETE comment: " <> show commentId)
     errMaybe <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup commentId (_comments db)
       case docMaybe of
@@ -195,7 +195,7 @@ interpret db log user = \case
   GetComments Nothing _ -> throwError $ err400 { errBody = (fromStrict . encodeUtf8) "issueId required" }
 
   GetComments (Just issueId) next -> do
-    liftIO $ log INFO (toLogStr $ "GET comments: " <> show issueId)
+    liftIO $ log DEBUG (toLogStr $ "GET comments: " <> show issueId)
     allComments <- values (_comments db)
     let conditions doc = not (isDeleted doc) && at "issueId" doc == issueId
         comments :: [Document] = filter conditions allComments
@@ -204,7 +204,7 @@ interpret db log user = \case
       Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
 
   UpdateComment commentId updates next -> do
-    liftIO $ log INFO (toLogStr $ "UPDATE comment: " <> show commentId)
+    liftIO $ log DEBUG (toLogStr $ "UPDATE comment: " <> show commentId)
     now <- liftIO getCurrentTime
     result <- liftIO $ atomically $ do
       docMaybe <- StmMap.lookup commentId (_comments db)
@@ -223,8 +223,8 @@ interpret db log user = \case
   Log _msg                     _next -> error "not implemented"
   Err _e                             -> error "not implemented"
 
-makeRunTime :: Logger -> IO RunTime
-makeRunTime logger = do
+makeRunTime :: IO RunTime
+makeRunTime = do
   db <- newDB
-  return $ RunTime (\user -> foldFree (interpret db logger user))
+  return $ RunTime (\logger user -> foldFree (interpret db logger user))
 

@@ -16,8 +16,8 @@ type CreateProject = "create" :> Post '[JSON] Project
 
 createProject :: User -> AppHandler Project
 createProject user = do
-  RunTime {..} <- ask
-  runApp user L.createProject
+  (RunTime {..}, logger) <- ask
+  runApp logger user L.createProject
 
 ------------------------------------------
 -- Delete Project
@@ -26,8 +26,8 @@ type DeleteProject = "delete" :> Capture "projectId" ProjectId :> Delete '[JSON]
 
 deleteProject :: User -> ProjectId -> AppHandler ()
 deleteProject user projectId = do
-  RunTime {..} <- ask
-  runApp user (L.deleteProject projectId)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.deleteProject projectId)
 
 ------------------------------------------
 -- Get Project
@@ -36,8 +36,8 @@ type GetProject = Capture "projectId" ProjectId :> Get '[JSON] Project
 
 getProject :: User -> ProjectId -> AppHandler Project
 getProject user projectId = do
-  RunTime {..} <- ask
-  runApp user (L.getProject projectId)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.getProject projectId)
 
 ------------------------------------------
 -- Update Project
@@ -46,8 +46,8 @@ type UpdateProject = Capture "projectId" ProjectId :> ReqBody '[JSON] [ProjectUp
 
 updateProject :: User -> ProjectId -> [ProjectUpdate] -> AppHandler Project
 updateProject user projectId updates = do
-  RunTime {..} <- ask
-  runApp user (L.updateProject projectId updates)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.updateProject projectId updates)
 
 ------------------------------------------------------------------------------------
 ------------------------------------------
@@ -57,8 +57,8 @@ type CreateIssue = "create" :> ReqBody '[JSON] ProjectId :> Post '[JSON] Issue
 
 createIssue :: User -> ProjectId -> AppHandler Issue
 createIssue user projectId = do
-  RunTime {..} <- ask
-  runApp user (L.createIssue projectId)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.createIssue projectId)
 
 ------------------------------------------
 -- Delete issue
@@ -67,8 +67,8 @@ type DeleteIssue = "delete" :> Capture "issueId" IssueId :> Delete '[JSON] ()
 
 deleteIssue :: User -> IssueId -> AppHandler ()
 deleteIssue user issueId = do
-  RunTime {..} <- ask
-  runApp user (L.deleteIssue issueId)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.deleteIssue issueId)
 
 ------------------------------------------
 -- Get issue
@@ -77,8 +77,8 @@ type GetIssue = Capture "issueId" IssueId :> Get '[JSON] Issue
 
 getIssue :: User -> IssueId -> AppHandler Issue
 getIssue user issueId = do
-  RunTime {..} <- ask
-  runApp user (L.getIssue issueId)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.getIssue issueId)
 
 ------------------------------------------
 -- Update issue
@@ -87,8 +87,8 @@ type UpdateIssue = Capture "issueId" IssueId :> ReqBody '[JSON] [IssueUpdate] :>
 
 updateIssue :: User -> IssueId -> [IssueUpdate] -> AppHandler Issue
 updateIssue user issueId issueUpdates = do
-   RunTime {..} <- ask
-   runApp user (L.updateIssue issueId issueUpdates)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.updateIssue issueId issueUpdates)
 
 ------------------------------------------------------------------------------------
 ------------------------------------------
@@ -98,8 +98,8 @@ type CreateComment = "create" :> ReqBody '[JSON] IssueId :> Post '[JSON] Comment
 
 createComment :: User -> IssueId -> AppHandler Comment
 createComment user issueId = do
-  RunTime {..} <- ask
-  runApp user (L.createComment issueId)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.createComment issueId)
 
 ------------------------------------------
 -- Delete comment
@@ -108,8 +108,8 @@ type DeleteComment = "delete" :> Capture "commentId" CommentId :> Delete '[JSON]
 
 deleteComment :: User -> CommentId -> AppHandler ()
 deleteComment user commentId = do
-  RunTime {..} <- ask
-  runApp user (L.deleteComment commentId)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.deleteComment commentId)
 
 ------------------------------------------
 -- Get comments
@@ -118,8 +118,8 @@ type GetComments = QueryParam "issueId" IssueId :> Get '[JSON] [Comment]
 
 getComments :: User -> Maybe IssueId -> AppHandler [Comment]
 getComments user issueId = do
-  RunTime {..} <- ask
-  runApp user (L.getComments issueId)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.getComments issueId)
 
 ------------------------------------------
 -- Update comment
@@ -128,8 +128,8 @@ type UpdateComment = Capture "commentId" CommentId :> ReqBody '[JSON] [CommentUp
 
 updateComment :: User -> CommentId -> [CommentUpdate] -> AppHandler Comment
 updateComment user commentId updates = do
-  RunTime {..} <- ask
-  runApp user (L.updateComment commentId updates)
+  (RunTime {..}, logger) <- ask
+  runApp logger user (L.updateComment commentId updates)
 
 ------------------------------------------------------------------------------------
 ------------------------------------------
