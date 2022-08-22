@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components'
 import { createRoot } from 'react-dom/client'
 import { makeApi } from './api';
 
@@ -67,13 +68,23 @@ const doStuff = async () => {
 }
 
 
+const Root = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
+  padding: 10px 10px 10px 10px;
+
+  background-color: #AAAAAA;
+`
 
 const App = () =>
-  <div>
+  <Root>
     <div>Hello, World!</div>
     <button onClick={doStuff}>click me</button>
-  </div>
+  </Root>
 
 const container = document.getElementById('root');
 
