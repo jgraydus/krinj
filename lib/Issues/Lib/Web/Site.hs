@@ -8,6 +8,7 @@ import Data.Text (pack, Text)
 import NeatInterpolation
 import Servant
 
+import Issues.Lib.BuildUtils (commitHash)
 import Issues.Lib.Config (ApplicationConfig(..), HttpConfig(..))
 import Issues.Lib.ContentTypes
 import Issues.Lib.Language.RunTime
@@ -38,7 +39,10 @@ index _ = do
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>foobar</title> 
+        <title>foobar</title>
+        <script>
+          window.IssueTracker = { commitHash: "${commitHash}" }
+        </script>
       </head>
       <body>
         <div id="root"></div>
