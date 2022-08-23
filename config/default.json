@@ -4,6 +4,7 @@
         "port": {{MONGO_PORT || 27017}}
     },
     "http": {
+        "protocol": {{HTTP_PROTOCOL || "http"}},
         "host": "{{HTTP_HOST}}",
         "port": {{HTTP_PORT || 80}}
     },

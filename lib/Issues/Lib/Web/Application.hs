@@ -10,7 +10,7 @@ import           System.Clock (Clock(Monotonic), diffTimeSpec, getTime, TimeSpec
 import           System.Log.FastLogger (LogStr)
 
 import           Issues.Lib.Auth (authContext)
-import           Issues.Lib.Config (JwtKey)
+import           Issues.Lib.Config (ApplicationConfig(..))
 import           Issues.Lib.ContentTypes ()
 import           Issues.Lib.Language.RunTime (AppHandler, runAppHandler, RunTime)
 import           Issues.Lib.Logger (Logger, LogLevel(INFO), toLogStr)
@@ -22,16 +22,18 @@ type API = API_V1 :<|> SiteAPI
 api :: ServerT API AppHandler
 api =  apiV1Server :<|> siteAPIServer
 
-_app :: JwtKey -> RunTime -> Logger -> Application
-_app key rt logger = serveWithContextT p context nt api
+_app :: ApplicationConfig -> RunTime -> Logger -> Application
+_app config rt logger = serveWithContextT p context nt api
   where
+    ApplicationConfig {..} = config
+
     p :: Proxy API
     p = Proxy
 
-    context = authContext key
+    context = authContext _applicationConfigJwtKey 
 
     nt :: forall a. AppHandler a -> Handler a
-    nt = runAppHandler rt logger
+    nt = runAppHandler rt logger config
 
 type RequestId = UUID
 
@@ -54,13 +56,13 @@ pathLogStr req =
   <> toLogStr (rawPathInfo req)
   <> toLogStr (rawQueryString req)
 
-app :: JwtKey -> RunTime -> Logger -> Application
-app key rt logger req res = do
+app :: ApplicationConfig -> RunTime -> Logger -> Application
+app config rt logger req res = do
   startTime <- getTime Monotonic
   reqId <- nextRandom
   let logger' = withReqId logger reqId
   logger' INFO (pathLogStr req)
-  _app key rt logger' req $ \response -> do
+  _app config rt logger' req $ \response -> do
     endTime <- getTime Monotonic
     let diff = toLogStr $ timeDiff startTime endTime
     logger' INFO ("request elapsed ms: " <> diff)

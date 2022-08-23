@@ -22,14 +22,14 @@ main = do
       putStrLn errorMessage
       exitWith (ExitFailure 1)
       
-    Right ApplicationConfig {..} -> do
+    Right c@ApplicationConfig {..} -> do
       let HttpConfig {..} = _applicationConfigHttp
       (logger, loggerCleanup) <- newLogger _applicationConfigLogLevel
 
       logger INFO (toLogStr $ "server listening on port " <> show _httpConfigPort)
 
       rt <- makeRunTime
-      Warp.run _httpConfigPort (app _applicationConfigJwtKey rt logger)
+      Warp.run _httpConfigPort (app c rt logger)
 
       _ <- loggerCleanup
       exitWith ExitSuccess

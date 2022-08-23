@@ -12,6 +12,7 @@ removeRecordPrefix prefix = fmap toLower . drop (length prefix)
 
 type HostString = String
 type PortNumber = Int
+type Protocol = String
 
 data MongoConfig = MongoConfig
   { _mongoHost :: HostString
@@ -23,7 +24,8 @@ instance FromJSON MongoConfig where
     defaultOptions { fieldLabelModifier = removeRecordPrefix "_mongo" }
 
 data HttpConfig = HttpConfig
-  { _httpConfigHost :: HostString
+  { _httpConfigProtocol :: Protocol
+  , _httpConfigHost :: HostString
   , _httpConfigPort :: PortNumber
   } deriving (Generic, Show)
 
