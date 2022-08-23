@@ -1,7 +1,10 @@
 import * as R from 'ramda'
 import * as Bindings from './generated/bindings'
 
-export const makeApi = bearerToken => R.map(
+const bearerToken = 'eyJhbGciOiJIUzI1NiJ9.eyJfdXNlcklkIjoiYTJhYjIwMzctMjYxNC00MmYx' +
+                    'LWI3MjMtZThiN2JlZGQ4NWYyIn0.5j9d5E_9ypS1W4kQNGjWVAfVbR2Fh_2sQA484-BGyiY';
+
+const makeApi = bearerToken => R.map(
   f => R.pipe(
          // the bearer token is always the last argument in the generated code
          R.partialRight(f, [bearerToken]),
@@ -11,3 +14,6 @@ export const makeApi = bearerToken => R.map(
   Bindings.default
 )
 
+const api = makeApi(bearerToken);
+
+export default api;

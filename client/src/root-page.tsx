@@ -1,9 +1,6 @@
 import styled from 'styled-components'
 
-const HeaderStyles = styled.div`
-  padding: 5px;
-`
-const Header = () => <HeaderStyles>HEADER</HeaderStyles>
+import Header from './page-header'
 
 const FooterStyles = styled.div`
   padding: 5px;
