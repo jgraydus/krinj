@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 
+import Footer from './page-footer'
 import Header from './page-header'
 
 const FooterStyles = styled.div`
   padding: 5px;
 `
-const Footer = () => <FooterStyles>FOOTER</FooterStyles>
 
 const Root = styled.div`
   position: absolute;
@@ -16,7 +16,7 @@ const Root = styled.div`
 
   padding: 0 10px 0 10px;
 
-  background-color: #AABBBB;
+  background-color: black;
   display: flex;
   justify-content: center;
 
@@ -33,6 +33,7 @@ const ContentArea = styled.div`
 `
 
 const Content = styled.div`
+  box-sizing: border-box;
   display: flex;
   flex-flow: column nowrap;
   flex-grow: 1;
@@ -43,7 +44,7 @@ export default ({ children }) =>
   <Root>
     <ContentArea>
       <Header />
-        <Content>{children}</Content>
+      <Content>{children}</Content>
       <Footer />
     </ContentArea>
   </Root>

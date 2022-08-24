@@ -2,9 +2,8 @@ import { Link, Route, Routes } from 'react-router-dom'
 
 import Issues from './issues'
 import Projects from './projects'
+import Project from './project'
 import RootPage from './root-page'
-
-const Project = ({projectId}) => <div>{projectId}</div>
 
 export default () =>
   <RootPage>
