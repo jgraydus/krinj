@@ -16,4 +16,6 @@ const makeApi = bearerToken => R.map(
 
 const api = makeApi(bearerToken);
 
+console.log(api)
+
 export default api;

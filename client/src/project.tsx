@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { EditText, EditTextarea } from 'react-edit-text'
 import 'react-edit-text/dist/index.css'
 import { useParams } from 'react-router-dom'
@@ -48,21 +48,28 @@ const save = projectId => ({name, value, previousValue}) => {
   }
 }
 
-const Project = ({ title, description, onSave }) =>
-  <Root>
-    <Header>Project</Header>
-    <Table>
-       <div>Title</div>
-       <EditText
-         name="ProjectTitle"
-         defaultValue={title}
-         onSave={onSave}
-       />
+const Project = ({ title, description, onSave }) => {
+  const saveDescription = useCallback(value => {
+      onSave({ name: 'ProjectDescription', value, previousValue: null })
+  }, [onSave]);
 
-       <div>Description</div>
-       <MdEditor />
-    </Table>
-  </Root>
+  return (
+    <Root>
+      <Header>Project</Header>
+      <Table>
+         <div>Title</div>
+         <EditText
+           name="ProjectTitle"
+           defaultValue={title}
+           onSave={onSave}
+         />
+
+         <div>Description</div>
+         <MdEditor initialValue={description} onSave={saveDescription}/>
+      </Table>
+    </Root>
+  );
+}
 
 export default () => {
   const { projectId } = useParams();

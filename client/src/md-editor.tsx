@@ -1,8 +1,7 @@
 import { useState, useCallback } from 'react'
-import styled from 'styled-components'
-
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import styled from 'styled-components'
 
 const Root = styled.div`
   border: 1px solid red;
@@ -13,6 +12,7 @@ const Root = styled.div`
   flex-flow: column nowrap;
 `
 const Editor = styled.div`
+  padding: 5px;
   flex-grow: 1;
 
   .task-list-item {
@@ -30,11 +30,14 @@ const Editor = styled.div`
 const Textarea = styled.textarea`
   box-sizing: border-box;
   width: 100%;
-  height: 200px;
+  height: 100%;
+  resize: none;
+  outline: none;
+  border: none;
 `
 
-export default () => {
-    const [markdown, setMarkdown] = useState('');
+export default ({ onSave, initialValue }) => {
+    const [markdown, setMarkdown] = useState(initialValue || '');
     const [mode, setMode] = useState('preview');
 
     const toggleMode = useCallback(() => {
@@ -42,19 +45,27 @@ export default () => {
             setMode('write');
         } else {
             setMode('preview');
+            onSave(markdown)
         }
     });
 
     return (
       <Root>
         <Editor>
-          <Textarea
-            value={markdown}
-            onChange={e => setMarkdown(e.target.value)}
-          />
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdown}</ReactMarkdown>
+          {mode === 'preview' ? (
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {markdown}
+            </ReactMarkdown>
+          ) : (
+            <Textarea
+              value={markdown}
+              onChange={e => setMarkdown(e.target.value)}
+            />
+          )}
         </Editor>
-        <button onClick={toggleMode}>{mode === 'preview' ? "Edit" : "Preview"}</button>
+        <button onClick={toggleMode}>
+          {mode === 'preview' ? "Edit" : "Preview (save changes)"}
+        </button>
       </Root>
     );
 }
