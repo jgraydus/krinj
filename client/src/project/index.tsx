@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { EditText, EditTextarea } from 'react-edit-text'
 import 'react-edit-text/dist/index.css'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import api from '../api'
@@ -16,8 +16,14 @@ const Root = styled.div`
   display: flex;
   flex-flow: column nowrap;
 `
+const HeaderRow = styled.div`
+  height: 40px;
+  display: flex;
+  flex-flow: row nowrap;
+`
 const Header = styled.div`
   font-size: 20px;
+  flex-grow: 1;
 `
 const Table = styled.div`
   box-sizing: border-box;
@@ -48,14 +54,17 @@ const save = projectId => ({name, value, previousValue}) => {
   }
 }
 
-const Project = ({ title, description, onSave }) => {
+const Project = ({ title, description, onSave, deleteProject }) => {
   const saveDescription = useCallback(value => {
       onSave({ name: 'ProjectDescription', value, previousValue: null })
   }, [onSave]);
 
   return (
     <Root>
-      <Header>Project</Header>
+      <HeaderRow>
+        <Header>Project</Header>
+        <button onClick={deleteProject}>Delete Project</button>
+      </HeaderRow>
       <Table>
          <div>Title</div>
          <EditText
@@ -72,6 +81,7 @@ const Project = ({ title, description, onSave }) => {
 }
 
 export default () => {
+  const navigate = useNavigate();
   const { projectId } = useParams();
   const [project, setProject] = useState(null);
 
@@ -82,8 +92,23 @@ export default () => {
     })()
   }, [projectId]);
 
+  const deleteProject = useCallback(() => {
+    (async () => {
+      api.deleteApiV1ProjectsDeleteByProjectId(projectId);
+      navigate('/projects')
+    })()
+  }, [projectId]);
+
   return (
-    !!project ? <Project {...project} onSave={save(project.projectId)} /> : <Loading />
+    !!project ? (
+      <Project 
+        {...project}
+        onSave={save(project.projectId)}
+        deleteProject={deleteProject}
+      />
+    ) : (
+      <Loading />
+    )
   )
 }
 
