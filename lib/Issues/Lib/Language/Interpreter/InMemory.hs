@@ -65,7 +65,7 @@ interpret db log user = \case
       docMaybe <- StmMap.lookup projectId (_projects db)
       case docMaybe of
         Just doc -> do
-          StmMap.insert (doc <> ["isDeleted" =: True]) projectId (_projects db)
+          StmMap.insert (merge ["isDeleted" =: True] doc) projectId (_projects db)
           return Nothing
         Nothing -> return $ Just err404
     case errMaybe of
@@ -85,7 +85,10 @@ interpret db log user = \case
   GetProjects next -> do
     liftIO $ log DEBUG "GET projects"
     docs <- liftIO $ values (_projects db)
-    case traverse documentToProject docs of
+    liftIO $ print docs
+    let docs' = filter (not . isDeleted) docs
+    liftIO $ print docs'
+    case traverse documentToProject (filter (not . isDeleted) docs) of
       Right projects -> return (next projects)
       Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
 
@@ -134,7 +137,7 @@ interpret db log user = \case
       docMaybe <- StmMap.lookup issueId (_issues db)
       case docMaybe of
         Just doc -> do
-          StmMap.insert (doc <> ["isDeleted" =: True]) issueId (_issues db)
+          StmMap.insert (merge ["isDeleted" =: True] doc) issueId (_issues db)
           return Nothing
         Nothing -> return $ Just err404
     case errMaybe of
@@ -192,7 +195,7 @@ interpret db log user = \case
       docMaybe <- StmMap.lookup commentId (_comments db)
       case docMaybe of
         Just doc -> do
-          StmMap.insert (doc <> ["isDeleted" =: True]) commentId (_comments db)
+          StmMap.insert (merge ["isDeleted" =: True] doc) commentId (_comments db)
           return Nothing
         Nothing -> return $ Just err404
     case errMaybe of
