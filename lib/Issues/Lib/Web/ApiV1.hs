@@ -91,6 +91,16 @@ getIssue user issueId = do
   runApp logger user (L.getIssue issueId)
 
 ------------------------------------------
+-- Get issue
+
+type GetIssues = Get '[JSON] [Issue]
+
+getIssues :: User -> AppHandler [Issue]
+getIssues user = do
+  (RunTime {..}, logger, _) <- ask
+  runApp logger user L.getIssues
+
+------------------------------------------
 -- Update issue
 
 type UpdateIssue = Capture "issueId" IssueId :> ReqBody '[JSON] [IssueUpdate] :> Patch '[JSON] Issue
@@ -146,7 +156,7 @@ updateComment user commentId updates = do
 -- API definition and composite handler
 
 type ProjectsV1API = "projects" :> (CreateProject :<|> DeleteProject :<|> GetProject :<|> GetProjects :<|> UpdateProject)
-type IssuesV1API = "issues" :> (CreateIssue :<|> DeleteIssue :<|> GetIssue :<|> UpdateIssue)
+type IssuesV1API = "issues" :> (CreateIssue :<|> DeleteIssue :<|> GetIssue :<|> GetIssues :<|> UpdateIssue)
 type CommentsV1API = "comments" :> (CreateComment :<|> DeleteComment :<|> GetComments :<|> UpdateComment)
 
 type API_V1 = JwtAuth :> "api" :> "v1" :> (ProjectsV1API :<|> IssuesV1API :<|> CommentsV1API)
@@ -164,6 +174,7 @@ apiV1Server user = projectsV1Handler :<|> issuesV1Handler :<|> commentsV1Handler
       createIssue user
       :<|> deleteIssue user
       :<|> getIssue user
+      :<|> getIssues user
       :<|> updateIssue user
     commentsV1Handler =
       createComment user

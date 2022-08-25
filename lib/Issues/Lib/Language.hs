@@ -32,6 +32,9 @@ deleteIssue issueId = liftF $ DeleteIssue issueId id
 getIssue :: IssueId -> App Issue
 getIssue issueId = liftF $ GetIssue issueId id
 
+getIssues :: App [Issue]
+getIssues = liftF $ GetIssues id
+
 updateIssue :: IssueId -> [IssueUpdate] -> App Issue
 updateIssue issueId updates = liftF $ UpdateIssue issueId updates id
 

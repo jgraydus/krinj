@@ -35,6 +35,9 @@ newDB = DB <$> StmMap.newIO <*> StmMap.newIO <*> StmMap.newIO
 isDeleted :: Document -> Bool
 isDeleted doc = fromMaybe False $ lookup "isDeleted" doc
 
+hasProjectId :: ProjectId -> Document -> Bool
+hasProjectId projectId = fromMaybe False . (fmap (== projectId)) . lookup "projectId" 
+
 values :: MonadIO m => StmMap.Map k v -> m [v]
 values = liftIO . atomically . (fmap . fmap) snd . ListT.toList . StmMap.listT
 
@@ -150,6 +153,13 @@ interpret db log user = \case
           Right issue -> return $ next issue 
           Left e      -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
       _ -> throwError err404
+
+  GetIssues next -> do
+    liftIO $ log DEBUG "GET issues"
+    docs  <- filter (not . isDeleted) <$> values (_issues db)
+    case traverse documentToIssue docs of
+      Right issues -> return $ next issues
+      Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
 
   UpdateIssue issueId updates next -> do
     liftIO $ log DEBUG (toLogStr $ "UDPATE issue: " <> show issueId)

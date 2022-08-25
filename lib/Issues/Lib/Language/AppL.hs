@@ -19,6 +19,7 @@ data AppL a where
   CreateIssue :: ProjectId -> (Issue -> a) -> AppL a
   DeleteIssue :: IssueId -> (() -> a) -> AppL a
   GetIssue :: IssueId -> (Issue -> a) -> AppL a
+  GetIssues :: ([Issue] -> a) -> AppL a
   UpdateIssue :: IssueId -> [IssueUpdate] -> (Issue -> a) -> AppL a
   -- comments
   CreateComment :: IssueId -> (Comment -> a) -> AppL a
