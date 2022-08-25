@@ -4,9 +4,9 @@ import 'react-edit-text/dist/index.css'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import api from './api'
-import Loading from './loading'
-import MdEditor from './md-editor'
+import api from '../api'
+import Loading from '../components/loading'
+import MdEditor from '../components/md-editor'
 
 const Root = styled.div`
   box-sizing: border-box;

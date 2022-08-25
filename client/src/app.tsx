@@ -1,12 +1,12 @@
 import { Link, Route, Routes } from 'react-router-dom'
 
 import Issues from './issues'
-import Projects from './projects'
 import Project from './project'
-import RootPage from './root-page'
+import Projects from './projects'
+import Root from './root'
 
 export default () =>
-  <RootPage>
+  <Root>
      <Routes>
        <Route path="/projects">
          <Route path="" element={<Projects />} />
@@ -14,5 +14,5 @@ export default () =>
        </Route>
        <Route path="/issues" element={<Issues />} />
      </Routes>
-  </RootPage>
+  </Root>
 

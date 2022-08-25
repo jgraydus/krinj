@@ -1,12 +1,11 @@
 import styled from 'styled-components'
 
-import Footer from './page-footer'
-import Header from './page-header'
+import Footer from './footer'
+import Header from './header'
 
 const FooterStyles = styled.div`
   padding: 5px;
 `
-
 const Root = styled.div`
   position: absolute;
   top: 0;
@@ -22,7 +21,6 @@ const Root = styled.div`
 
   font-family: "Lucida", sans-serif;
 `
-
 const ContentArea = styled.div`
   width: 1024px;
   border: 1px solid black;
@@ -31,7 +29,6 @@ const ContentArea = styled.div`
   flex-flow: column nowrap;
   align-items: stretch;
 `
-
 const Content = styled.div`
   box-sizing: border-box;
   display: flex;

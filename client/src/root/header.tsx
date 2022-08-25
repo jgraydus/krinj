@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Spacer from './spacer'
+import Spacer from '../components/spacer'
 
 const Root = styled.div`
   padding: 5px;
