@@ -82,6 +82,13 @@ interpret db log user = \case
           Left e    -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
       _ -> throwError err404
 
+  GetProjects next -> do
+    liftIO $ log DEBUG "GET projects"
+    docs <- liftIO $ values (_projects db)
+    case traverse documentToProject docs of
+      Right projects -> return (next projects)
+      Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
+
   UpdateProject projectId updates next -> do
     liftIO $ log DEBUG (toLogStr $ "UDPATE project: " <> show projectId)
     now <- liftIO getCurrentTime

@@ -16,6 +16,9 @@ deleteProject projectId = liftF $ DeleteProject projectId id
 getProject :: ProjectId -> App Project
 getProject projectId = liftF $ GetProject projectId id
 
+getProjects :: App [Project]
+getProjects = liftF $ GetProjects id
+
 updateProject :: ProjectId -> [ProjectUpdate] -> App Project
 updateProject projectId updates = liftF $ UpdateProject projectId updates id
 

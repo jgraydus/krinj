@@ -1,5 +1,5 @@
-module Issues.Lib.Web.JsBundle (
-  jsBundle
+module Issues.Lib.Web.Bundles (
+  cssBundle, jsBundle
 ) where
 
 import qualified Data.ByteString as BS
@@ -11,4 +11,10 @@ jsBundleFilePath = "client/build/bundle.js"
 
 jsBundle :: IO Text
 jsBundle = decodeUtf8 <$> BS.readFile jsBundleFilePath
+
+cssBundleFilePath :: FilePath
+cssBundleFilePath = "client/build/bundle.css"
+
+cssBundle :: IO Text
+cssBundle = decodeUtf8 <$> BS.readFile cssBundleFilePath
 

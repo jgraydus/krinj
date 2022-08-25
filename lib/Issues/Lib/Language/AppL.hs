@@ -13,6 +13,7 @@ data AppL a where
   CreateProject :: (Project -> a) -> AppL a
   DeleteProject :: ProjectId -> (() -> a) -> AppL a
   GetProject :: ProjectId -> (Project -> a) -> AppL a
+  GetProjects :: ([Project] -> a) -> AppL a
   UpdateProject :: ProjectId -> [ProjectUpdate] -> (Project -> a) -> AppL a
   -- issues
   CreateIssue :: ProjectId -> (Issue -> a) -> AppL a

@@ -40,6 +40,16 @@ getProject user projectId = do
   runApp logger user (L.getProject projectId)
 
 ------------------------------------------
+-- Get Projects
+
+type GetProjects = Get '[JSON] [Project]
+
+getProjects :: User -> AppHandler [Project]
+getProjects user = do
+  (RunTime {..}, logger, _) <- ask
+  runApp logger user L.getProjects
+
+------------------------------------------
 -- Update Project
 
 type UpdateProject = Capture "projectId" ProjectId :> ReqBody '[JSON] [ProjectUpdate] :> Patch '[JSON] Project
@@ -135,7 +145,7 @@ updateComment user commentId updates = do
 ------------------------------------------
 -- API definition and composite handler
 
-type ProjectsV1API = "projects" :> (CreateProject :<|> DeleteProject :<|> GetProject :<|> UpdateProject)
+type ProjectsV1API = "projects" :> (CreateProject :<|> DeleteProject :<|> GetProject :<|> GetProjects :<|> UpdateProject)
 type IssuesV1API = "issues" :> (CreateIssue :<|> DeleteIssue :<|> GetIssue :<|> UpdateIssue)
 type CommentsV1API = "comments" :> (CreateComment :<|> DeleteComment :<|> GetComments :<|> UpdateComment)
 
@@ -148,6 +158,7 @@ apiV1Server user = projectsV1Handler :<|> issuesV1Handler :<|> commentsV1Handler
       createProject user
       :<|> deleteProject user
       :<|> getProject user
+      :<|> getProjects user
       :<|> updateProject user
     issuesV1Handler =
       createIssue user

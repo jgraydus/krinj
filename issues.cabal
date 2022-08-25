@@ -55,7 +55,7 @@ library
         Issues.Lib.ObjectId,
         Issues.Lib.TH,
         Issues.Lib.Web.ApiV1,
-        Issues.Lib.Web.JsBundle,
+        Issues.Lib.Web.Bundles,
         Issues.Lib.Web.Site
     build-depends:
         aeson,
