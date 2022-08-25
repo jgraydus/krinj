@@ -85,9 +85,6 @@ interpret db log user = \case
   GetProjects next -> do
     liftIO $ log DEBUG "GET projects"
     docs <- liftIO $ values (_projects db)
-    liftIO $ print docs
-    let docs' = filter (not . isDeleted) docs
-    liftIO $ print docs'
     case traverse documentToProject (filter (not . isDeleted) docs) of
       Right projects -> return (next projects)
       Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
