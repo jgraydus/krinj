@@ -25,6 +25,7 @@ type IssueId = ObjectId
 
 data Issue = Issue
   { issueId :: IssueId 
+  , parentId :: Maybe IssueId
   , projectId :: ProjectId
   , title :: Text
   , description :: Text
@@ -41,6 +42,7 @@ instance ToJSON Issue
 issueToDocument :: Issue -> Document
 issueToDocument Issue {..} =
   [ "issueId" =: ObjId issueId
+  , "parendId" =: fromMaybe Null (ObjId <$> parentId)
   , "projectId" =: ObjId projectId
   , "title" =: String title
   , "description" =: String description
@@ -56,6 +58,7 @@ documentToIssue :: Document -> Either Text Issue
 documentToIssue doc =
   Issue
   <$> lookup' "issueId" doc
+  <*> lookup' "parentId" doc
   <*> lookup' "projectId" doc
   <*> lookup' "title" doc
   <*> lookup' "description" doc

@@ -116,6 +116,7 @@ interpret db log user = \case
     let issue =
           Issue
           { issueId
+          , parentId = Nothing
           , projectId
           , title = ""
           , description = ""
