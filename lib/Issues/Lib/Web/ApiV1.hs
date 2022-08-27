@@ -91,12 +91,12 @@ getIssue user issueId = do
   runApp logger user (L.getIssue issueId)
 
 ------------------------------------------
--- Get issue
+-- Get issues
 
-type GetIssues = Get '[JSON] [Issue]
+type GetIssues = QueryParam "projectId" ProjectId :> QueryParam "parentId" IssueId :> Get '[JSON] [Issue]
 
-getIssues :: User -> AppHandler [Issue]
-getIssues user = do
+getIssues :: User -> Maybe ProjectId -> Maybe IssueId -> AppHandler [Issue]
+getIssues user _projectId _parentId = do
   (RunTime {..}, logger, _) <- ask
   runApp logger user L.getIssues
 
