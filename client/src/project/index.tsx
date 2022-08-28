@@ -10,22 +10,24 @@ import MdEditor from '../components/md-editor'
 
 const Root = styled.div`
   box-sizing: border-box;
-  padding: 5px;
   height: 100%;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
 `
 const HeaderRow = styled.div`
-  height: 40px;
+  height: 30px;
+  padding: 5px;
   display: flex;
   flex-flow: row nowrap;
 `
-const Header = styled.div`
+const ProjectPageTitle = styled(
+  ({ className }) => <div className={className}>Project</div>
+)`
   font-size: 20px;
   flex-grow: 1;
 `
-const Table = styled.div`
+const ProjectDetails = styled.div`
   box-sizing: border-box;
   height: 100%;
   width: 100%;
@@ -45,6 +47,31 @@ const Table = styled.div`
     border: 1px solid #AAA;
   }
 `
+const Tabs = styled.div`
+  width: 100%;
+  height: 20px;
+  display: flex;
+  flex-flow: row nowrap;
+  border-bottom: 1px solid gray;
+`
+const Tab = styled.div`
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  :hover {
+    background-color: white;
+  }
+  background-color: ${props => props.isSelected ? 'rgba(255,255,255,0.5)' : ''};
+`
+const ProjectIssues = styled.div`
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+  border: 1px solid red;
+`
 
 const save = projectId => ({name, value, previousValue}) => {
   if (value !== previousValue) {
@@ -54,7 +81,13 @@ const save = projectId => ({name, value, previousValue}) => {
   }
 }
 
-const Project = ({ title, description, onSave, deleteProject }) => {
+const ProjectPageTab = {
+  Details: 0,
+  Issues: 1
+}
+
+const Layout = ({ projectId, title, description, onSave, deleteProject, selectedTab }) => {
+  const navigate = useNavigate();
   const saveDescription = useCallback(value => {
       onSave({ name: 'ProjectDescription', value, previousValue: null })
   }, [onSave]);
@@ -62,25 +95,43 @@ const Project = ({ title, description, onSave, deleteProject }) => {
   return (
     <Root>
       <HeaderRow>
-        <Header>Project</Header>
+        <ProjectPageTitle />
         <button onClick={deleteProject}>Delete Project</button>
       </HeaderRow>
-      <Table>
-         <div>Title</div>
-         <EditText
-           name="ProjectTitle"
-           defaultValue={title}
-           onSave={onSave}
-         />
+      <Tabs>
+        <Tab
+          isSelected={selectedTab === ProjectPageTab.Details}
+          onClick={() => navigate(`/projects/${projectId}`)}
+        >
+          Project Details
+        </Tab>
+        <Tab
+          isSelected={selectedTab === ProjectPageTab.Issues}
+          onClick={() => navigate(`/projects/${projectId}/issues`)}
+        >
+          Issues
+        </Tab>
+      </Tabs>
+      {selectedTab === ProjectPageTab.Details ? (
+         <ProjectDetails>
+           <div>Title</div>
+           <EditText
+             name="ProjectTitle"
+             defaultValue={title}
+             onSave={onSave}
+           />
 
-         <div>Description</div>
-         <MdEditor initialValue={description} onSave={saveDescription}/>
-      </Table>
+           <div>Description</div>
+           <MdEditor initialValue={description} onSave={saveDescription}/>
+        </ProjectDetails>
+      ) : (
+        <ProjectIssues />
+      )}
     </Root>
   );
 }
 
-export default () => {
+const View = ({ selectedTab }) => {
   const navigate = useNavigate();
   const { projectId } = useParams();
   const [project, setProject] = useState(null);
@@ -101,7 +152,8 @@ export default () => {
 
   return (
     !!project ? (
-      <Project 
+      <Layout 
+        selectedTab={selectedTab}
         {...project}
         onSave={save(project.projectId)}
         deleteProject={deleteProject}
@@ -111,4 +163,7 @@ export default () => {
     )
   )
 }
+
+export const Project = () => <View selectedTab={ProjectPageTab.Details} />
+export const Issues = () => <View selectedTab={ProjectPageTab.Issues} />
 

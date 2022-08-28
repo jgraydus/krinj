@@ -1,7 +1,6 @@
 import { Link, Navigate, Route, Routes } from 'react-router-dom'
 
-import Issues from './issues'
-import Project from './project'
+import { Project, Issues } from './project'
 import Projects from './projects'
 import Root from './root'
 
