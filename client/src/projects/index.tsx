@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import ReactModal from 'react-modal'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import api from '../api'
 import Loading from '../components/loading'
+import NewProject from './new-project'
 import Table from './table'
 
 const Root = styled.div`
@@ -40,10 +42,16 @@ const Content = ({ projects }) => {
   }
   return <Table projects={projects} />;
 }
+          //const project = await api.postApiV1ProjectsCreate();
+          //navigate(`/projects/${project.projectId}`);
 
 export default () => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState(null);
+  const [newProjectModalIsOpen, setNewProjectModalIsOpen] = useState(false);
+
+  const openModal = useCallback(() => setNewProjectModalIsOpen(true), []);
+  const closeModal = useCallback(() => setNewProjectModalIsOpen(false), []);
 
   useEffect(() => {
     (async () => {
@@ -56,14 +64,12 @@ export default () => {
     <Root>
       <HeaderRow>
         <Header>Projects</Header>
-        <button onClick={async () => {
-          const project = await api.postApiV1ProjectsCreate();
-          navigate(`/projects/${project.projectId}`);
-        }}>
+        <button onClick={openModal}>
           New Project
         </button>
       </HeaderRow>
       <Content projects={projects}/>
+      <NewProject isOpen={newProjectModalIsOpen} close={closeModal} />
     </Root>
   )
 }

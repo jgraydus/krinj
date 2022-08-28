@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { Link, Navigate, Route, Routes } from 'react-router-dom'
 
 import Issues from './issues'
 import Project from './project'
@@ -8,11 +8,14 @@ import Root from './root'
 export default () =>
   <Root>
      <Routes>
+       <Route path="/" element={<Navigate to="/projects" />} />
        <Route path="/projects">
          <Route path="" element={<Projects />} />
-         <Route path=":projectId" element={<Project />} />
+         <Route path=":projectId">
+           <Route path="" element={<Project />} />
+           <Route path="issues" element={<Issues />} />
+         </Route>
        </Route>
-       <Route path="/issues" element={<Issues />} />
      </Routes>
   </Root>
 

@@ -34,7 +34,6 @@ const Content = styled.div`
   display: flex;
   flex-flow: column nowrap;
   flex-grow: 1;
-  border: 1px solid red;
 `
 
 export default ({ children }) =>

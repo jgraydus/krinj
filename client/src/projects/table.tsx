@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 const Root = styled.div`
+  height: 0px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow-y: scroll;
   :last-child {
     border-bottom: 1px solid black;
   }
