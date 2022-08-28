@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import api from '../api'
 import InlineEdit from '../components/inline-edit'
 import Modal from '../components/modal'
 import Spacer from '../components/spacer'
@@ -34,10 +36,22 @@ const Footer = styled.div`
 const ProjectName = styled.div`
   font-size: 14px;
 `
+const createProject = async projectName => {
+  const { projectId } = await api.postApiV1ProjectsCreate();
+  await api.patchApiV1ProjectsByProjectId(projectId, [
+    { tag: 'ProjectTitle', contents: projectName }
+  ]);
+  return projectId
+}
 
 
 export default ({ isOpen, close }) => {
+  const navigate = useNavigate();
   const [projectName, setProjectName] = useState('')
+  const submit = useCallback(async () => {
+    const projectId = await createProject(projectName);
+    navigate(`/projects/${projectId}`);
+  }, [projectName]);
 
   return (
     <Modal isOpen={isOpen} close={close}>
@@ -54,7 +68,7 @@ export default ({ isOpen, close }) => {
           <button onClick={close}>Cancel</button>
           <button
             disabled={!projectName}
-            onClick={() => { /*TODO*/ }}
+            onClick={submit}
           >
             Submit
           </button>
