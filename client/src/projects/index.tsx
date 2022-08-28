@@ -42,8 +42,6 @@ const Content = ({ projects }) => {
   }
   return <Table projects={projects} />;
 }
-          //const project = await api.postApiV1ProjectsCreate();
-          //navigate(`/projects/${project.projectId}`);
 
 export default () => {
   const navigate = useNavigate();
@@ -58,7 +56,7 @@ export default () => {
         const projects = await api.getApiV1Projects();
         setProjects(projects);
     })()
-  },[])
+  },[setProjects])
 
   return (
     <Root>

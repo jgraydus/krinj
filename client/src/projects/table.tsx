@@ -7,12 +7,12 @@ const Root = styled.div`
   flex-grow: 1;
   flex-shrink: 1;
   overflow-y: scroll;
-  :last-child {
+  & > div:last-child {
     border-bottom: 1px solid black;
   }
 `
 const _TableRow = styled.div`
-  height: 40px;
+  height: 30px;
   padding: 5px;
   display: flex;
   flex-flow: row nowrap;
@@ -26,7 +26,7 @@ const _TableRow = styled.div`
     cursor: pointer;
   }
 `
-const ProjectTitle = styled.div`
+const ProjectName = styled.div`
   font-size: 14px;
   flex-grow: 1;
   padding: 10px;
@@ -41,7 +41,7 @@ const TableRow = ({ project }) => {
   
   return (
     <_TableRow onClick={() => navigate(`/projects/${project.projectId}`)}>
-      <ProjectTitle>{project.title}</ProjectTitle>
+      <ProjectName>{project.title}</ProjectName>
       <ProjectId>{project.projectId}</ProjectId>
     </_TableRow>
   )
