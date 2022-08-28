@@ -58,7 +58,7 @@ type JsBundle = "bundle.js" :> Get '[JavaScript] Text
 jsBundle :: AppHandler Text
 jsBundle = liftIO Bundles.jsBundle
 
-type CssBundle = "bundle.css" :> Get '[JavaScript] Text
+type CssBundle = "bundle.css" :> Get '[CSS] Text
 
 cssBundle :: AppHandler Text
 cssBundle = liftIO Bundles.cssBundle

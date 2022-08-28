@@ -1,5 +1,5 @@
 module Issues.Lib.ContentTypes (
-    HTML, JavaScript
+    CSS, HTML, JavaScript
 ) where
 
 import qualified Data.ByteString.Lazy as BSL
@@ -27,5 +27,14 @@ instance Accept JavaScript where
   contentType _ = "application" // "javascript" /: ("charset", "Utf-8")
 
 instance MimeRender JavaScript Text where
+  mimeRender _ = BSL.fromStrict . encodeUtf8
+
+-----------------------------------------------------------------------
+data CSS
+
+instance Accept CSS where
+  contentType _ = "text" // "css" /: ("charset", "Utf-8")
+
+instance MimeRender CSS Text where
   mimeRender _ = BSL.fromStrict . encodeUtf8
 
