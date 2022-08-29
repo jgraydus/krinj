@@ -44,7 +44,7 @@ export default ({ projectId }) => {
 
   useEffect(() => {
     (async () => {
-        const issues = await api.getApiV1Issues();
+        const issues = await api.getApiV1Issues(projectId);
         setIssues(issues);
     })()
   }, [projectId]);
