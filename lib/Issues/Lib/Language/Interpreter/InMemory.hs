@@ -131,7 +131,7 @@ interpret db log user = \case
     let doc = issueToDocument issue <> ["isDeleted" =: False]
     liftIO $ atomically $ StmMap.insert doc issueId (_issues db)
     return $ next issue
-    
+
   DeleteIssue issueId next -> do
     liftIO $ log DEBUG (toLogStr $ "DELETE issue: " <> show issueId)
     errMaybe <- liftIO $ atomically $ do
@@ -155,12 +155,15 @@ interpret db log user = \case
           Left e      -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
       _ -> throwError err404
 
-  GetIssues next -> do
+  GetIssues projectIdM next -> do
     liftIO $ log DEBUG "GET issues"
-    docs  <- filter (not . isDeleted) <$> values (_issues db)
-    case traverse documentToIssue docs of
-      Right issues -> return $ next issues
-      Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
+    case projectIdM of
+      Nothing -> throwError $ err404 { errBody = "projectId is required" }
+      Just projectId -> do
+        docs  <- filter (hasProjectId projectId) . filter (not . isDeleted) <$> values (_issues db)
+        case traverse documentToIssue docs of
+          Right issues -> return $ next issues
+          Left e -> throwError $ err500 { errBody = (fromStrict . encodeUtf8) e }
 
   UpdateIssue issueId updates next -> do
     liftIO $ log DEBUG (toLogStr $ "UDPATE issue: " <> show issueId)

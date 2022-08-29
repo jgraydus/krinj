@@ -42,7 +42,7 @@ instance ToJSON Issue
 issueToDocument :: Issue -> Document
 issueToDocument Issue {..} =
   [ "issueId" =: ObjId issueId
-  , "parendId" =: fromMaybe Null (ObjId <$> parentId)
+  , "parentId" =: fromMaybe Null (ObjId <$> parentId)
   , "projectId" =: ObjId projectId
   , "title" =: String title
   , "description" =: String description
@@ -58,7 +58,7 @@ documentToIssue :: Document -> Either Text Issue
 documentToIssue doc =
   Issue
   <$> lookup' "issueId" doc
-  <*> lookup' "parentId" doc
+  <*> (lookup' "parentId" doc :: Either Text (Maybe IssueId))
   <*> lookup' "projectId" doc
   <*> lookup' "title" doc
   <*> lookup' "description" doc

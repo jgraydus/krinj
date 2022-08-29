@@ -96,9 +96,9 @@ getIssue user issueId = do
 type GetIssues = QueryParam "projectId" ProjectId :> QueryParam "parentId" IssueId :> Get '[JSON] [Issue]
 
 getIssues :: User -> Maybe ProjectId -> Maybe IssueId -> AppHandler [Issue]
-getIssues user _projectId _parentId = do
+getIssues user projectId _parentId = do
   (RunTime {..}, logger, _) <- ask
-  runApp logger user L.getIssues
+  runApp logger user (L.getIssues projectId) 
 
 ------------------------------------------
 -- Update issue
