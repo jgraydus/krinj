@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import api from '../../api'
 import Loading from '../../components/loading'
+import Issues from './issues'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -41,32 +42,15 @@ const createNewIssue = async projectId => {
 }
 
 export default ({ projectId }) => {
-  const [issues, setIssues] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      const issues = await api.getApiV1Issues(projectId, null);
-      setIssues(issues);
-    })()
-  }, [projectId]);
-
   const newIssue = useCallback(async () => {
     const issue = await createNewIssue(projectId);
     setIssues([iissue, ...issues]);
   }, [projectId]);
 
-  if (issues === null) {
-    return <Loading />
-  }
-
-  if (issues.length === 0) {
-    return <NoIssues />
-  }
-
   return (
     <Root>
       <button onClick={newIssue}>New Issue</button>
-      <Table />
+      <Issues projectId={projectId} />
     </Root>
   )
 }

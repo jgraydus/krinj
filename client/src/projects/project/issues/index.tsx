@@ -1,26 +1,10 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import api from '../api'
-import Loading from '../components/loading'
+import api from '../../../api'
+import Loading from '../../../components/loading'
 import Table from './table'
 
-const Root = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-flow: column nowrap;
-`
-const Header = styled.div`
-  font-size: 20px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  padding: 5px;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`
-const NoIssues = styled.div`
+const NoIssues = styled(({ className }) => <div className={className}>No Issues</div>)`
   width: 100%;
   height: 100%;
   font-size: 30px;
@@ -34,7 +18,7 @@ const Content = ({ issues }) => {
       return <Loading />;
   }
   if (issues.length === 0) {
-      return <NoIssues>No Issues</NoIssues>;
+      return <NoIssues />;
   }
   return <Table issues={issues} />;
 }
@@ -44,15 +28,11 @@ export default ({ projectId }) => {
 
   useEffect(() => {
     (async () => {
-        const issues = await api.getApiV1Issues(projectId);
-        setIssues(issues);
+      const issues = await api.getApiV1Issues(projectId, null);
+      setIssues(issues);
     })()
   }, [projectId]);
 
-  return (
-    <Root>
-      <Header>Issues</Header>
-      <Content issues={issues} />
-    </Root>
-  )
+  return <Content issues={issues} />
 }
+
