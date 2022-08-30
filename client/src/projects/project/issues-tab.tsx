@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import api from '../api'
-import Loading from '../components/loading'
+import api from '../../api'
+import Loading from '../../components/loading'
 
 const Root = styled.div`
   box-sizing: border-box;

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import api from '../api'
-import Loading from '../components/loading'
+import api from '../../api'
+import Loading from '../../components/loading'
 import DetailsTab from './details-tab'
 import IssuesTab from './issues-tab'
 

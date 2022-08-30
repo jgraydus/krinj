@@ -3,9 +3,9 @@ import { EditText, EditTextarea } from 'react-edit-text'
 import 'react-edit-text/dist/index.css'
 import styled from 'styled-components'
 
-import api from '../api'
-import Loading from '../components/loading'
-import MdEditor from '../components/md-editor'
+import api from '../../api'
+import Loading from '../../components/loading'
+import MdEditor from '../../components/md-editor'
 
 const Root = styled.div`
   box-sizing: border-box;
