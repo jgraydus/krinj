@@ -20,7 +20,7 @@ const TableRow = styled.div`
   font-size: 8px;
 `
 
-const mkRow = issue => <TableRow>{JSON.stringify(issue)}</TableRow>
+const mkRow = issue => <TableRow key={issue.issueId}>{JSON.stringify(issue)}</TableRow>
 
 export default ({ issues }) =>
   <Table>

@@ -22,8 +22,8 @@ const Title = styled.div`
   font-size: 20px;
 `
 const Content = styled.div`
-  width: 100$;
-  height: 0;
+  width: 100%;
+  height: 0px;
   flex-grow: 1;
   flex-strink: 1;
 `
@@ -56,7 +56,7 @@ export default ({ isOpen, close }) => {
   return (
     <Modal isOpen={isOpen} close={close}>
       <Root>
-        <Title>New Project Model</Title>
+        <Title>New Project</Title>
         <Spacer height="10" />
         <Content>
          <ProjectName>Project Name</ProjectName>

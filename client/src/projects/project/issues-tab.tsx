@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import api from '../../api'
 import Loading from '../../components/loading'
 import Issues from './issues'
+import NewIssue from './issues/new-issue'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -42,6 +43,11 @@ const createNewIssue = async projectId => {
 }
 
 export default ({ projectId }) => {
+  const [newIssueModalIsOpen, setNewIssueModalIsOpen] = useState(false);
+
+  const closeNewIssueModal = useCallback(() => setNewIssueModalIsOpen(false), [setNewIssueModalIsOpen]);
+  const openNewIssueModal = useCallback(() => setNewIssueModalIsOpen(true), [setNewIssueModalIsOpen]);
+
   const newIssue = useCallback(async () => {
     const issue = await createNewIssue(projectId);
     setIssues([iissue, ...issues]);
@@ -49,8 +55,9 @@ export default ({ projectId }) => {
 
   return (
     <Root>
-      <button onClick={newIssue}>New Issue</button>
+      <button onClick={openNewIssueModal}>New Issue</button>
       <Issues projectId={projectId} />
+      <NewIssue isOpen={newIssueModalIsOpen} close={closeNewIssueModal}  projectId={projectId}/>
     </Root>
   )
 }
