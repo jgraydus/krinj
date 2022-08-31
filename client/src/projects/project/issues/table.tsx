@@ -1,4 +1,6 @@
 import * as R from 'ramda'
+import { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 const Table = styled.div`
@@ -20,10 +22,26 @@ const TableRow = styled.div`
   font-size: 8px;
 `
 
-const mkRow = issue => <TableRow key={issue.issueId}>{JSON.stringify(issue)}</TableRow>
+const Row = ({ issue, onClick }) =>
+  <TableRow onClick={onClick}>
+    {JSON.stringify(issue)}
+  </TableRow>
 
-export default ({ issues }) =>
-  <Table>
-    {R.map(mkRow, issues)}
-  </Table>
+export default ({ issues, projectId }) => {
+  const navigate = useNavigate();
+
+  return (
+    <Table>
+      {R.map(
+        issue =>
+          <Row
+            key={issue.issueId}
+            issue={issue}
+            onClick={() => navigate(`/projects/${projectId}/issues/${issue.issueId}`)}
+          />,
+        issues
+      )}
+    </Table>
+  )
+}
 

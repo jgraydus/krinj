@@ -13,14 +13,14 @@ const NoIssues = styled(({ className }) => <div className={className}>No Issues<
   align-items: center;
   justify-content: center;
 `
-const Content = ({ issues }) => {
+const Content = ({ issues, projectId }) => {
   if (issues == null) {
       return <Loading />;
   }
   if (issues.length === 0) {
       return <NoIssues />;
   }
-  return <Table issues={issues} />;
+  return <Table issues={issues} projectId={projectId} />;
 }
 
 export default ({ projectId }) => {
@@ -33,6 +33,6 @@ export default ({ projectId }) => {
     })()
   }, [projectId]);
 
-  return <Content issues={issues} />
+  return <Content issues={issues} projectId={projectId} />
 }
 
