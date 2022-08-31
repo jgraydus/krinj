@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import api from '../../api'
-import Loading from '../../components/loading'
-import Issues from './issues'
-import NewIssue from './issues/new-issue'
+import IssuesTable from './issues'
+import NewIssueModal from './issues/new-issue'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -15,32 +13,8 @@ const Root = styled.div`
   padding: 5px;
   border: 1px solid red;
 `
-const NoIssues = styled(({ className }) => <div className={className}>No Issues</div>)`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-`
-const Table = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  flex-flow: column nowrap;
-  width: 100%;
-  height: 0px;
-  flex-grow: 1;
-  flex-shrink: 1;
-  border: 1px solid purple;
-`
-
-const createNewIssue = async projectId => {
-  const issue = await api.postApiV1IssuesCreate(JSON.stringify(projectId));
-  await api.patchApiV1IssuesByIssueId(issue.issueId, [{
-    tag: 'Title', contents: 'ISSUE A'
-  }]);
-  return issue;
-}
+const NewIssueButton = ({ onClick }) => 
+  <button onClick={onClick}>New Issue</button>
 
 export default ({ projectId }) => {
   const [newIssueModalIsOpen, setNewIssueModalIsOpen] = useState(false);
@@ -48,16 +22,15 @@ export default ({ projectId }) => {
   const closeNewIssueModal = useCallback(() => setNewIssueModalIsOpen(false), [setNewIssueModalIsOpen]);
   const openNewIssueModal = useCallback(() => setNewIssueModalIsOpen(true), [setNewIssueModalIsOpen]);
 
-  const newIssue = useCallback(async () => {
-    const issue = await createNewIssue(projectId);
-    setIssues([iissue, ...issues]);
-  }, [projectId]);
-
   return (
     <Root>
-      <button onClick={openNewIssueModal}>New Issue</button>
-      <Issues projectId={projectId} />
-      <NewIssue isOpen={newIssueModalIsOpen} close={closeNewIssueModal}  projectId={projectId}/>
+      <NewIssueButton onClick={openNewIssueModal} />
+      <IssuesTable projectId={projectId} />
+      <NewIssueModal
+        close={closeNewIssueModal}
+        isOpen={newIssueModalIsOpen}
+        projectId={projectId}
+      />
     </Root>
   )
 }
