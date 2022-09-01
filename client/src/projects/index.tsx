@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import ReactModal from 'react-modal'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import api from '../api'
 import Loading from '../components/loading'
 import NewProject from './new-project'
 import Table from './table'
+import { loadProjects, projectsSelector } from '../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -25,7 +27,9 @@ const HeaderRow = styled.div`
   flow-flow: row nowrap;
   justify-content: space-between;
 `
-const NoProjects = styled.div`
+const NoProjects = styled(({ className }) =>
+  <div className={className}>No Projects</div>
+)`
   width: 100%;
   flex-grow: 1;
   display: flex;
@@ -38,37 +42,38 @@ const Content = ({ projects }) => {
       return <Loading />;
   }
   if (projects.length == 0) {
-      return <NoProjects>No Projects</NoProjects>;
+      return <NoProjects />;
   }
   return <Table projects={projects} />;
 }
 
+const Projects = ({ closeModal, modalIsOpen, openModal, projects }) =>
+  <Root>
+    <HeaderRow>
+      <Header>Projects</Header>
+      <button onClick={openModal}>
+        New Project
+      </button>
+    </HeaderRow>
+    <Content projects={projects}/>
+    <NewProject isOpen={modalIsOpen} close={closeModal} />
+  </Root>
+
 export default () => {
-  const navigate = useNavigate();
-  const [projects, setProjects] = useState(null);
-  const [newProjectModalIsOpen, setNewProjectModalIsOpen] = useState(false);
+  const dispatch = useDispatch();
+  const projects = useSelector(projectsSelector);
+  useEffect(() => { dispatch(loadProjects) }, []);
 
-  const openModal = useCallback(() => setNewProjectModalIsOpen(true), []);
-  const closeModal = useCallback(() => setNewProjectModalIsOpen(false), []);
-
-  useEffect(() => {
-    (async () => {
-        const projects = await api.getApiV1Projects();
-        setProjects(projects);
-    })()
-  },[setProjects])
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const openModal = useCallback(() => setModalIsOpen(true), []);
+  const closeModal = useCallback(() => setModalIsOpen(false), []);
 
   return (
-    <Root>
-      <HeaderRow>
-        <Header>Projects</Header>
-        <button onClick={openModal}>
-          New Project
-        </button>
-      </HeaderRow>
-      <Content projects={projects}/>
-      <NewProject isOpen={newProjectModalIsOpen} close={closeModal} />
-    </Root>
+    <Projects
+      closeModal={closeModal}
+      modalIsOpen={modalIsOpen}
+      openModal={openModal}
+      projects={projects}
+    />
   )
 }
-
