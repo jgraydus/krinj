@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { EditText, EditTextarea } from 'react-edit-text'
 import 'react-edit-text/dist/index.css'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
 import api from '../../api'
 import Loading from '../../components/loading'
 import MdEditor from '../../components/md-editor'
+import { loadProject, projectSelector, updateProject } from '../../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -28,43 +30,46 @@ const Root = styled.div`
   }
 `
 
-const save = ({ projectId, name }) => ({ value, previousValue }) => {
-  api.patchApiV1ProjectsByProjectId(projectId, [
+const save = ({ projectId, name }, dispatch) => ({ value, previousValue }) => {
+  dispatch(updateProject(projectId, [
     { tag: name, contents: value },
-  ])
+  ]));
 }
 
+const View = ({ project, saveDescription, saveTitle }) =>
+  <Root>
+    <div>Title</div>
+    <EditText
+      name="ProjectTitle"
+      defaultValue={project.title}
+      onSave={saveTitle}
+    />
+
+    <div>Description</div>
+    <MdEditor
+      initialValue={project.description}
+      onSave={saveDescription}
+    />
+  </Root>
+
 export default ({ projectId }) => {
-  const [project, setProject] = useState(null);
+  const dispatch = useDispatch();
+  const project = useSelector(projectSelector(projectId));
 
-  useEffect(() => {
-    (async () => {
-      const project = await api.getApiV1ProjectsByProjectId(projectId);
-      setProject(project);
-    })()
-  }, [projectId]);
+  useEffect(() => { dispatch(loadProject(projectId)) }, [projectId]);
 
-  const saveTitle = useCallback(save({ projectId, name: 'ProjectTitle' }), [projectId])
-  const saveDescription = useCallback(value => save({ projectId, name: 'ProjectDescription' })({ value }), [projectId]);
+  const saveTitle = useCallback(
+      save({ projectId, name: 'ProjectTitle' }, dispatch),
+      [projectId]
+  )
+  const saveDescription = useCallback(
+      value => save({ projectId, name: 'ProjectDescription' }, dispatch)({ value }),
+      [projectId]
+  );
 
   if (project === null) {
     return <Loading />
   }
 
-  return (
-    <Root>
-      <div>Title</div>
-      <EditText
-        name="ProjectTitle"
-        defaultValue={project.title}
-        onSave={saveTitle}
-      />
-
-      <div>Description</div>
-      <MdEditor
-        initialValue={project.description}
-        onSave={saveDescription}
-      />
-    </Root>
-  )
+  return <View project={project} saveDescription={saveDescription} saveTitle={saveTitle} />
 }
