@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
+
 import api from '../../../api'
 import Loading from '../../../components/loading'
-import Table from './table'
 import { issuesSelector, loadIssues } from '../../../redux'
+import Table from './table'
 
 const NoIssues = styled(({ className }) => <div className={className}>No Issues</div>)`
   width: 100%;

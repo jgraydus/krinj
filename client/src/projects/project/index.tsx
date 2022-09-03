@@ -1,5 +1,6 @@
+import * as R from 'ramda'
 import { useCallback, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -7,7 +8,7 @@ import api from '../../api'
 import Loading from '../../components/loading'
 import DetailsTab from './details-tab'
 import IssuesTab from './issues-tab'
-import { deleteProject } from '../../redux'
+import { deleteProject, loadProject, projectSelector } from '../../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -40,7 +41,7 @@ const ProjectPageTab = {
 }
 
 const ProjectPageTitle = styled(
-  ({ className }) => <div className={className}>Project</div>
+  ({ className, projectName }) => <div className={className}>Project: {projectName}</div>
 )`
   font-size: 20px;
   flex-grow: 1;
@@ -56,9 +57,10 @@ const DeleteProjectButton = ({ projectId }) => {
 
   return <button onClick={_deleteProject}>Delete Project</button>
 }
-const HeaderRow = styled(({ className, projectId }) =>
+
+const HeaderRow = styled(({ className, projectId, projectName }) =>
   <div className={className}>
-    <ProjectPageTitle />
+    <ProjectPageTitle projectName={projectName} />
     <DeleteProjectButton projectId={projectId} />
   </div>
 )`
@@ -69,8 +71,14 @@ const HeaderRow = styled(({ className, projectId }) =>
 `
 
 const View = ({ selectedTab }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { projectId } = useParams();
+  const project = useSelector(projectSelector(projectId));
+
+  useEffect(() => {
+    dispatch(loadProject(projectId));
+  }, [projectId]);
 
   const tab = (() => {
     if (selectedTab === ProjectPageTab.Details) {
@@ -84,7 +92,7 @@ const View = ({ selectedTab }) => {
   return (
     <Root>
 
-      <HeaderRow projectId={projectId} />
+      <HeaderRow projectId={projectId} projectName={R.propOr('', 'title', project || {})}/>
 
       <Tabs>
         <Tab

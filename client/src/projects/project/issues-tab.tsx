@@ -10,11 +10,15 @@ const Root = styled.div`
   flex-flow: column nowrap;
   height: 100%;
   width: 100%;
-  padding: 5px;
-  border: 1px solid red;
 `
-const NewIssueButton = ({ onClick }) => 
-  <button onClick={onClick}>New Issue</button>
+const NewIssueButton = styled(({ className, onClick }) => 
+  <div className={className}>
+    <button onClick={onClick}>New Issue</button>
+  </div>)`
+ display: flex;
+ flex-flow: row-reverse nowrap;
+ padding: 5px;
+`
 
 export default ({ projectId }) => {
   const [newIssueModalIsOpen, setNewIssueModalIsOpen] = useState(false);
