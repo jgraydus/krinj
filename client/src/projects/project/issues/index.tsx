@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import api from '../../../api'
 import Loading from '../../../components/loading'
 import Table from './table'
+import { issuesSelector, loadIssues } from '../../../redux'
 
 const NoIssues = styled(({ className }) => <div className={className}>No Issues</div>)`
   width: 100%;
@@ -24,14 +26,10 @@ const Content = ({ issues, projectId }) => {
 }
 
 export default ({ projectId }) => {
-  const [issues, setIssues] = useState(null);
+  const dispatch = useDispatch();
+  const issues = useSelector(issuesSelector(projectId));
 
-  useEffect(() => {
-    (async () => {
-      const issues = await api.getApiV1Issues(projectId, null);
-      setIssues(issues);
-    })()
-  }, [projectId]);
+  useEffect(() => { dispatch(loadIssues(projectId)); }, []);
 
   return <Content issues={issues} projectId={projectId} />
 }

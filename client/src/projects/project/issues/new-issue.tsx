@@ -1,8 +1,10 @@
 import { useCallback, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import api from '../../../api'
 import Modal from '../../../components/modal'
 import InlineEdit from '../../../components/inline-edit'
+import { createIssue } from '../../../redux'
 
 const Root = styled.div`
   height: 100%;
@@ -26,19 +28,12 @@ const Footer = styled.div`
   justify-content: flex-end;
 `
 
-const createNewIssue = async (name, projectId)=> {
-  const issue = await api.postApiV1IssuesCreate(JSON.stringify(projectId));
-  await api.patchApiV1IssuesByIssueId(issue.issueId, [{
-    tag: 'Title', contents: name
-  }]);
-  return issue;
-}
-
 export default ({ close, isOpen, projectId }) => {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
 
   const newIssue = useCallback(async () => {
-    const issues = await createNewIssue(name, projectId);
+    dispatch(createIssue(projectId, name));
     close()
   }, [name, projectId]);
 

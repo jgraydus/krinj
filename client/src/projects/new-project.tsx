@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import api from '../api'
 import InlineEdit from '../components/inline-edit'
 import Modal from '../components/modal'
 import Spacer from '../components/spacer'
+import { createProject } from '../redux'
 
 const Root = styled.div`
   width: 100%;
@@ -36,20 +37,14 @@ const Footer = styled.div`
 const ProjectName = styled.div`
   font-size: 14px;
 `
-const createProject = async projectName => {
-  const { projectId } = await api.postApiV1ProjectsCreate();
-  await api.patchApiV1ProjectsByProjectId(projectId, [
-    { tag: 'ProjectTitle', contents: projectName }
-  ]);
-  return projectId
-}
-
 
 export default ({ isOpen, close }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [projectName, setProjectName] = useState('')
+
   const submit = useCallback(async () => {
-    const projectId = await createProject(projectName);
+    const projectId = await dispatch(createProject(projectName));
     navigate(`/projects/${projectId}`);
   }, [projectName]);
 

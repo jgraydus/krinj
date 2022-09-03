@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -6,6 +7,7 @@ import api from '../../api'
 import Loading from '../../components/loading'
 import DetailsTab from './details-tab'
 import IssuesTab from './issues-tab'
+import { deleteProject } from '../../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -44,14 +46,15 @@ const ProjectPageTitle = styled(
   flex-grow: 1;
 `
 const DeleteProjectButton = ({ projectId }) => {
-  const deleteProject = useCallback(() => {
-    (async () => {
-      api.deleteApiV1ProjectsDeleteByProjectId(projectId);
-      navigate('/projects')
-    })()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const _deleteProject = useCallback(() => {
+    dispatch(deleteProject(projectId));
+    navigate('/projects');
   }, [projectId]);
 
-  return <button onClick={deleteProject}>Delete Project</button>
+  return <button onClick={_deleteProject}>Delete Project</button>
 }
 const HeaderRow = styled(({ className, projectId }) =>
   <div className={className}>
