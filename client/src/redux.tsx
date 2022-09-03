@@ -46,7 +46,7 @@ export const loadIssues = projectId => async (dispatch, getState, api) => {
 }
 
 export const loadIssue = issueId => async (dispatch, getState, api) => {
-  const issue = api.getApiV1IssuesByIssueId(issueId);
+  const issue = await api.getApiV1IssuesByIssueId(issueId);
   dispatch({ type: UPDATE_ISSUE, payload: issue });
 }
 
@@ -138,17 +138,24 @@ export const projectSelector = projectId =>
 
 export const issuesSelector = projectId => createSelector(issuesByIdSelector(projectId), R.values);
 
-export const issueSelector = issueId =>
+export const issueSelector = ({ projectId, issueId }) =>
   createSelector(
-    issuesByIdSelector,
+    issuesByIdSelector(projectId),
     R.compose(
       R.defaultTo(null),
       R.prop(issueId)
     )
   );
 
+const debugLogReducer = (state, action) => {
+  console.log('action:', action);
+  const result = reducer(state, action);
+  console.log('updated store:', result);
+  return result;
+}
+
 export const store = createStore(
-  reducer,
+  debugLogReducer,
   applyMiddleware(thunk.withExtraArgument(api))
 );
 

@@ -29,6 +29,7 @@ const View = styled.div`
   font-weight: normal;
   font-kerning: normal;
   font-variant: normal;
+  font-family: "Lucida", sans-serif;
   letter-spacing: 0px;
   border: 1px solid black;
 `
@@ -42,6 +43,7 @@ const Edit = styled.input`
   font-weight: normal;
   font-kerning: normal;
   font-variant: normal;
+  font-family: "Lucida", sans-serif;
   letter-spacing: 0px;
   border: 1px solid black;
   outline: none;

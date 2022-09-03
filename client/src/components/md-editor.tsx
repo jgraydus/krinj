@@ -4,8 +4,7 @@ import remarkGfm from 'remark-gfm'
 import styled from 'styled-components'
 
 const Root = styled.div`
-  border: 1px solid red;
-  background-color: white;
+  border: 1px solid black;
   height: 100%;
   width: 100%;
   display: flex;
