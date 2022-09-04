@@ -36,7 +36,7 @@ instance ToJSON Project
 
 projectToDocument :: Project -> Document
 projectToDocument Project {..} =
-  [ "projectId" =: ObjId projectId
+  [ "_id" =: ObjId projectId
   , "title" =: String title
   , "description" =: String description
   , "owner" =: (Uuid . toBsonUuid) owner 
@@ -48,7 +48,7 @@ projectToDocument Project {..} =
 documentToProject :: Document -> Either Text Project
 documentToProject doc =
   Project
-  <$> lookup' "projectId" doc
+  <$> lookup' "_id" doc
   <*> lookup' "title" doc
   <*> lookup' "description" doc
   <*> (lookup' "owner" doc >>= fromBsonUuid)

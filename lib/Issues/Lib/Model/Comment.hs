@@ -35,7 +35,7 @@ instance ToJSON Comment
 
 commentToDocument :: Comment -> Document
 commentToDocument Comment {..} =
-  [ "commentId" =: ObjId commentId
+  [ "_id" =: ObjId commentId
   , "issueId" =: ObjId issueId
   , "content" =: String content
   , "createdBy" =: (Uuid . toBsonUuid) createdBy
@@ -46,7 +46,7 @@ commentToDocument Comment {..} =
 documentToComment :: Document -> Either Text Comment
 documentToComment doc =
   Comment
-  <$> lookup' "commentId" doc
+  <$> lookup' "_id" doc
   <*> lookup' "issueId" doc
   <*> lookup' "content" doc
   <*> (lookup' "createdBy" doc >>= fromBsonUuid)
