@@ -1,19 +1,11 @@
 version: '3.7'
 
 services:
-    mongo:
-        container_name: mongo
-        image: mongo:4.2.5-bionic
-        volumes:
-            - ./data/mongo:/data/db
-        restart: always
-        ports:
-            - "27018:27017"
 
-    redis:
-        container_name: redis
-        image: redis:5.0
-        restart: always
-        ports:
-            - "16379:6379"
+#    redis:
+#        container_name: redis
+#        image: redis:5.0
+#        restart: always
+#        ports:
+#            - "16379:6379"
 

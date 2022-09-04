@@ -74,7 +74,6 @@ library
         lens,
         list-t,
         mtl,
-        mongoDB ==2.7.1.1,
         neat-interpolation,
         optparse-applicative,
         process,

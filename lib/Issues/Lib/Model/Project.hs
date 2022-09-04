@@ -36,7 +36,7 @@ instance ToJSON Project
 
 projectToDocument :: Project -> Document
 projectToDocument Project {..} =
-  [ "_id" =: ObjId projectId
+  [ "_id" =: projectId
   , "title" =: String title
   , "description" =: String description
   , "owner" =: (Uuid . toBsonUuid) owner 
