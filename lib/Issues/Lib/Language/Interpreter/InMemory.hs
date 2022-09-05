@@ -1,4 +1,6 @@
-module Issues.Lib.Language.Interpreter.InMemory where
+module Issues.Lib.Language.Interpreter.InMemory (
+  withRunTime
+) where
 
 import           Prelude hiding (log, lookup)
 
@@ -248,4 +250,9 @@ makeRunTime :: IO RunTime
 makeRunTime = do
   db <- newDB
   return $ RunTime (\logger user -> foldFree (interpret db logger user))
+
+withRunTime :: (RunTime -> IO a) -> IO a
+withRunTime program = do
+  rt <- makeRunTime
+  program rt
 
