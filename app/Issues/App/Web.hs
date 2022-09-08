@@ -28,7 +28,7 @@ main = do
 
       logger INFO (toLogStr $ "server listening on port " <> show _httpConfigPort)
 
-      withRunTime "test.db" $ \rt -> Warp.run _httpConfigPort (app c rt logger)
+      withRunTime "memory" $ \rt -> Warp.run _httpConfigPort (app c rt logger)
 
       _ <- loggerCleanup
       exitWith ExitSuccess

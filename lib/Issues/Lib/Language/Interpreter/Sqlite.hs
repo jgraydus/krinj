@@ -182,7 +182,7 @@ interpret conn log user = \case
   CreateComment issueId next -> do
     commentId <- liftIO genObjectId
     now <- liftIO getCurrentTime
-    let _comment =
+    let comment =
           Comment
           { commentId
           , issueId
@@ -192,22 +192,41 @@ interpret conn log user = \case
           , updatedAt = now
           }
     liftIO $ log DEBUG (toLogStr $ "CREATE comment: " <> show commentId)
-    return $ next $ error "not implemented yet" -- TODO
+    liftIO $ execute conn
+      "INSERT INTO comments (commentId, issueId, content, createdBy, createdAt, updatedAt) \
+      \VALUES (?, ?, ?, ?, ?, ?)"
+      comment
+    result :: [Comment] <- liftIO $ query conn "SELECT * FROM comments WHERE commentId = ?" (Only commentId)
+    case result of
+      [c] -> return $ next c
+      _   -> throwError err500 { errBody = "created comment but there was an error reading it" }
     
   DeleteComment commentId next -> do
     liftIO $ log DEBUG (toLogStr $ "DELETE comment: " <> show commentId)
-    return $ next $ error "not implemented yet" -- TODO
+    liftIO $ execute conn "DELETE FROM comments WHERE commentId = ?" (Only commentId)
+    return $ next ()
 
   GetComments Nothing _ -> throwError $ err400 { errBody = "issueId required" }
 
   GetComments (Just issueId) next -> do
     liftIO $ log DEBUG (toLogStr $ "GET comments: " <> show issueId)
-    return $ next $ error "not implemented yet" -- TODO
+    comments :: [Comment] <- liftIO $ query conn "SELECT * FROM comments WHERE issueId = ?" (Only issueId)
+    return $ next comments
 
-  UpdateComment commentId _updates next -> do
+  UpdateComment commentId updates next -> do
     liftIO $ log DEBUG (toLogStr $ "UPDATE comment: " <> show commentId)
-    _now <- liftIO getCurrentTime
-    return $ next $ error "not implemented yet" -- TODO
+    now <- liftIO getCurrentTime 
+    liftIO $ forM_ updates $ \case
+      Content content -> executeNamed conn
+        "UPDATE comments \
+        \SET content = :content, updatedAt = :updatedAt \
+        \WHERE commentId = :commentId"
+        [":contentId" := commentId, ":updatedAt" := now, ":content" := content ]
+      Dummy -> return ()
+    result :: [Comment] <- liftIO $ query conn "SELECT * FROM comments WHERE commentId = ?" (Only commentId)
+    case result of
+      [c] -> return $ next c
+      _   -> throwError err500 { errBody = "created comment but there was an error reading it" }
 
   Log _msg                     _next -> error "not implemented"
   Err _e                             -> error "not implemented"
@@ -241,6 +260,14 @@ withRunTime databaseFile program = withConnection databaseFile $ \conn -> do
     \ createdAt TEXT, \
     \ updatedAt TEXT \
     \)"
-  -- TODO create comments table
+  _ <- execute_ conn
+    "CREATE TABLE IF NOT EXISTS comments (\
+    \ commentId TEXT PRIMARY KEY, \
+    \ issueId TEXT, \
+    \ content TEXT, \
+    \ createdBy TEXT, \
+    \ createdAt TEXT, \
+    \ updatedAt TEXT \
+    \)"
   program $ makeRunTime conn 
 

@@ -14,6 +14,8 @@ import           Data.Bson ((=:), Document, Field, Value(..))
 import           Data.Text (Text)
 import           Data.Time.Clock (UTCTime)
 import           Data.UUID (UUID)
+import           Database.SQLite.Simple.FromRow (FromRow)
+import           Database.SQLite.Simple.ToRow (ToRow)
 import           GHC.Generics (Generic)
 
 import           Issues.Lib.Model.Issue (IssueId)
@@ -32,6 +34,8 @@ data Comment = Comment
   } deriving (Generic, Show)
 
 instance ToJSON Comment
+instance FromRow Comment
+instance ToRow Comment
 
 commentToDocument :: Comment -> Document
 commentToDocument Comment {..} =
