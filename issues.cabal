@@ -38,6 +38,7 @@ library
         Issues.Lib.GenerateJsBindings,
         Issues.Lib.Logger,
         Issues.Lib.Language.Interpreter.InMemory,
+        Issues.Lib.Language.Interpreter.Sqlite,
         Issues.Lib.Model,
         Issues.Lib.Web.Application,
         Issues.Lib.Web.Options,
@@ -54,6 +55,7 @@ library
         Issues.Lib.Model.User,
         Issues.Lib.ObjectId,
         Issues.Lib.TH,
+        Issues.Lib.UUID,
         Issues.Lib.Web.ApiV1,
         Issues.Lib.Web.Bundles,
         Issues.Lib.Web.Site
@@ -81,6 +83,7 @@ library
         servant-foreign,
         servant-js,
         servant-server,
+        sqlite-simple,
         stm-containers,
         template-haskell,
         text,

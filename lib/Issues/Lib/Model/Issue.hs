@@ -15,6 +15,8 @@ import           Data.Maybe (fromMaybe)
 import           Data.Text (Text)
 import           Data.Time.Clock (UTCTime)
 import           Data.UUID (UUID)
+import           Database.SQLite.Simple.FromRow (FromRow)
+import           Database.SQLite.Simple.ToRow (ToRow)
 import           GHC.Generics (Generic)
 
 import           Issues.Lib.Model.Project (ProjectId)
@@ -38,6 +40,8 @@ data Issue = Issue
   } deriving (Generic, Show)
 
 instance ToJSON Issue
+instance FromRow Issue
+instance ToRow Issue
 
 issueToDocument :: Issue -> Document
 issueToDocument Issue {..} =

@@ -14,10 +14,13 @@ import           Data.Bson ((=:), Document, Field, Value(..))
 import           Data.Text (Text)
 import           Data.Time.Clock (UTCTime)
 import           Data.UUID (UUID)
+import           Database.SQLite.Simple.FromRow
+import           Database.SQLite.Simple.ToRow
 import           GHC.Generics (Generic)
 
 import           Issues.Lib.Model.Util (fromBsonUuid, lookup', toBsonUuid)
 import           Issues.Lib.ObjectId
+import           Issues.Lib.UUID ()
 
 --------------------------------------------------
 type ProjectId = ObjectId
@@ -33,7 +36,9 @@ data Project = Project
   } deriving (Generic, Show)
 
 instance ToJSON Project
-
+instance FromRow Project
+instance ToRow Project
+ 
 projectToDocument :: Project -> Document
 projectToDocument Project {..} =
   [ "_id" =: projectId

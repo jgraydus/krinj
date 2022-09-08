@@ -9,6 +9,8 @@ import Data.Aeson.Types (prependFailure, typeMismatch)
 import Data.Bson hiding (String)
 import Data.Hashable
 import Data.Text (pack, Text, unpack)
+import Database.SQLite.Simple.FromField (FromField(..))
+import Database.SQLite.Simple.ToField (ToField(..))
 import Servant.API (FromHttpApiData(..))
 
 toText :: ObjectId -> Text
@@ -29,4 +31,10 @@ instance FromHttpApiData ObjectId where
 
 instance Hashable ObjectId where
   hashWithSalt s (Oid v1 v2) = s `hashWithSalt` v1 `hashWithSalt` v2
+
+instance FromField ObjectId where
+  fromField = (fromText <$>) . fromField
+
+instance ToField ObjectId where
+  toField = toField . toText
 
