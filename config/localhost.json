@@ -1,12 +1,14 @@
 {
-    "mongo": {
-        "host": "localhost",
-        "port": 27018
-    },
     "http": {
         "protocol": "http",
         "host": "localhost",
-        "port": 8080
+        "port": 8080,
+        "implementation": {
+            "tag": "Sqlite",
+            "contents": {
+                "filePath": "issues.db"
+            }
+        }
     },
     "loglevel": "DEBUG",
     "jwtkey": "this is a secret key"

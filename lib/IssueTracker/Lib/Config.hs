@@ -23,10 +23,25 @@ instance FromJSON MongoConfig where
   parseJSON = genericParseJSON
     defaultOptions { fieldLabelModifier = removeRecordPrefix "_mongo" }
 
+data SqliteConfig = SqliteConfig
+  { filePath :: FilePath
+  } deriving (Generic, Show)
+
+instance FromJSON SqliteConfig 
+
+data Implementation =
+    InMemory
+  | Mongo MongoConfig
+  | Sqlite SqliteConfig
+  deriving (Generic, Show)
+
+instance FromJSON Implementation
+
 data HttpConfig = HttpConfig
   { _httpConfigProtocol :: Protocol
   , _httpConfigHost :: HostString
   , _httpConfigPort :: PortNumber
+  , _httpConfigImplementation :: Implementation
   } deriving (Generic, Show)
 
 instance FromJSON HttpConfig where
@@ -36,8 +51,7 @@ instance FromJSON HttpConfig where
 type JwtKey = String
 
 data ApplicationConfig = ApplicationConfig
-  { _applicationConfigMongo :: MongoConfig
-  , _applicationConfigHttp :: HttpConfig
+  { _applicationConfigHttp :: HttpConfig
   , _applicationConfigLogLevel :: LogLevel
   , _applicationConfigJwtKey :: JwtKey
   } deriving (Generic, Show)
