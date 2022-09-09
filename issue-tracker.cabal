@@ -1,0 +1,122 @@
+cabal-version:      3.6
+name:               issue-tracker
+version:            0.1.0.0
+
+common shared-properties
+    default-language: Haskell2010
+    ghc-options: -Wall
+    build-depends:
+        base ^>=4.16.1.0
+    default-extensions:
+        DataKinds,
+        DeriveFunctor,
+        DeriveGeneric,
+        DuplicateRecordFields,
+        FlexibleContexts,
+        FlexibleInstances,
+        GADTs,
+        LambdaCase,
+        MultiParamTypeClasses,
+        NamedFieldPuns,
+        OverloadedStrings,
+        PolyKinds,
+        QuasiQuotes,
+        RankNTypes,
+        RecordWildCards,
+        ScopedTypeVariables,
+        StandaloneDeriving,
+        TypeApplications,
+        TypeFamilies,
+        TypeOperators
+
+library
+    import: shared-properties
+    hs-source-dirs:  lib
+    exposed-modules:
+        IssueTracker.Lib.Auth,
+        IssueTracker.Lib.Config,
+        IssueTracker.Lib.GenerateJsBindings,
+        IssueTracker.Lib.Logger,
+        IssueTracker.Lib.Language.Interpreter.InMemory,
+        IssueTracker.Lib.Language.Interpreter.Sqlite,
+        IssueTracker.Lib.Model,
+        IssueTracker.Lib.Web.Application,
+        IssueTracker.Lib.Web.Options,
+    other-modules:
+        IssueTracker.Lib.BuildUtils,
+        IssueTracker.Lib.ContentTypes,
+        IssueTracker.Lib.Language,
+        IssueTracker.Lib.Language.AppL,
+        IssueTracker.Lib.Language.RunTime,
+        IssueTracker.Lib.Model.Comment,
+        IssueTracker.Lib.Model.Issue,
+        IssueTracker.Lib.Model.Project,
+        IssueTracker.Lib.Model.Util,
+        IssueTracker.Lib.Model.User,
+        IssueTracker.Lib.ObjectId,
+        IssueTracker.Lib.TH,
+        IssueTracker.Lib.UUID,
+        IssueTracker.Lib.Web.ApiV1,
+        IssueTracker.Lib.Web.Bundles,
+        IssueTracker.Lib.Web.Site
+    build-depends:
+        aeson,
+        AesonBson,
+        bson,
+        bytestring,
+        clock,
+        containers,
+        fast-logger,
+        free,
+        hashable,
+        http-media,
+        http-types,
+        jose-jwt,
+        json-config,
+        lens,
+        list-t,
+        mtl,
+        neat-interpolation,
+        optparse-applicative,
+        process,
+        servant,
+        servant-foreign,
+        servant-js,
+        servant-server,
+        sqlite-simple,
+        stm-containers,
+        template-haskell,
+        text,
+        time,
+        uuid,
+        wai
+
+-- http server - backend of the issue-tracker application
+executable web
+    import: shared-properties
+    build-depends:
+        issue-tracker,
+        stm-containers,
+        warp
+    hs-source-dirs: app
+    main-is:        IssueTracker/App/Web.hs
+    ghc-options:    -Wall -threaded -main-is IssueTracker.App.Web
+
+-- code generator - produces javascript functions to make requests to backend rest end points
+executable generate-js-bindings
+    import: shared-properties
+    build-depends:
+        issue-tracker
+    hs-source-dirs: app
+    main-is:        IssueTracker/App/GenerateJsBindings.hs
+    ghc-options:    -Wall -threaded -main-is IssueTracker.App.GenerateJsBindings
+
+-- utility for testing - prints out a valid auth token for a randomly generated user id
+executable make-auth-token
+    import: shared-properties
+    build-depends:
+        issue-tracker
+    hs-source-dirs:   app
+    main-is:          IssueTracker/App/MakeAuthToken.hs
+    ghc-options: -Wall -threaded -main-is IssueTracker.App.MakeAuthToken
+

@@ -1,5 +1,5 @@
 packages:
-  ./issues.cabal
+  ./issue-tracker.cabal
   ../json-config/json-config.cabal
   ../json-config/glabrous/glabrous.cabal
 
