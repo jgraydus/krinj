@@ -40,7 +40,7 @@ index _ = do
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>foobar</title>
+        <title>Issue Tracker</title>
         <link rel="stylesheet" href="${path}.css">
         <script>
           window.IssueTracker = { commitHash: "${commitHash}" }
