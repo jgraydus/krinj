@@ -9,7 +9,8 @@
     "build-prod": "esbuild src/index.tsx --bundle --minify --outfile=build/bundle.js",
     "reinstall": "rm -rf node_modules && npm install",
     "ci-check": "npm run lint && npm run tsc && npm run test",
-    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "clean": "rm -f ./build/*"
   },
   "dependencies": {
     "@types/jest": "27.5.0",
