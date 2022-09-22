@@ -1,5 +1,10 @@
 packages:
   ./issue-tracker.cabal
-  ../json-config/json-config.cabal
-  ../json-config/glabrous/glabrous.cabal
 
+source-repository-package
+  type: git
+  location: https://github.com/jgraydus/glabrous.git
+
+source-repository-package
+  type: git
+  location: https://github.com/jgraydus/json-config.git
