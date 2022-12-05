@@ -8,3 +8,9 @@ source-repository-package
 source-repository-package
   type: git
   location: https://github.com/jgraydus/json-config.git
+
+source-repository-package
+  type: git
+  location: https://github.com/haskell-servant/servant
+  subdir: servant-foreign
+
