@@ -1,15 +1,14 @@
 module IssueTracker.App.Web where
 
-import qualified Network.Wai.Handler.Warp as Warp
-import           System.Exit (ExitCode(..), exitWith)
-
-import qualified IssueTracker.Lib.Language.Interpreter.Sqlite as Sqlite
-import qualified IssueTracker.Lib.Language.Interpreter.InMemory as InMemory
-import           IssueTracker.Lib.Logger (LogLevel(INFO), newLogger, toLogStr)
-import           IssueTracker.Lib.Config (ApplicationConfig(..), HttpConfig(..), Implementation(..), readConfig,
-                                          SqliteConfig(..))
-import           IssueTracker.Lib.Web.Application
-import           IssueTracker.Lib.Web.Options
+import IssueTracker.Lib.Language.Interpreter.Sqlite qualified as Sqlite
+import IssueTracker.Lib.Language.Interpreter.InMemory qualified as InMemory
+import IssueTracker.Lib.Logger (LogLevel(INFO), newLogger, toLogStr)
+import IssueTracker.Lib.Config (ApplicationConfig(..), HttpConfig(..), Implementation(..), readConfig,
+                                SqliteConfig(..))
+import IssueTracker.Lib.Web.Application (app)
+import IssueTracker.Lib.Web.Options (env, Options(..), parseOptions)
+import Network.Wai.Handler.Warp qualified as Warp
+import System.Exit (ExitCode(ExitFailure), exitSuccess, exitWith)
 
 main :: IO ()
 main = do
@@ -40,5 +39,5 @@ main = do
         _ -> error "unsupported implementation"
 
       _ <- loggerCleanup
-      exitWith ExitSuccess
+      exitSuccess
 

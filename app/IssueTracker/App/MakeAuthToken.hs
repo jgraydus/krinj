@@ -1,11 +1,11 @@
 module IssueTracker.App.MakeAuthToken where
 
-import           System.Exit (ExitCode(..), exitWith)
 
-import           IssueTracker.Lib.Auth (makeAuthToken)
-import           IssueTracker.Lib.Config (ApplicationConfig(..), readConfig)
-import           IssueTracker.Lib.Model (makeUserForTest)
-import           IssueTracker.Lib.Web.Options (env, Options(..), parseOptions)
+import IssueTracker.Lib.Auth (makeAuthToken)
+import IssueTracker.Lib.Config (ApplicationConfig(..), readConfig)
+import IssueTracker.Lib.Model (makeUserForTest)
+import IssueTracker.Lib.Web.Options (env, Options(..), parseOptions)
+import System.Exit (ExitCode(..), exitSuccess, exitWith)
 
 main :: IO ()
 main = do
@@ -23,5 +23,5 @@ main = do
       user <- makeUserForTest 
       let token = makeAuthToken _applicationConfigJwtKey user
       print token
-      exitWith ExitSuccess
+      exitSuccess
 
