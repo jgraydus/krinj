@@ -16,3 +16,23 @@ root.render(
   </Provider>
 );
 
+
+const socket = new WebSocket('ws://localhost:8082');
+
+socket.addEventListener('open', (_event) => {
+    console.log('websocket opened');
+    return false;
+});
+
+socket.addEventListener('message', (event) => {
+    console.log(event);
+    if (event.data === 'RELOAD') {
+        location.reload();
+    }
+    return false;
+});
+
+socket.addEventListener('close', (_event) => {
+    console.log('websocket closed');
+});
+

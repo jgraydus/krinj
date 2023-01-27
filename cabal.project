@@ -1,4 +1,5 @@
 packages:
+  ./dev-server/dev-server.cabal
   ./issue-tracker.cabal
 
 source-repository-package
