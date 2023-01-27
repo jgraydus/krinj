@@ -2,11 +2,11 @@ module IssueTracker.Lib.Model.Util (
    fromBsonUuid, lookup', toBsonUuid
 ) where
 
-import           Data.ByteString.Lazy (fromStrict, toStrict)
-import           Data.Text (Text)
-import           Data.UUID (fromByteString, toByteString, UUID)
-import           Data.Bson (Document, Val)
-import qualified Data.Bson as Bson
+import Data.ByteString.Lazy (fromStrict, toStrict)
+import Data.Text (Text)
+import Data.UUID (fromByteString, toByteString, UUID)
+import Data.Bson (Document, Val)
+import Data.Bson qualified as Bson
 
 toBsonUuid :: UUID -> Bson.UUID
 toBsonUuid = Bson.UUID . toStrict . toByteString

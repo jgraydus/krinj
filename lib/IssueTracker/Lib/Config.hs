@@ -1,11 +1,10 @@
 module IssueTracker.Lib.Config where
 
-import           Data.Aeson
-import           Data.Char (toLower)
-import           GHC.Generics (Generic)
-import qualified JsonConfig as JsonConfig
-
-import           IssueTracker.Lib.Logger (LogLevel(..))
+import Data.Aeson (defaultOptions, fieldLabelModifier, FromJSON(..), genericParseJSON)
+import Data.Char (toLower)
+import GHC.Generics (Generic)
+import IssueTracker.Lib.Logger (LogLevel(..))
+import JsonConfig qualified
 
 removeRecordPrefix :: String -> String -> String
 removeRecordPrefix prefix = fmap toLower . drop (length prefix)
@@ -23,7 +22,7 @@ instance FromJSON MongoConfig where
   parseJSON = genericParseJSON
     defaultOptions { fieldLabelModifier = removeRecordPrefix "_mongo" }
 
-data SqliteConfig = SqliteConfig
+newtype SqliteConfig = SqliteConfig
   { filePath :: FilePath
   } deriving (Generic, Show)
 

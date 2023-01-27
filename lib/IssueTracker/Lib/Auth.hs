@@ -4,25 +4,24 @@ module IssueTracker.Lib.Auth (
    makeAuthToken
 ) where
 
-import           Control.Monad.Except (MonadError)
-import           Control.Monad.IO.Class (MonadIO)
-import           Data.Aeson
-import           Data.ByteString (ByteString, fromStrict, toStrict)
-import           Data.Functor.Identity (runIdentity)
-import qualified Data.List as L
-import           Data.Text (pack)
-import           Data.Text.Encoding (encodeUtf8)
-import           Jose.Jwa (JwsAlg(HS256))
-import           Jose.Jws (hmacDecode, hmacEncode)
-import           Jose.Jwt (Jwt(..))
-import           Network.Wai (Request, requestHeaders)
-import           Servant (throwError)
-import           Servant.Server (Context(..), err401, errBody, ServerError)
-import           Servant.API.Experimental.Auth (AuthProtect)
-import           Servant.Server.Experimental.Auth (AuthHandler, AuthServerData, mkAuthHandler)
-
-import           IssueTracker.Lib.Config
-import           IssueTracker.Lib.Model
+import Control.Monad.Except (MonadError)
+import Control.Monad.IO.Class (MonadIO)
+import Data.Aeson (decode, encode)
+import Data.ByteString (ByteString, fromStrict, toStrict)
+import Data.Functor.Identity (runIdentity)
+import Data.List qualified as L
+import Data.Text (pack)
+import Data.Text.Encoding (encodeUtf8)
+import IssueTracker.Lib.Config (JwtKey)
+import IssueTracker.Lib.Model (User)
+import Jose.Jwa (JwsAlg(HS256))
+import Jose.Jws (hmacDecode, hmacEncode)
+import Jose.Jwt (Jwt(..))
+import Network.Wai (Request, requestHeaders)
+import Servant (throwError)
+import Servant.Server (Context(..), err401, errBody, ServerError)
+import Servant.API.Experimental.Auth (AuthProtect)
+import Servant.Server.Experimental.Auth (AuthHandler, AuthServerData, mkAuthHandler)
 
 type JwtAuth = AuthProtect "JWT"
 type instance AuthServerData JwtAuth = User

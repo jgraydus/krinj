@@ -2,24 +2,27 @@ module IssueTracker.Lib.Language.Interpreter.Sqlite (
   withRunTime
 ) where
 
-import           Prelude hiding (log)
 
-import           Control.Monad (forM_)
-import           Control.Monad.Except (MonadError)
-import           Control.Monad.Free (foldFree)
-import           Control.Monad.IO.Class (liftIO, MonadIO)
-import           Data.Bson (genObjectId)
-import           Data.Time.Clock (getCurrentTime)
-import           Database.SQLite.Simple (Connection, execute, execute_, executeNamed, NamedParam(..), Only(..),
-                                         query, query_, withConnection)
-import           Servant (throwError)
-import           Servant.Server (err400, err404, err500, errBody, ServerError)
-import           System.Log.FastLogger (toLogStr)
+import Control.Monad (forM_)
+import Control.Monad.Except (MonadError)
+import Control.Monad.Free (foldFree)
+import Control.Monad.IO.Class (liftIO, MonadIO)
+import Data.Bson (genObjectId)
+import Data.Time.Clock (getCurrentTime)
+import Database.SQLite.Simple (Connection, execute, execute_, executeNamed,
+                               NamedParam(..), Only(..), query, query_,
+                               withConnection)
+import IssueTracker.Lib.Language.AppL (AppL(..))
+import IssueTracker.Lib.Model (Comment(..), CommentUpdate(..), Issue(..),
+                               IssueUpdate(..), Project(..), ProjectUpdate(..),
+                               User(..))
+import IssueTracker.Lib.Language.RunTime (RunTime(..))
+import IssueTracker.Lib.Logger (Logger, LogLevel(..))
+import Prelude hiding (log)
+import Servant (throwError)
+import Servant.Server (err400, err404, err500, errBody, ServerError)
+import System.Log.FastLogger (toLogStr)
 
-import           IssueTracker.Lib.Language.AppL
-import           IssueTracker.Lib.Model
-import           IssueTracker.Lib.Language.RunTime
-import           IssueTracker.Lib.Logger (Logger, LogLevel(..))
 
 interpret :: (MonadIO m, MonadError ServerError m) => Connection -> Logger -> User -> AppL a -> m a
 interpret conn log user = \case

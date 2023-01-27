@@ -1,12 +1,11 @@
 module IssueTracker.Lib.Language.AppL where
 
-import           Control.Monad.Except (MonadError)
-import           Control.Monad.IO.Class (MonadIO)
-import           Control.Exception (SomeException)
-import           Control.Monad.Free (Free)
-import           Servant.Server (ServerError)
-
-import           IssueTracker.Lib.Model
+import Control.Monad.Except (MonadError)
+import Control.Monad.IO.Class (MonadIO)
+import Control.Exception (SomeException)
+import Control.Monad.Free (Free)
+import IssueTracker.Lib.Model
+import Servant.Server (ServerError)
 
 data AppL a where
   -- projects

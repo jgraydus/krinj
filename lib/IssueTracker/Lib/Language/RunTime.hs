@@ -1,16 +1,15 @@
 module IssueTracker.Lib.Language.RunTime where
 
-import           Control.Monad.IO.Class (MonadIO)
-import           Control.Monad.Except (ExceptT, MonadError)
-import           Control.Monad.Reader (ReaderT, runReaderT)
-import           Servant.Server (Handler(..), ServerError)
+import Control.Monad.IO.Class (MonadIO)
+import Control.Monad.Except (ExceptT, MonadError)
+import Control.Monad.Reader (ReaderT, runReaderT)
+import IssueTracker.Lib.Config (ApplicationConfig)
+import IssueTracker.Lib.Language.AppL (App)
+import IssueTracker.Lib.Logger (Logger)
+import IssueTracker.Lib.Model (User)
+import Servant.Server (Handler(..), ServerError)
 
-import           IssueTracker.Lib.Config (ApplicationConfig)
-import           IssueTracker.Lib.Language.AppL
-import           IssueTracker.Lib.Logger (Logger)
-import           IssueTracker.Lib.Model
-
-data RunTime = RunTime
+newtype RunTime = RunTime
   { runApp :: forall m a. (MonadIO m, MonadError ServerError m) => Logger -> User -> App a -> m a
   }
 

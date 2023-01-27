@@ -2,9 +2,9 @@ module IssueTracker.Lib.Web.Bundles (
   cssBundle, jsBundle
 ) where
 
-import qualified Data.ByteString as BS
-import           Data.Text (Text)
-import           Data.Text.Encoding (decodeUtf8)
+import Data.ByteString qualified as BS
+import Data.Text (Text)
+import Data.Text.Encoding (decodeUtf8)
 
 jsBundleFilePath :: FilePath
 jsBundleFilePath = "client/build/bundle.js"

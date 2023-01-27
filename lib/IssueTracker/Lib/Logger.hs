@@ -5,12 +5,12 @@ module IssueTracker.Lib.Logger (
     toLogStr
 ) where
 
-import Prelude hiding (log)
-
 import Control.Monad (when)
 import Data.Aeson (FromJSON)
 import GHC.Generics (Generic)
-import System.Log.FastLogger
+import Prelude hiding (log)
+import System.Log.FastLogger (LogType'(LogStdout), LogStr, newTimeCache,
+                              newTimedFastLogger, simpleTimeFormat', ToLogStr(..))
 
 data LogLevel = TRACE | DEBUG | INFO | WARN | ERROR
   deriving (Eq, Generic, Ord, Show)

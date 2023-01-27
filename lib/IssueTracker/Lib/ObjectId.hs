@@ -4,10 +4,10 @@ module IssueTracker.Lib.ObjectId (
 ) where
 
 import Prelude hiding (String)
-import Data.Aeson
+import Data.Aeson (FromJSON(..), ToJSON(..), Value(String))
 import Data.Aeson.Types (prependFailure, typeMismatch)
 import Data.Bson hiding (String)
-import Data.Hashable
+import Data.Hashable (Hashable(..))
 import Data.Text (pack, Text, unpack)
 import Database.SQLite.Simple.FromField (FromField(..))
 import Database.SQLite.Simple.ToField (ToField(..))

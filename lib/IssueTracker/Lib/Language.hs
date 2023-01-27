@@ -1,10 +1,11 @@
 module IssueTracker.Lib.Language where
 
-import           Control.Monad.Free (liftF)
-import           Control.Exception (SomeException)
-
-import           IssueTracker.Lib.Language.AppL
-import           IssueTracker.Lib.Model
+import Control.Monad.Free (liftF)
+import Control.Exception (SomeException)
+import IssueTracker.Lib.Language.AppL (App, AppL(..))
+import IssueTracker.Lib.Model (Comment, CommentId, CommentUpdate, Issue,
+                               IssueId, IssueUpdate, Project, ProjectId,
+                               ProjectUpdate)
 
 -- projects
 createProject :: App Project

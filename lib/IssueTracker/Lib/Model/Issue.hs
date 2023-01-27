@@ -7,21 +7,19 @@ module IssueTracker.Lib.Model.Issue (
     issueUpdatesToDocument
 ) where
 
-import           Prelude hiding (String)
-
-import           Data.Aeson (FromJSON, ToJSON)
-import           Data.Bson ((=:), Document, Field, Value(..))
-import           Data.Maybe (fromMaybe)
-import           Data.Text (Text)
-import           Data.Time.Clock (UTCTime)
-import           Data.UUID (UUID)
-import           Database.SQLite.Simple.FromRow (FromRow)
-import           Database.SQLite.Simple.ToRow (ToRow)
-import           GHC.Generics (Generic)
-
-import           IssueTracker.Lib.Model.Project (ProjectId)
-import           IssueTracker.Lib.Model.Util (fromBsonUuid, lookup', toBsonUuid)
-import           IssueTracker.Lib.ObjectId
+import Data.Aeson (FromJSON, ToJSON)
+import Data.Bson ((=:), Document, Field, Value(..))
+import Data.Maybe (fromMaybe)
+import Data.Text (Text)
+import Data.Time.Clock (UTCTime)
+import Data.UUID (UUID)
+import Database.SQLite.Simple.FromRow (FromRow)
+import Database.SQLite.Simple.ToRow (ToRow)
+import GHC.Generics (Generic)
+import IssueTracker.Lib.Model.Project (ProjectId)
+import IssueTracker.Lib.Model.Util (fromBsonUuid, lookup', toBsonUuid)
+import IssueTracker.Lib.ObjectId (ObjectId)
+import Prelude hiding (String)
 
 type IssueId = ObjectId
 

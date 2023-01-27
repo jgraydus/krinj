@@ -2,24 +2,24 @@ module IssueTracker.Lib.Web.Site (
     SiteAPI, siteAPIServer
 ) where
 
-import           Control.Monad.Reader (ask)
-import           Control.Monad.IO.Class (liftIO)
-import           Data.Text (pack, Text)
-import           NeatInterpolation
-import           Servant
-
-import           IssueTracker.Lib.BuildUtils (commitHash)
-import           IssueTracker.Lib.Config (ApplicationConfig(..), HttpConfig(..))
-import           IssueTracker.Lib.ContentTypes
-import           IssueTracker.Lib.Language.RunTime
-import qualified IssueTracker.Lib.Web.Bundles as Bundles
+import Control.Monad.Reader (ask)
+import Control.Monad.IO.Class (liftIO)
+import Data.Text (pack, Text)
+import IssueTracker.Lib.BuildUtils (commitHash)
+import IssueTracker.Lib.Config (ApplicationConfig(..), HttpConfig(..))
+import IssueTracker.Lib.ContentTypes (CSS, HTML, JavaScript)
+import IssueTracker.Lib.Language.RunTime (AppHandler)
+import IssueTracker.Lib.Web.Bundles qualified as Bundles
+import NeatInterpolation (text)
+import Servant (ServerT)
+import Servant.API
 
 bundlePath :: HttpConfig -> Text
 bundlePath HttpConfig {..} = pack $
   _httpConfigProtocol
   <> "://"
   <> _httpConfigHost
-  <> (if length port == 0 then "" else ":" <> port)
+  <> (if null port then "" else ":" <> port)
   <> "/bundle"
   where
     port = if _httpConfigPort == 0 then "" else show _httpConfigPort

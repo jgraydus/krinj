@@ -2,20 +2,22 @@ module IssueTracker.Lib.Web.Application (
     app
 ) where
 
-import           Data.UUID (toASCIIBytes, UUID)
-import           Data.UUID.V4 (nextRandom)
-import           Network.Wai (rawQueryString, rawPathInfo, Request, requestMethod)
-import           Servant
-import           System.Clock (Clock(Monotonic), diffTimeSpec, getTime, TimeSpec, toNanoSecs)
-import           System.Log.FastLogger (LogStr)
+import Data.UUID (toASCIIBytes, UUID)
+import Data.UUID.V4 (nextRandom)
+import Data.Proxy (Proxy(..))
+import IssueTracker.Lib.Auth (authContext)
+import IssueTracker.Lib.Config (ApplicationConfig(..))
+import IssueTracker.Lib.ContentTypes ()
+import IssueTracker.Lib.Language.RunTime (AppHandler, runAppHandler, RunTime)
+import IssueTracker.Lib.Logger (Logger, LogLevel(INFO), toLogStr)
+import IssueTracker.Lib.Web.ApiV1 (API_V1, apiV1Server)
+import IssueTracker.Lib.Web.Site (SiteAPI, siteAPIServer)
+import Network.Wai (Application, rawQueryString, rawPathInfo, Request, requestMethod)
+import Servant (Handler, ServerT, serveWithContextT)
+import Servant.API
+import System.Clock (Clock(Monotonic), diffTimeSpec, getTime, TimeSpec, toNanoSecs)
+import System.Log.FastLogger (LogStr)
 
-import           IssueTracker.Lib.Auth (authContext)
-import           IssueTracker.Lib.Config (ApplicationConfig(..))
-import           IssueTracker.Lib.ContentTypes ()
-import           IssueTracker.Lib.Language.RunTime (AppHandler, runAppHandler, RunTime)
-import           IssueTracker.Lib.Logger (Logger, LogLevel(INFO), toLogStr)
-import           IssueTracker.Lib.Web.ApiV1 (API_V1, apiV1Server)
-import           IssueTracker.Lib.Web.Site (SiteAPI, siteAPIServer)
 
 type API = API_V1 :<|> SiteAPI
 

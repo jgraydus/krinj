@@ -3,13 +3,13 @@ module IssueTracker.Lib.Model.User (
     User(..)
 ) where
 
-import           Data.Aeson (FromJSON, ToJSON)
-import           Data.UUID (UUID)
-import           Data.UUID.V4 (nextRandom)
-import           GHC.Generics (Generic)
+import Data.Aeson (FromJSON, ToJSON)
+import Data.UUID (UUID)
+import Data.UUID.V4 (nextRandom)
+import GHC.Generics (Generic)
 
 --------------------------------------------------
-data User = User
+newtype User = User
   { _userId :: UUID
   } deriving (Generic, Show)
 

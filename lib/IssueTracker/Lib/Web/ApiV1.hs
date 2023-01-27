@@ -1,12 +1,12 @@
 module IssueTracker.Lib.Web.ApiV1 where
 
-import           Control.Monad.Reader (ask)
-import           Servant
-
-import qualified IssueTracker.Lib.Language as L
-import           IssueTracker.Lib.Auth
-import           IssueTracker.Lib.Model
-import           IssueTracker.Lib.Language.RunTime
+import Control.Monad.Reader (ask)
+import IssueTracker.Lib.Language qualified as L
+import IssueTracker.Lib.Auth (JwtAuth)
+import IssueTracker.Lib.Model
+import IssueTracker.Lib.Language.RunTime
+import Servant (ServerT)
+import Servant.API
 
 ------------------------------------------------------------------------------------
 ------------------------------------------

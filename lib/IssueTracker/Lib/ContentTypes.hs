@@ -2,11 +2,11 @@ module IssueTracker.Lib.ContentTypes (
     CSS, HTML, JavaScript
 ) where
 
-import qualified Data.ByteString.Lazy as BSL
-import           Data.Text (Text)
-import           Data.Text.Encoding (encodeUtf8)
-import           Network.HTTP.Media ((//), (/:))
-import           Servant.API.ContentTypes (Accept(..),MimeRender(..))
+import Data.ByteString.Lazy qualified as BSL
+import Data.Text (Text)
+import Data.Text.Encoding (encodeUtf8)
+import Network.HTTP.Media ((//), (/:))
+import Servant.API.ContentTypes (Accept(..),MimeRender(..))
 
 -- this module defines types and typeclass instances to enable
 -- specifying servant endpoints that return HTML and javascript

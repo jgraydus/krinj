@@ -5,7 +5,8 @@ module IssueTracker.Lib.Web.Options (
     parseOptions
 ) where
 
-import Options.Applicative
+import Options.Applicative (auto, execParser, help, info, long, metavar,
+                            option, Parser, strOption, value)
 
 data Mode = DEV | PROD
   deriving (Read, Show)

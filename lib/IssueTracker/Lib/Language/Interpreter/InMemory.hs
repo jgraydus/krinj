@@ -2,28 +2,31 @@ module IssueTracker.Lib.Language.Interpreter.InMemory (
   withRunTime
 ) where
 
-import           Prelude hiding (log, lookup)
+import Control.Monad.Except (MonadError)
+import Control.Monad.Free (foldFree)
+import Control.Monad.IO.Class (liftIO, MonadIO)
+import Data.Bson ((=:), at, Document, genObjectId, lookup, merge, Value(UTC))
+import Data.ByteString.Lazy (fromStrict)
+import Data.Maybe (fromMaybe)
+import Data.Text.Encoding (encodeUtf8)
+import Data.Time.Clock (getCurrentTime)
+import GHC.Conc (atomically)
+import IssueTracker.Lib.Language.AppL (AppL(..))
+import IssueTracker.Lib.Model (Comment(..), commentUpdatesToDocument, commentToDocument,
+                               documentToComment, documentToIssue, documentToProject,
+                               Issue(..), issueUpdatesToDocument, issueToDocument,
+                               Project(..), ProjectId, projectToDocument, projectUpdatesToDocument,
+                               User(..))
+import IssueTracker.Lib.Language.RunTime (RunTime(..))
+import IssueTracker.Lib.Logger (Logger, LogLevel(..))
+import IssueTracker.Lib.ObjectId (ObjectId)
+import ListT qualified
+import Prelude hiding (log, lookup)
+import Servant (throwError)
+import Servant.Server (err400, err404, err500, errBody, ServerError)
+import StmContainers.Map qualified as StmMap
+import System.Log.FastLogger (toLogStr)
 
-import           Control.Monad.Except (MonadError)
-import           Control.Monad.Free (foldFree)
-import           Control.Monad.IO.Class (liftIO, MonadIO)
-import           Data.Bson ((=:), at, Document, genObjectId, lookup, merge, Value(UTC))
-import           Data.ByteString.Lazy (fromStrict)
-import           Data.Maybe (fromMaybe)
-import           Data.Text.Encoding (encodeUtf8)
-import           Data.Time.Clock (getCurrentTime)
-import qualified ListT as ListT
-import           GHC.Conc (atomically)
-import qualified StmContainers.Map as StmMap
-import           Servant (throwError)
-import           Servant.Server (err400, err404, err500, errBody, ServerError)
-import           System.Log.FastLogger (toLogStr)
-
-import           IssueTracker.Lib.Language.AppL
-import           IssueTracker.Lib.Model
-import           IssueTracker.Lib.Language.RunTime
-import           IssueTracker.Lib.Logger (Logger, LogLevel(..))
-import           IssueTracker.Lib.ObjectId
 
 data DB = DB
   { _projects :: StmMap.Map ObjectId Document
@@ -38,7 +41,7 @@ isDeleted :: Document -> Bool
 isDeleted doc = fromMaybe False $ lookup "isDeleted" doc
 
 hasProjectId :: ProjectId -> Document -> Bool
-hasProjectId projectId = fromMaybe False . (fmap (== projectId)) . lookup "projectId" 
+hasProjectId projectId = (Just projectId ==) . lookup "projectId" 
 
 values :: MonadIO m => StmMap.Map k v -> m [v]
 values = liftIO . atomically . (fmap . fmap) snd . ListT.toList . StmMap.listT
