@@ -4,17 +4,30 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './app'
 import { store } from './redux'
 
-const root = createRoot(
-  document.getElementById('root')
-);
+declare global {
+    interface Window {
+        IssueTracker: {
+            commitHash: String
+        }
+    }
+}
 
-root.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </Provider>
-);
+const rootElement = document.getElementById('root')
+
+
+if (rootElement !== null) {
+    const root = createRoot(rootElement);
+
+    root.render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </Provider>
+    );
+} else {
+    throw new Error("failed to find root element")
+}
 
 
 const socket = new WebSocket('ws://localhost:8082');

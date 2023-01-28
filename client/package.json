@@ -4,8 +4,7 @@
   "private": true,
   "main": "src/index.tsx",
   "scripts": {
-    "build": "esbuild src/index.tsx --bundle --outfile=build/bundle.js",
-    "watch": "esbuild src/index.tsx --bundle --outfile=build/bundle.js --watch",
+    "build": "tsc && esbuild src/index.tsx --bundle --outfile=build/bundle.js",
     "build-prod": "esbuild src/index.tsx --bundle --minify --outfile=build/bundle.js",
     "reinstall": "rm -rf node_modules && npm install",
     "ci-check": "npm run lint && npm run tsc && npm run test",
@@ -37,6 +36,8 @@
   },
   "devDependencies": {
     "@types/ramda": "^0.28.15",
+    "@types/react-edit-text": "^5.0.1",
+    "@types/react-modal": "^3.13.1",
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "5.22.0",
     "@typescript-eslint/parser": "5.22.0",

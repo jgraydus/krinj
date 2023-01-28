@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -36,7 +37,7 @@ const ProjectId = styled.div`
   padding 10px;
 `
 
-const TableRow = ({ project }) => {
+const TableRow = ({ project }: { project: Project }) => {
   const navigate = useNavigate();
   
   return (
@@ -47,9 +48,11 @@ const TableRow = ({ project }) => {
   )
 }
 
-const mkTableRows = R.addIndex(R.map)((prj, i) => <TableRow key={i} project={prj} />);
+const mkTableRow: any = (prj: Project, i: number): ReactNode => <TableRow key={i} project={prj} />
 
-export default ({ projects }) =>
+const mkTableRows: any = (projects: Array<Project>) => R.addIndex(R.map)(mkTableRow, projects)
+
+export default ({ projects }: { projects: Array<Project> }) =>
   <Root>
     {mkTableRows(projects)}
   </Root>

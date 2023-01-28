@@ -1,6 +1,5 @@
 import * as R from 'ramda'
 import { useCallback, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -8,7 +7,9 @@ import api from '../../api'
 import Loading from '../../components/loading'
 import DetailsTab from './details-tab'
 import IssuesTab from './issues-tab'
-import { deleteProject, loadProject, projectSelector } from '../../redux'
+import { projectSelector } from '../../redux/selectors'
+import { deleteProject, loadProject } from '../../redux/actions'
+import { useDispatch, useSelector } from '../../hooks'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -24,7 +25,7 @@ const Tabs = styled.div`
   flex-flow: row nowrap;
   border-bottom: 1px solid gray;
 `
-const Tab = styled.div`
+const Tab = styled.div<{ isSelected: boolean }>`
   padding: 10px;
   display: flex;
   align-items: center;
@@ -35,10 +36,7 @@ const Tab = styled.div`
   }
   background-color: ${props => props.isSelected ? 'rgba(255,255,255,0.5)' : ''};
 `
-const ProjectPageTab = {
-  Details: 0,
-  Issues: 1
-}
+const enum ProjectPageTab { Details, Issues }
 
 const ProjectPageTitle = styled(
   ({ className, projectName }) => <div className={className}>Project: {projectName}</div>
@@ -46,7 +44,7 @@ const ProjectPageTitle = styled(
   font-size: 20px;
   flex-grow: 1;
 `
-const DeleteProjectButton = ({ projectId }) => {
+const DeleteProjectButton = ({ projectId }: { projectId: ProjectId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -70,10 +68,10 @@ const HeaderRow = styled(({ className, projectId, projectName }) =>
   flex-flow: row nowrap;
 `
 
-const View = ({ selectedTab }) => {
+const View = ({ selectedTab }: { selectedTab: ProjectPageTab } ) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { projectId } = useParams();
+  const { projectId }: any = useParams();
   const project = useSelector(projectSelector(projectId));
 
   useEffect(() => {

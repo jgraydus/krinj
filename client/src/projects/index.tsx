@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import ReactModal from 'react-modal'
-import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import api from '../api'
 import Loading from '../components/loading'
 import NewProject from './new-project'
 import Table from './table'
-import { loadProjects, projectsSelector } from '../redux'
+import { useDispatch, useSelector } from '../hooks'
+import { loadProjects } from '../redux/actions'
+import { projectsSelector } from '../redux/selectors'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -37,7 +38,7 @@ const NoProjects = styled(({ className }) =>
   justify-content: center;
   font-size: 30px;
 `
-const Content = ({ projects }) => {
+const Content = ({ projects }: { projects: Array<Project> }) => {
   if (projects == null) {
       return <Loading />;
   }
@@ -47,7 +48,17 @@ const Content = ({ projects }) => {
   return <Table projects={projects} />;
 }
 
-const Projects = ({ closeModal, modalIsOpen, openModal, projects }) =>
+const Projects = ({
+    closeModal,
+    modalIsOpen,
+    openModal,
+    projects
+    }: {
+        closeModal: () => void,
+        modalIsOpen: boolean,
+        openModal: () => void,
+        projects: Array<Project>
+    }) =>
   <Root>
     <HeaderRow>
       <Header>Projects</Header>

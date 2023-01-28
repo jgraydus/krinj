@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import api from '../../../api'
 import Loading from '../../../components/loading'
-import { issuesSelector, loadIssues } from '../../../redux'
+import { loadIssues } from '../../../redux/actions'
+import { issuesSelector } from '../../../redux/selectors'
+import { useDispatch, useSelector } from '../../../hooks'
 import Table from './table'
 
 const NoIssues = styled(({ className }) => <div className={className}>No Issues</div>)`
@@ -16,7 +16,7 @@ const NoIssues = styled(({ className }) => <div className={className}>No Issues<
   align-items: center;
   justify-content: center;
 `
-const Content = ({ issues, projectId }) => {
+const Content = ({ issues, projectId }: { issues: Array<Issue>, projectId: ProjectId }) => {
   if (issues == null) {
       return <Loading />;
   }
@@ -26,7 +26,7 @@ const Content = ({ issues, projectId }) => {
   return <Table issues={issues} projectId={projectId} />;
 }
 
-export default ({ projectId }) => {
+export default ({ projectId }: { projectId: ProjectId }) => {
   const dispatch = useDispatch();
   const issues = useSelector(issuesSelector(projectId));
 

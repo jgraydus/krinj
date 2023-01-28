@@ -1,12 +1,13 @@
 import { useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { loadIssue, issueSelector, updateIssue } from '../../../../redux'
+import { loadIssue, updateIssue } from '../../../../redux/actions'
+import { issueSelector } from '../../../../redux/selectors'
 import InlineEdit from '../../../../components/inline-edit'
 import Loading from '../../../../components/loading'
 import MdEditor from '../../../../components/md-editor'
+import { useDispatch, useSelector } from '../../../../hooks'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -64,8 +65,8 @@ const BackButton = styled(({ className, onClick }) =>
 export default () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { issueId, projectId } = useParams()
-  const issue = useSelector(issueSelector({ projectId, issueId }));
+  const { issueId, projectId }: any = useParams()
+  const issue: Issue = useSelector(issueSelector({ projectId, issueId }))
 
   useEffect(() => {
     dispatch(loadIssue(issueId));
@@ -75,11 +76,11 @@ export default () => {
     navigate(`/projects/${projectId}/issues`);
   }, [projectId]);
 
-  const updateName = useCallback(name => {
+  const updateName = useCallback((name: string) => {
     dispatch(updateIssue(issueId, [{ tag: 'Title', contents: name }]));
   }, [issueId]);
 
-  const updateDescription = useCallback(desc => {
+  const updateDescription = useCallback((desc: string) => {
     dispatch(updateIssue(issueId, [{ tag: 'Description', contents: desc }]));
   }, [issueId]);
 

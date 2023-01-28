@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import styled from 'styled-components'
 
 import Footer from './footer'
@@ -36,7 +37,7 @@ const Content = styled.div`
   flex-grow: 1;
 `
 
-export default ({ children }) =>
+export default ({ children }: { children: ReactNode }) =>
   <Root>
     <ContentArea>
       <Header />

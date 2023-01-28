@@ -1,11 +1,16 @@
+import { ReactNode } from 'react'
 import ReactModal from 'react-modal'
 import styled from 'styled-components'
 
-ReactModal.setAppElement(
-  document.getElementById('root')
-);
+const rootElement = document.getElementById('root')
 
-const style = {
+if (rootElement !== null) {
+    ReactModal.setAppElement(rootElement);
+} else {
+    throw new Error("failed to find root element")
+}
+
+const style: any = {
   content: {
     position: 'relative',
     top: 0, left: 0, bottom: 0, right: 0,
@@ -46,7 +51,11 @@ const Content = styled.div`
   width: 100%;
 `
 
-export default ({ children, close, isOpen }) =>
+export default ({
+    children, close, isOpen
+}: {
+    children: ReactNode, close: () => void, isOpen: boolean
+}) =>
   <ReactModal isOpen={isOpen} style={style}>
     <CloseButton onClick={close}>X</CloseButton>
     <Content>

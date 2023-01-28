@@ -1,12 +1,9 @@
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 
-const InlineEditMode = {
-  VIEW: 0,
-  EDIT: 1
-};
+const enum InlineEditMode { VIEW, EDIT }
 
-const flip = mode => mode === InlineEditMode.VIEW
+const flip = (mode: InlineEditMode) => mode === InlineEditMode.VIEW
   ? InlineEditMode.EDIT
   : InlineEditMode.VIEW;
 
@@ -49,12 +46,12 @@ const Edit = styled.input`
   outline: none;
 `
 
-export default ({ initialValue, onSave }) => {
+export default ({ initialValue, onSave }: { initialValue?: string, onSave: any }) => {
   const [mode, setMode] = useState(InlineEditMode.VIEW);
   const [value, setValue] = useState(initialValue || '');
 
   const toggle = useCallback(() => setMode(flip(mode)), [mode, setMode]);
-  const onChange = useCallback(e => setValue(e.target.value), [setValue]);
+  const onChange: any = useCallback((e: any) => setValue(e.target.value), [setValue]);
   const save = useCallback(() => { onSave(value); toggle(); }, [onSave, toggle, value]);
 
   return (

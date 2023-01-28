@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import InlineEdit from '../components/inline-edit'
 import Modal from '../components/modal'
 import Spacer from '../components/spacer'
-import { createProject } from '../redux'
+import { createProject } from '../redux/actions'
+import { useDispatch } from '../hooks'
 
 const Root = styled.div`
   width: 100%;
@@ -38,7 +38,7 @@ const ProjectName = styled.div`
   font-size: 14px;
 `
 
-export default ({ isOpen, close }) => {
+export default ({ isOpen, close }: { isOpen: boolean, close: any }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [projectName, setProjectName] = useState('')
@@ -52,7 +52,7 @@ export default ({ isOpen, close }) => {
     <Modal isOpen={isOpen} close={close}>
       <Root>
         <Title>New Project</Title>
-        <Spacer height="10" />
+        <Spacer height={10} />
         <Content>
          <ProjectName>Project Name</ProjectName>
          <InlineEdit

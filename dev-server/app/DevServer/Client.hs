@@ -17,7 +17,7 @@ endsWith :: String -> String -> Bool
 endsWith pattern str = pattern == drop (length str - length pattern) str
 
 isTriggerFileType :: String -> Bool
-isTriggerFileType = endsWith ".tsx"
+isTriggerFileType s = endsWith ".tsx" s || endsWith ".ts" s || endsWith ".js" s
 
 dropLastCharacter :: String -> String
 dropLastCharacter s = take l s where l = length s - 1

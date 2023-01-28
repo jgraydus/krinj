@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react'
-import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import api from '../../../api'
 import Modal from '../../../components/modal'
 import InlineEdit from '../../../components/inline-edit'
-import { createIssue } from '../../../redux'
+import { createIssue } from '../../../redux/actions'
+import { useDispatch } from '../../../hooks'
 
 const Root = styled.div`
   height: 100%;
@@ -28,7 +28,7 @@ const Footer = styled.div`
   justify-content: flex-end;
 `
 
-export default ({ close, isOpen, projectId }) => {
+export default ({ close, isOpen, projectId }: { close: any, isOpen: boolean, projectId: ProjectId }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
 

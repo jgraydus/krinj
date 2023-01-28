@@ -41,7 +41,7 @@ const TableRow = styled.div`
     background-color: rgb(255,255,255,0.5);
   }
 `
-const Cell = styled.div`
+const Cell = styled.div<{ width: string }>`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -50,7 +50,7 @@ const Cell = styled.div`
   width: ${props => props.width};
 `
 
-const Row = ({ issue, onClick }) =>
+const Row = ({ issue, onClick }: { issue: Issue, onClick: any }) =>
   <TableRow onClick={onClick}>
     <Cell width="30%">{issue.title}</Cell>
     <Cell width="20%">{issue.owner}</Cell>
@@ -60,7 +60,7 @@ const Row = ({ issue, onClick }) =>
     <Cell width="10%">{issue.updatedAt}</Cell>
   </TableRow>
 
-export default ({ issues, projectId }) => {
+export default ({ issues, projectId }: { issues: Array<Issue>, projectId: ProjectId }) => {
   const navigate = useNavigate();
 
   return (

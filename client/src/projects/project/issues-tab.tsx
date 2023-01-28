@@ -20,7 +20,7 @@ const NewIssueButton = styled(({ className, onClick }) =>
  padding: 5px;
 `
 
-export default ({ projectId }) => {
+export default ({ projectId }: { projectId: ProjectId }) => {
   const [newIssueModalIsOpen, setNewIssueModalIsOpen] = useState(false);
 
   const closeNewIssueModal = useCallback(() => setNewIssueModalIsOpen(false), [setNewIssueModalIsOpen]);

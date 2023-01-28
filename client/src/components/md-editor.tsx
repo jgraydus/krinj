@@ -35,7 +35,7 @@ const Textarea = styled.textarea`
   border: none;
 `
 
-export default ({ onSave, initialValue }) => {
+export default ({ onSave, initialValue }: { onSave: (arg: string) => void, initialValue?: string }) => {
     const [markdown, setMarkdown] = useState(initialValue || '');
     const [mode, setMode] = useState('preview');
 
@@ -46,7 +46,7 @@ export default ({ onSave, initialValue }) => {
             setMode('preview');
             onSave(markdown)
         }
-    });
+    }, [markdown]);
 
     return (
       <Root>
