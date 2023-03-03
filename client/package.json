@@ -4,7 +4,8 @@
   "private": true,
   "main": "src/index.tsx",
   "scripts": {
-    "build": "tsc && esbuild src/index.tsx --bundle --outfile=build/bundle.js",
+    "build": "esbuild src/index.tsx --bundle --outfile=build/bundle.js",
+    "_build": "tsc && esbuild src/index.tsx --bundle --outfile=build/bundle.js",
     "build-prod": "esbuild src/index.tsx --bundle --minify --outfile=build/bundle.js",
     "reinstall": "rm -rf node_modules && npm install",
     "ci-check": "npm run lint && npm run tsc && npm run test",

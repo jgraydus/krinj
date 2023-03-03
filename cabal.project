@@ -1,5 +1,4 @@
 packages:
-  ./dev-server/dev-server.cabal
   ./issue-tracker.cabal
 
 source-repository-package
@@ -9,6 +8,10 @@ source-repository-package
 source-repository-package
   type: git
   location: https://github.com/jgraydus/json-config.git
+
+source-repository-package
+  type: git
+  location: https://github.com/jgraydus/dev-server.git
 
 source-repository-package
   type: git

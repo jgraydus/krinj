@@ -107,3 +107,11 @@ executable make-auth-token
     main-is:        IssueTracker/App/MakeAuthToken.hs
     ghc-options:    -Wall -threaded -main-is IssueTracker.App.MakeAuthToken
 
+executable dev-server
+    import: shared-properties
+    build-depends:
+        dev-server
+    hs-source-dirs: app/dev-server
+    main-is:        Main.hs
+    ghc-options:    -Wall -threaded -main-is Main
+

@@ -4,7 +4,7 @@ import thunk from 'redux-thunk'
 import api from '../api'
 import { DELETE_ISSUE, DELETE_PROJECT, LOAD_ISSUES, LOAD_PROJECTS, UPDATE_ISSUE, UPDATE_PROJECT } from './action-types'
 
-export type ProjectsById = { [index: ProjectId]: Project }
+export type ProjectsById = { [index: ProjectId]: ProjectWithIssues }
 export type IssuesById = { [index: IssueId]: Issue }
 
 export interface RootState {

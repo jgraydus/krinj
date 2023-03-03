@@ -1,4 +1,4 @@
-
+/*
 type ProjectId = string
 type IssueId = string
 
@@ -14,10 +14,15 @@ interface Issue {
     updatedAt: string
 }
 
-interface Project {
+interface ProjectAndIssues {
     projectId: ProjectId,
     title?: string,
     description?: string,
     issues: { [index: IssueId]: Issue }
 }
+*/
 
+type IssueId = string
+type ProjectId = string
+
+type ProjectWithIssues = Project & { issues: { [index: IssueId]: Issue } }
