@@ -9,9 +9,12 @@ common shared-properties
         base < 5.0
     default-extensions:
         DataKinds,
+        DeriveAnyClass,
+        DerivingStrategies,
         DuplicateRecordFields,
         GADTs,
         LambdaCase,
+        OverloadedRecordDot,
         OverloadedStrings,
         QuasiQuotes,
         RecordWildCards,
@@ -21,32 +24,17 @@ library
     import: shared-properties
     hs-source-dirs:  lib
     exposed-modules:
-        IssueTracker.Lib.Auth,
-        IssueTracker.Lib.Config,
-        IssueTracker.Lib.GenerateJsBindings,
-        IssueTracker.Lib.Logger,
-        IssueTracker.Lib.Language.Interpreter.InMemory,
-        IssueTracker.Lib.Language.Interpreter.Sqlite,
-        IssueTracker.Lib.Model,
-        IssueTracker.Lib.Web.Application,
-        IssueTracker.Lib.Web.Options,
+        IssueTracker.BuildUtils,
+        IssueTracker.Config,
+        IssueTracker.Logger,
+        IssueTracker.Options,
+        IssueTracker.TH,
+        IssueTracker.Web.Application
     other-modules:
-        IssueTracker.Lib.BuildUtils,
-        IssueTracker.Lib.ContentTypes,
-        IssueTracker.Lib.Language,
-        IssueTracker.Lib.Language.AppL,
-        IssueTracker.Lib.Language.RunTime,
-        IssueTracker.Lib.Model.Comment,
-        IssueTracker.Lib.Model.Issue,
-        IssueTracker.Lib.Model.Project,
-        IssueTracker.Lib.Model.Util,
-        IssueTracker.Lib.Model.User,
-        IssueTracker.Lib.ObjectId,
-        IssueTracker.Lib.TH,
-        IssueTracker.Lib.UUID,
-        IssueTracker.Lib.Web.ApiV1,
-        IssueTracker.Lib.Web.Bundles,
-        IssueTracker.Lib.Web.Site
+        IssueTracker.Web.ContentTypes,
+        IssueTracker.Web.Routes.Site,
+        IssueTracker.Web.Routes.Site.Bundles,
+        IssueTracker.Web.RouteHandler
     build-depends:
         aeson,
         AesonBson,
@@ -54,6 +42,7 @@ library
         bytestring,
         clock,
         containers,
+        entity-service,
         fast-logger,
         free,
         hashable,
@@ -87,25 +76,41 @@ executable web
         warp
     hs-source-dirs: app
     main-is:        IssueTracker/App/Web.hs
-    ghc-options:    -Wall -threaded -main-is IssueTracker.App.Web
+    ghc-options:
+        -threaded
+        -rtsopts
+        -with-rtsopts=-N
+        -main-is IssueTracker.App.Web
 
--- code generator - produces javascript functions to make requests to backend rest end points
-executable generate-js-bindings
+---- code generator - produces javascript functions to make requests to backend rest end points
+--executable generate-js-bindings
+--    import: shared-properties
+--    build-depends:
+--        issue-tracker
+--    hs-source-dirs: app
+--    main-is:        IssueTracker/App/GenerateJsBindings.hs
+--    ghc-options:    -Wall -threaded -main-is IssueTracker.App.GenerateJsBindings
+--
+---- utility for testing - prints out a valid auth token for a randomly generated user id
+--executable make-auth-token
+--    import: shared-properties
+--    build-depends:
+--        issue-tracker
+--    hs-source-dirs: app
+--    main-is:        IssueTracker/App/MakeAuthToken.hs
+--    ghc-options:    -Wall -threaded -main-is IssueTracker.App.MakeAuthToken
+
+-- initialize the database, etc.
+executable init
     import: shared-properties
     build-depends:
-        issue-tracker
+        issue-tracker,
+        postgresql-migration,
+        postgresql-simple,
+        text
     hs-source-dirs: app
-    main-is:        IssueTracker/App/GenerateJsBindings.hs
-    ghc-options:    -Wall -threaded -main-is IssueTracker.App.GenerateJsBindings
-
--- utility for testing - prints out a valid auth token for a randomly generated user id
-executable make-auth-token
-    import: shared-properties
-    build-depends:
-        issue-tracker
-    hs-source-dirs: app
-    main-is:        IssueTracker/App/MakeAuthToken.hs
-    ghc-options:    -Wall -threaded -main-is IssueTracker.App.MakeAuthToken
+    main-is:        IssueTracker/App/Init.hs
+    ghc-options:    -Wall -threaded -main-is IssueTracker.App.Init
 
 executable dev-server
     import: shared-properties

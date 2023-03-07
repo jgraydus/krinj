@@ -1,15 +1,10 @@
 {
-    "http": {
+    "httpServerConfig": {
         "protocol": "http",
         "host": "localhost",
         "port": 8080,
-        "implementation": {
-            "tag": "Sqlite",
-            "contents": {
-                "filePath": "issues.db"
-            }
-        }
+        "jwtKey": "this is a secret key"
     },
-    "loglevel": "DEBUG",
-    "jwtkey": "this is a secret key"
+    "logLevel": "DEBUG"
 }
+

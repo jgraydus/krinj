@@ -1,8 +1,8 @@
 version: '3.7'
 
 volumes:
-    postgres:
-    pgadmin:
+    issues-tracker-postgres:
+    issues-tracker-pgadmin:
 
 services: 
     postgres:
@@ -13,7 +13,7 @@ services:
             POSTGRES_PASSWORD: "password"
             PGDATA: "/data/postgres"
         volumes:
-            - postgres:/data/postgres
+            - issues-tracker-postgres:/data/postgres
             - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_int.sql
         ports:
             - "15432:5432"
@@ -28,7 +28,7 @@ services:
             PGADMIN_CONFIG_SERVER_MODE: "False"
             PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
         volumes:
-            - pgadmin:/var/lib/pgadmin 
+            - issues-tracker-pgadmin:/var/lib/pgadmin 
             - ./docker_pgadmin_servers.json:/pgadmin4/servers.json 
         ports:
             - "15433:80"

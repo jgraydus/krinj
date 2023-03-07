@@ -1,0 +1,68 @@
+cabal-version:      3.8
+name:               entity-service
+version:            0.1.0.0
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall
+
+library
+    import:           warnings
+    exposed-modules:
+        EntityService,
+    other-modules:
+        EntityService.Class,
+        EntityService.Instance,
+        EntityService.Internal,
+        EntityService.Internal.Command,
+        EntityService.Internal.Command.Attributes,
+        EntityService.Internal.Command.Entities,
+        EntityService.Internal.Command.EntityTypes,
+        EntityService.Internal.Command.Projects,
+        EntityService.Internal.Command.Relationships,
+        EntityService.Internal.Model,
+        EntityService.Internal.Model.Attributes,
+        EntityService.Internal.Model.Entities,
+        EntityService.Internal.Model.EntityTypes,
+        EntityService.Internal.Model.Newtypes,
+        EntityService.Internal.Model.Projects,
+        EntityService.Internal.Model.Relationships,
+        EntityService.Internal.Util,
+        EntityService.Internal.Query,
+        EntityService.Internal.Query.Attributes,
+        EntityService.Internal.Query.Entities,
+        EntityService.Internal.Query.EntityTypes,
+        EntityService.Internal.Query.Projects,
+        EntityService.Internal.Query.Relationships
+    build-depends:
+        aeson,
+        base ^>=4.17.0.0,
+        containers,
+        lens,
+        mtl,
+        opaleye,
+        postgresql-simple,
+        product-profunctors,
+        resource-pool,
+        text,
+        uuid
+    hs-source-dirs:   src
+    default-language: GHC2021
+    default-extensions:
+        DataKinds,
+        DuplicateRecordFields,
+        LambdaCase,
+        OverloadedRecordDot,
+        RecordWildCards
+
+test-suite entity-service-test
+    import:           warnings
+    default-language: GHC2021
+    other-modules:
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.17.0.0,
+        entity-service
+

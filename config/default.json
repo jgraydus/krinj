@@ -1,13 +1,10 @@
 {
-    "http": {
+    "httpServerConfig": {
         "protocol": {{HTTP_PROTOCOL || "http"}},
         "host": "{{HTTP_HOST}}",
         "port": {{HTTP_PORT || 80}},
-        "implementation": {
-            "tag": "InMemory"
-        }
+        "jwtKey": "{{JWT_KEY}}"
     },
-    "loglevel": "{{LOG_LEVEL}}",
-    "jwtkey": "{{JWT_KEY}}"
+    "logLevel": "{{LOG_LEVEL}}"
 }
 
