@@ -8,6 +8,8 @@ import Data.Proxy (Proxy(..))
 import Data.UUID (UUID)
 import Data.UUID qualified as UUID
 import Data.UUID.V4 qualified as UUID
+import Data.Pool (Pool)
+import Database.PostgreSQL.Simple (Connection)
 import IssueTracker.Config (ApplicationConfig(..))
 import IssueTracker.Logger (Logger, LogLevel(INFO), LogStr, toLogStr)
 import IssueTracker.Web.Routes.Site (SiteAPI, siteAPIServer)
@@ -49,6 +51,7 @@ data RequestContext = RequestContext
   { requestId :: RequestId
   , applicationConfig :: ApplicationConfig
   , logger :: Logger
+  , databaseConnectionPool :: Pool Connection
   }
 
 p :: Proxy SiteAPI
@@ -57,8 +60,8 @@ p = Proxy
 toHandler :: RequestContext -> ReaderT RequestContext (ExceptT ServerError IO) x -> Handler x
 toHandler ctx m = Handler (runReaderT m ctx)
 
-app :: ApplicationConfig -> Logger -> Application
-app applicationConfig l req res = do
+app :: Pool Connection -> ApplicationConfig -> Logger -> Application
+app databaseConnectionPool applicationConfig l req res = do
   requestId <- UUID.nextRandom
 
   let logger = withReqId l requestId

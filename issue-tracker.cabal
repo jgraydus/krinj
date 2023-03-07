@@ -26,12 +26,14 @@ library
     exposed-modules:
         IssueTracker.BuildUtils,
         IssueTracker.Config,
+        IssueTracker.DatabaseConnectionPool,
         IssueTracker.Logger,
         IssueTracker.Options,
-        IssueTracker.TH,
         IssueTracker.Web.Application
     other-modules:
+        IssueTracker.TH,
         IssueTracker.Web.ContentTypes,
+        IssueTracker.Web.Routes.Projects,
         IssueTracker.Web.Routes.Site,
         IssueTracker.Web.Routes.Site.Bundles,
         IssueTracker.Web.RouteHandler
@@ -55,7 +57,9 @@ library
         mtl,
         neat-interpolation,
         optparse-applicative,
+        postgresql-simple,
         process,
+        resource-pool,
         servant,
         servant-foreign,
         servant-js,
@@ -73,6 +77,7 @@ executable web
     import: shared-properties
     build-depends:
         issue-tracker,
+        postgresql-simple,
         warp
     hs-source-dirs: app
     main-is:        IssueTracker/App/Web.hs

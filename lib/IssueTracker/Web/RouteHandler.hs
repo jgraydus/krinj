@@ -3,6 +3,7 @@ module IssueTracker.Web.RouteHandler where
 
 import Control.Monad.Except (MonadError)
 import Control.Monad.Reader (MonadReader)
+import EntityService
 import IssueTracker.Config (ApplicationConfig)
 import IssueTracker.Web.Routes.Site.Bundles (SiteBundles)
 import GHC.Records (HasField)
@@ -24,6 +25,7 @@ type Constraints r m =
   , MonadError ServerError m
   , MonadReader r m
   , HasField "applicationConfig" r ApplicationConfig
+  , EntityService m
   , SiteBundles m
   )
 
