@@ -9,10 +9,11 @@ import Data.UUID (UUID)
 import GHC.Generics (Generic)
 import Opaleye (DefaultFromField, Field, sqlValueJSON, SqlJson, sqlStrictText, SqlText,
                 sqlUUID, SqlUuid, ToFields, toToFields)
+import Web.Internal.HttpApiData (FromHttpApiData)
 
 newtype ProjectId = ProjectId UUID
   deriving stock (Generic, Show)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromJSON, Ord, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToJSON)
 
 instance Default ToFields ProjectId (Field SqlUuid) where
   def = toToFields (sqlUUID . coerce)
@@ -33,7 +34,7 @@ instance Default ToFields ProjectDescription (Field SqlText) where
 
 newtype EntityTypeId = EntityTypeId UUID
   deriving stock (Generic, Show)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromJSON, Ord, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToJSON)
 
 instance Default ToFields EntityTypeId (Field SqlUuid) where
   def = toToFields (sqlUUID . coerce)
@@ -54,14 +55,14 @@ instance Default ToFields EntityTypeDescriptor (Field SqlJson) where
 
 newtype EntityId = EntityId UUID
   deriving stock (Generic, Show)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromJSON, Ord, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToJSON)
 
 instance Default ToFields EntityId (Field SqlUuid) where
   def = toToFields (sqlUUID . coerce)
 
 newtype AttributeId = AttributeId UUID
   deriving stock (Generic, Show)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromJSON, Ord, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToJSON)
 
 instance Default ToFields AttributeId (Field SqlUuid) where
   def = toToFields (sqlUUID . coerce)
@@ -82,7 +83,7 @@ instance Default ToFields AttributeValue (Field SqlJson) where
 
 newtype RelationshipId = RelationshipId UUID
   deriving stock (Generic, Show)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromJSON, Ord, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToJSON)
 
 instance Default ToFields RelationshipId (Field SqlUuid) where
   def = toToFields (sqlUUID . coerce)

@@ -38,6 +38,7 @@ library
         aeson,
         base ^>=4.17.0.0,
         containers,
+        http-api-data,
         lens,
         mtl,
         opaleye,
