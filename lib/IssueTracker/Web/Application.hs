@@ -12,7 +12,7 @@ import Data.Pool (Pool)
 import Database.PostgreSQL.Simple (Connection)
 import IssueTracker.Config (ApplicationConfig(..))
 import IssueTracker.Logger (Logger, LogLevel(INFO), LogStr, toLogStr)
-import IssueTracker.Web.Routes.Site (SiteAPI, siteAPIServer)
+import IssueTracker.Web.Routes
 import Network.Wai (Application, rawQueryString, rawPathInfo, Request, requestMethod)
 import Servant (Context(..), Handler(..), ServerError, serveWithContextT)
 import System.Clock (Clock(Monotonic), diffTimeSpec, getTime, TimeSpec, toNanoSecs)
@@ -54,7 +54,7 @@ data RequestContext = RequestContext
   , databaseConnectionPool :: Pool Connection
   }
 
-p :: Proxy SiteAPI
+p :: Proxy APIAndSite
 p = Proxy
 
 toHandler :: RequestContext -> ReaderT RequestContext (ExceptT ServerError IO) x -> Handler x
@@ -68,5 +68,5 @@ app databaseConnectionPool applicationConfig l req res = do
   _ <- logger INFO (pathLogStr req)
 
   withLoggedDuration logger $
-    serveWithContextT p EmptyContext (toHandler RequestContext {..}) siteAPIServer req res
+    serveWithContextT p EmptyContext (toHandler RequestContext {..}) apiAndSiteHandler req res
 

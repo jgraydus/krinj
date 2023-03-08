@@ -33,6 +33,7 @@ library
     other-modules:
         IssueTracker.TH,
         IssueTracker.Web.ContentTypes,
+        IssueTracker.Web.Routes,
         IssueTracker.Web.Routes.Projects,
         IssueTracker.Web.Routes.Site,
         IssueTracker.Web.Routes.Site.Bundles,

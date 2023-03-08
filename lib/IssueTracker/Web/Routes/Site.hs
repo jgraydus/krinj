@@ -1,5 +1,5 @@
 module IssueTracker.Web.Routes.Site (
-    SiteAPI, siteAPIServer
+    Site, siteHandler
 ) where
 
 import Control.Monad.Reader (asks)
@@ -60,8 +60,8 @@ type CssBundle = "bundle.css" :> Get '[CSS] Text
 cssBundle :: RouteHandler CssBundle
 cssBundle = Bundles.cssBundle
 
-type SiteAPI = JsBundle :<|> CssBundle :<|> Index
+type Site = JsBundle :<|> CssBundle :<|> Index
 
-siteAPIServer :: RouteHandler SiteAPI
-siteAPIServer = jsBundle :<|> cssBundle :<|> index
+siteHandler :: RouteHandler Site
+siteHandler = jsBundle :<|> cssBundle :<|> index
 
