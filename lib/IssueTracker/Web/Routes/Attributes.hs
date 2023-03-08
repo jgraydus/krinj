@@ -22,8 +22,8 @@ attributesApiHandler =
        getAttributesHandler
   :<|> getAttributeHandler
   :<|> createAttributesHandler
-  :<|> updateAttributesHandler
-  :<|> deleteAttributesHandler
+  :<|> updateAttributeHandler
+  :<|> deleteAttributeHandler
 
 -----------------------------------------------------------------------------------------
 type GetAttributes = QueryParam "entityId" EntityId :> Get '[JSON] [Attribute]
@@ -51,14 +51,14 @@ type CreateAttributes = ReqBody '[JSON] CreateAttributesReqBody :> Post '[JSON] 
 
 data CreateAttributesReqBody = CreateAttributesReqBody
   { entityId :: EntityId
-  , attributes: :: [(AttributeName, AttributeValue)]
+  , attributes :: [(AttributeName, AttributeValue)]
   }
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON, ToJSON)
 
 createAttributesHandler :: RouteHandler CreateAttributes
 createAttributesHandler CreateAttributesReqBody {..} = do
-  result <- createAttribute entityId attributes
+  result <- createAttributes entityId attributes
   case result of
     Left _ -> error "TODO proper error"
     Right attribute -> pure attribute
@@ -69,7 +69,7 @@ type UpdateAttribute =
   :> ReqBody '[JSON] UpdateAttributeReqBody
   :> Patch '[JSON] Attribute
 
-data UpdateAttributeReqBody
+data UpdateAttributeReqBody = UpdateAttributeReqBody
   { name :: Maybe AttributeName
   , value :: Maybe AttributeValue
   }
@@ -77,8 +77,8 @@ data UpdateAttributeReqBody
   deriving anyclass (FromJSON, ToJSON)
 
 updateAttributeHandler :: RouteHandler UpdateAttribute
-updateAttributeHandler UpdateAttributeReqBody {..} = do
-  result <- updateAttribute attributeId entityId attributes
+updateAttributeHandler attributeId UpdateAttributeReqBody {..} = do
+  result <- updateAttribute attributeId name value
   case result of
     Left _ -> error "TODO proper error"
     Right attribute -> pure attribute

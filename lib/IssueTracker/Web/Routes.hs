@@ -9,18 +9,18 @@ import IssueTracker.Web.RouteHandler
 import Servant
 
 type API = "api" :> (
-       ProjectsApi
-  :<|> EntityTypesApi
+       AttributesApi
   :<|> EntitiesApi
-  :<|> AttributesApi
+  :<|> EntityTypesApi
+  :<|> ProjectsApi
   )
 
 apiHandler :: RouteHandler API
 apiHandler =
-       projectsApiHandler
-  :<|> entityTypesApiHandler
+       attributesApiHandler
   :<|> entitiesApiHandler
-  :<|> attributesApiHandler
+  :<|> entityTypesApiHandler
+  :<|> projectsApiHandler
 
 type APIAndSite = API :<|> Site
 
