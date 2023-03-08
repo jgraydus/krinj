@@ -34,6 +34,7 @@ library
         IssueTracker.TH,
         IssueTracker.Web.ContentTypes,
         IssueTracker.Web.Routes,
+        IssueTracker.Web.Routes.Entities,
         IssueTracker.Web.Routes.EntityTypes,
         IssueTracker.Web.Routes.Projects,
         IssueTracker.Web.Routes.Site,

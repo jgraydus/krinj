@@ -1,8 +1,10 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE DerivingVia, DeriveAnyClass, TemplateHaskell #-}
 module EntityService.Internal.Model.Entities where
 
+import Data.Aeson (FromJSON, ToJSON)
 import Data.Profunctor.Product.TH
 import EntityService.Internal.Model.Newtypes
+import GHC.Generics (Generic)
 import Opaleye
 
 data EntitiesRowT a b c = EntitiesRowT
@@ -10,6 +12,8 @@ data EntitiesRowT a b c = EntitiesRowT
   ,  projectId :: b
   ,  entityTypeId :: c
   }
+  deriving stock (Generic, Show)
+  deriving anyclass (FromJSON, ToJSON)
 
 $(makeAdaptorAndInstance' ''EntitiesRowT)
 

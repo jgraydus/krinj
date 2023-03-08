@@ -1,8 +1,9 @@
 module EntityService (
     EntityService(..)
-  , Project, ProjectId, ProjectName, ProjectDescription
+  , Attribute, AttributeId, AttributeName, AttributeValue
   , Entity, EntityId
   , EntityType, EntityTypeId, EntityTypeName, EntityTypeDescriptor
+  , Project, ProjectId, ProjectName, ProjectDescription
   , Error(..), Result,
 
   module EntityService.Instance
