@@ -87,7 +87,7 @@ const View = ({ selectedTab }: { selectedTab: ProjectPageTab } ) => {
   return (
     <Root>
 
-      <HeaderRow projectId={projectId} projectName={R.propOr('', 'title', project || {})}/>
+      <HeaderRow projectId={projectId} projectName={R.propOr('', 'name', project || {})}/>
 
       <Tabs>
         <Tab

@@ -47,8 +47,6 @@ export default ({ projectId }: { projectId: ProjectId }) => {
   const dispatch = useDispatch();
   const project = useSelector(state => selectProject(state, projectId));
 
-  useEffect(() => { dispatch(loadProject(projectId)) }, [projectId]);
-
   const saveTitle = useCallback(
       ({ value }: { value: string }) => {
           dispatch(updateProject(projectId, { projectName: value || 'ProjectTitle' }));
