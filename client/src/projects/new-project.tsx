@@ -4,8 +4,7 @@ import styled from 'styled-components'
 import InlineEdit from '../components/inline-edit'
 import Modal from '../components/modal'
 import Spacer from '../components/spacer'
-import { createProject } from '../redux/actions'
-import { useDispatch } from '../hooks'
+import { createProject, useDispatch } from '../redux'
 
 const Root = styled.div`
   width: 100%;
@@ -44,7 +43,7 @@ export default ({ isOpen, close }: { isOpen: boolean, close: any }) => {
   const [projectName, setProjectName] = useState('')
 
   const submit = useCallback(async () => {
-    const projectId = await dispatch(createProject(projectName));
+    const projectId = await dispatch(createProject({ projectName, projectDescription: '' }));
     navigate(`/projects/${projectId}`);
   }, [projectName]);
 

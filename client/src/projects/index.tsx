@@ -6,9 +6,7 @@ import api from '../api'
 import Loading from '../components/loading'
 import NewProject from './new-project'
 import Table from './table'
-import { useDispatch, useSelector } from '../hooks'
-import { loadProjects } from '../redux/actions'
-import { projectsSelector } from '../redux/selectors'
+import { loadProjects, selectProjects, useDispatch, useSelector } from '../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -72,7 +70,7 @@ const Projects = ({
 
 export default () => {
   const dispatch = useDispatch();
-  const projects = useSelector(projectsSelector);
+  const projects = useSelector(selectProjects);
   useEffect(() => { dispatch(loadProjects) }, []);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);

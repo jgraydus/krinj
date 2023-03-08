@@ -52,12 +52,12 @@ const Cell = styled.div<{ width: string }>`
 
 const Row = ({ issue, onClick }: { issue: Issue, onClick: any }) =>
   <TableRow onClick={onClick}>
-    <Cell width="30%">{issue.title}</Cell>
-    <Cell width="20%">{issue.owner}</Cell>
-    <Cell width="20%">{issue.assignee || 'No assignee'}</Cell>
-    <Cell width="10%">{issue.state || '--'}</Cell>
-    <Cell width="10%">{issue.createdAt}</Cell>
-    <Cell width="10%">{issue.updatedAt}</Cell>
+    <Cell width="30%">{issue.attributes['title'] || '--'}</Cell>
+    <Cell width="20%">{issue.attributes['owner'] || '--'}</Cell>
+    <Cell width="20%">{issue.attributes['assignee'] || 'No assignee'}</Cell>
+    <Cell width="10%">{issue.attributes['state'] || '--'}</Cell>
+    <Cell width="10%">{issue.attributes['createdAt'] || '--'}</Cell>
+    <Cell width="10%">{issue.attributes['updatedAt'] || '--'}</Cell>
   </TableRow>
 
 export default ({ issues, projectId }: { issues: Array<Issue>, projectId: ProjectId }) => {

@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import api from '../../../api'
 import Modal from '../../../components/modal'
 import InlineEdit from '../../../components/inline-edit'
-import { createIssue } from '../../../redux/actions'
-import { useDispatch } from '../../../hooks'
+import { createIssue, useDispatch } from '../../../redux'
 
 const Root = styled.div`
   height: 100%;
@@ -33,7 +32,7 @@ export default ({ close, isOpen, projectId }: { close: any, isOpen: boolean, pro
   const [name, setName] = useState('');
 
   const newIssue = useCallback(async () => {
-    dispatch(createIssue(projectId, name));
+    dispatch(createIssue(projectId, { name }));
     close()
   }, [name, projectId]);
 

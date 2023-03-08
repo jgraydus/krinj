@@ -1,28 +1,29 @@
-/*
 type ProjectId = string
+
+interface Project {
+    projectId: ProjectId,
+    name: string,
+    description: string
+}
+
 type IssueId = string
 
 interface Issue {
-    issueId: IssueId,
+    issueId: EntityId,
     projectId: ProjectId,
-    title?: string,
-    description?: string,
-    owner?: string
-    assignee?: string,
-    state?: string,
-    createdAt: string,
-    updatedAt: string
+    attributes: any,
 }
 
-interface ProjectAndIssues {
-    projectId: ProjectId,
-    title?: string,
-    description?: string,
-    issues: { [index: IssueId]: Issue }
+
+
+
+
+
+type ProjectsById = { [projectId: ProjectId]: Project }
+type IssuesById = { [issueId: IssueId]: Issue }
+
+interface RootState {
+    projects: ProjectsById,
+    issues: IssuesById
 }
-*/
 
-type IssueId = string
-type ProjectId = string
-
-type ProjectWithIssues = Project & { issues: { [index: IssueId]: Issue } }

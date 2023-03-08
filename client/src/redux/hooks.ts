@@ -1,5 +1,5 @@
 import * as ReactRedux from 'react-redux'
-import { RootState, store } from './redux'
+import { store } from './store'
 
 type DispatchFunc = () => typeof store.dispatch
 

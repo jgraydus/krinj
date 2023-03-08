@@ -3,13 +3,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import api from '../../api'
 import Loading from '../../components/loading'
 import DetailsTab from './details-tab'
 import IssuesTab from './issues-tab'
-import { projectSelector } from '../../redux/selectors'
-import { deleteProject, loadProject } from '../../redux/actions'
-import { useDispatch, useSelector } from '../../hooks'
+import { deleteProject, loadProject, selectProject, useDispatch, useSelector } from '../../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -72,7 +69,7 @@ const View = ({ selectedTab }: { selectedTab: ProjectPageTab } ) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { projectId }: any = useParams();
-  const project = useSelector(projectSelector(projectId));
+  const project = useSelector(state => selectProject(state, projectId));
 
   useEffect(() => {
     dispatch(loadProject(projectId));

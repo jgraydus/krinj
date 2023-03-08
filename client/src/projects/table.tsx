@@ -42,7 +42,7 @@ const TableRow = ({ project }: { project: Project }) => {
   
   return (
     <_TableRow onClick={() => navigate(`/projects/${project.projectId}`)}>
-      <ProjectName>{project.title}</ProjectName>
+      <ProjectName>{project.name}</ProjectName>
       <ProjectId>{project.projectId}</ProjectId>
     </_TableRow>
   )

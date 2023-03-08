@@ -1,75 +1,63 @@
-import { AnyAction } from 'redux'
-import { ThunkAction } from 'redux-thunk'
-import { DELETE_ISSUE, DELETE_PROJECT, LOAD_ISSUES, LOAD_PROJECTS, UPDATE_ISSUE, UPDATE_PROJECT } from './action-types'
-import type { RootState } from './'
+import * as A from './action-types'
+import { store } from './store'
 
-type AppThunk<ReturnType> = ThunkAction<ReturnType, RootState, any, AnyAction>
+type API = any
+type AppAction<T> = (dispatch: (arg: any) => typeof store.dispatch, getState: () => RootState, api: API) => Promise<T>;
 
-export const loadProjects: AppThunk<any>
-= async (dispatch, getState, api) => {
-  const projects = await api.getApiV1Projects();
-  dispatch({ type: LOAD_PROJECTS, payload: projects });
+export const loadProjects: AppAction<void>
+= async (dispatch, _getState, api) => {
+  const projects = await api.getProjects();
+  dispatch({ type: A.LOAD_PROJECTS, payload: projects });
 }
 
-export const loadProject: (projectId: ProjectId) => AppThunk<any>
+export const loadProject: (projectId: ProjectId) => AppAction<void>
 = projectId => async (dispatch, getState, api) => {
-  const project = await api.getApiV1ProjectsByProjectId(projectId);
-  dispatch({ type: UPDATE_PROJECT, payload: project });
+  const project = await api.getProject(projectId);
+  dispatch({ type: A.UPDATE_PROJECT, payload: project });
 }
 
-export const updateProject: (projectId: ProjectId, updates: any) => AppThunk<any>
-= (projectId: ProjectId, updates: any) => async (dispatch, getState, api) => {
-  const project = await api.patchApiV1ProjectsByProjectId(projectId, updates);
-  dispatch({ type: UPDATE_PROJECT, payload: project });
+export const createProject: (arg: { projectName: string, projectDescription: string }) => AppAction<ProjectId>
+= arg => async (dispatch, _getState, api) => {
+  const project = await api.createProject(arg);
+  dispatch({ type: A.UPDATE_PROJECT, payload: project });
+  return project.projectId
 }
 
-export const createProject: (projectName: string) => AppThunk<any>
-= (projectName: string) => async (dispatch, getState, api) => {
-  const { projectId } = await api.postApiV1ProjectsCreate();
-  const project = await api.patchApiV1ProjectsByProjectId(projectId, [
-    { tag: 'ProjectTitle', contents: projectName }
-  ]);
-  dispatch({ type: UPDATE_PROJECT, payload: project });
-  return projectId;
+export const updateProject: (projectId: ProjectId, arg: { projectName?: string, projectDescription?: string }) => AppAction<any>
+= (projectId, arg) => async (dispatch, _getState, api) => {
+  const project = await api.updateProject(projectId, arg);
+  dispatch({ type: A.UPDATE_PROJECT, payload: project });
 }
 
-export const deleteProject: (projectId: ProjectId) => AppThunk<any>
-= (projectId: ProjectId) => async (dispatch, getState, api) => {
-  api.deleteApiV1ProjectsDeleteByProjectId(projectId);
-  dispatch({ type: DELETE_PROJECT, payload: projectId });
+export const deleteProject: (projectId: ProjectId) => AppAction<any>
+= projectId => async (dispatch, _getState, api) => {
+  await api.deleteProject(projectId);
+  dispatch({ type: A.DELETE_PROJECT, payload: projectId });
 }
 
-export const loadIssues: (projectId: ProjectId) => AppThunk<any>
-= (projectId: ProjectId) => async (dispatch, getState, api) => {
-  const issues = await api.getApiV1Issues(projectId, null);
-  dispatch({ type: LOAD_ISSUES, payload: { projectId, issues } });
+export const loadIssues: (projectId: ProjectId) => AppAction<void>
+= projectId => async (_dispatch, _getState, _api) => {
+    // TODO
 }
 
-export const loadIssue: (issueId: IssueId) => AppThunk<any>
-= (issueId: IssueId) => async (dispatch, getState, api) => {
-  const issue = await api.getApiV1IssuesByIssueId(issueId);
-  dispatch({ type: UPDATE_ISSUE, payload: issue });
+export const loadIssue: (issueId: IssueId) => AppAction<void>
+= issueId => async (_dispatch, _getState, _api) => {
+    // TODO
 }
 
-export const updateIssue: (issueId: IssueId, updates: any) => AppThunk<any>
-= (issueId: IssueId, updates: any) => async (dispatch, getState, api) => {
-  const issue = api.patchApiV1IssuesByIssueId(issueId, updates);
-  dispatch({ type: UPDATE_ISSUE, payload: issue });
+export const createIssue: (projectId: ProjectId, args: any) => AppAction<ProjectId>
+= projectId => async (_dispatch, _getState, _api) => {
+    // TODO
+    return "UNIMPLEMENTED"
 }
 
-export const createIssue: (projectId: ProjectId, name: string) => AppThunk<any>
-= (projectId: ProjectId, name: string) => async (dispatch, getState, api) => {
-  const { issueId } = await api.postApiV1IssuesCreate(JSON.stringify(projectId));
-  const issue = await api.patchApiV1IssuesByIssueId(issueId, [{
-    tag: 'Title', contents: name
-  }]);
-  dispatch({ type: UPDATE_ISSUE, payload: issue });
-  return issueId;
+export const updateIssue: (issueId: IssueId, updates: any) => AppAction<void>
+= (issueId, update) => async (_dispatch, _getState, _api) => {
+    // TODO
 }
 
-export const deleteIssue: (projectId: ProjectId, issueId: IssueId) => AppThunk<any>
-= (projectId: ProjectId, issueId: IssueId) => async (dispatch, getState, api) => {
-  api.deleteApiV1IssuesDeleteByIssueId(issueId);
-  dispatch({ type: DELETE_ISSUE, payload: { projectId, issueId } });
+export const deleteIssue: (issueId: IssueId) => AppAction<void>
+= issueId => async (_dipatch, _getState, _api) => {
+    // TODO
 }
 

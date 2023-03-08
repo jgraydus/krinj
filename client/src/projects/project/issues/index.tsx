@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import Loading from '../../../components/loading'
-import { loadIssues } from '../../../redux/actions'
-import { issuesSelector } from '../../../redux/selectors'
-import { useDispatch, useSelector } from '../../../hooks'
+import { loadIssues, selectIssuesForProject, useDispatch, useSelector } from '../../../redux'
 import Table from './table'
 
 const NoIssues = styled(({ className }) => <div className={className}>No Issues</div>)`
@@ -28,7 +26,7 @@ const Content = ({ issues, projectId }: { issues: Array<Issue>, projectId: Proje
 
 export default ({ projectId }: { projectId: ProjectId }) => {
   const dispatch = useDispatch();
-  const issues = useSelector(issuesSelector(projectId));
+  const issues = useSelector(state => selectIssuesForProject(state, projectId));
 
   useEffect(() => { dispatch(loadIssues(projectId)); }, []);
 

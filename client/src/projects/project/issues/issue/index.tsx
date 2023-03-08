@@ -2,12 +2,10 @@ import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { loadIssue, updateIssue } from '../../../../redux/actions'
-import { issueSelector } from '../../../../redux/selectors'
 import InlineEdit from '../../../../components/inline-edit'
 import Loading from '../../../../components/loading'
 import MdEditor from '../../../../components/md-editor'
-import { useDispatch, useSelector } from '../../../../hooks'
+import { loadIssue, useDispatch, useSelector, updateIssue, selectIssue } from '../../../../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -66,7 +64,7 @@ export default () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { issueId, projectId }: any = useParams()
-  const issue: Issue = useSelector(issueSelector({ projectId, issueId }))
+  const issue: Issue | null = useSelector(state => selectIssue(state, issueId))
 
   useEffect(() => {
     dispatch(loadIssue(issueId));
@@ -92,37 +90,37 @@ export default () => {
 
       <Row>
         <Label>Name</Label>
-        <Cell><InlineEdit initialValue={issue.title} onSave={updateName} /></Cell>
+        <Cell><InlineEdit initialValue={issue.attributes['title'] || '--'} onSave={updateName} /></Cell>
       </Row>
 
       <Row>
         <Label>State</Label>
-        <Cell><InlineEdit initialValue={issue.state} onSave={console.log}/></Cell>
+        <Cell><InlineEdit initialValue={issue.attributes['state'] || '--'} onSave={console.log}/></Cell>
       </Row>
 
       <Row>
         <Label>Assignee</Label>
-        <Cell><InlineEdit initialValue={issue.assignee} onSave={console.log}/></Cell>
+        <Cell><InlineEdit initialValue={issue.attributes['assignee'] || '--'} onSave={console.log}/></Cell>
       </Row>
 
       <BigRow>
         <Label>Description</Label>
-        <BigCell><MdEditor initialValue={issue.description} onSave={updateDescription} /></BigCell>
+        <BigCell><MdEditor initialValue={issue.attributes['description'] || '--'} onSave={updateDescription} /></BigCell>
       </BigRow>
 
       <Row>
         <Label>Owner</Label>
-        <Cell>{issue.owner}</Cell>
+        <Cell>{issue.attributes['owner'] || '--'}</Cell>
       </Row>
 
       <Row>
         <Label>Created</Label>
-        <Cell>{issue.createdAt}</Cell>
+        <Cell>{issue.attributes['createdAt'] || '--'}</Cell>
       </Row>
       
       <Row>
         <Label>Last Updated</Label>
-        <Cell>{issue.updatedAt}</Cell>
+        <Cell>{issue.attributes['updatedAt'] || '--'}</Cell>
       </Row>
     </Root>
   ) : <Loading />

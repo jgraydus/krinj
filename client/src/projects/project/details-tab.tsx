@@ -3,13 +3,9 @@ import { EditText, EditTextarea } from 'react-edit-text'
 import 'react-edit-text/dist/index.css'
 import styled from 'styled-components'
 
-import api from '../../api'
 import Loading from '../../components/loading'
 import MdEditor from '../../components/md-editor'
-import { updateProject } from '../../redux/actions'
-import { projectSelector } from '../../redux/selectors'
-import { loadProject } from '../../redux/actions'
-import { useDispatch, useSelector } from '../../hooks'
+import { loadProject, selectProject, useDispatch, updateProject, useSelector } from '../../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -32,20 +28,17 @@ const Root = styled.div`
   }
 `
 
-const save =
-    ({ projectId, name }: { projectId: ProjectId, name: string }, dispatch: any) =>
+const save = ({ projectId, name }: { projectId: ProjectId, name: string }, dispatch: any) =>
     ({ value }: { value: string }) => {
-  dispatch(updateProject(projectId, [
-    { tag: name, contents: value },
-  ]));
-}
+        dispatch(updateProject(projectId, { projectName: name }));
+    }
 
 const View = ({ project, saveDescription, saveTitle }: { project: Project, saveDescription: any, saveTitle: any }) =>
   <Root>
     <div>Title</div>
     <EditText
       name="ProjectTitle"
-      defaultValue={project.title}
+      defaultValue={project.name}
       onSave={saveTitle}
     />
 
@@ -58,7 +51,7 @@ const View = ({ project, saveDescription, saveTitle }: { project: Project, saveD
 
 export default ({ projectId }: { projectId: ProjectId }) => {
   const dispatch = useDispatch();
-  const project = useSelector(projectSelector(projectId));
+  const project = useSelector(state => selectProject(state, projectId));
 
   useEffect(() => { dispatch(loadProject(projectId)) }, [projectId]);
 
