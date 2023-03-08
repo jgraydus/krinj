@@ -45,15 +45,15 @@ getProjectHandler projectId = do
 type CreateProject = "projects" :> ReqBody '[JSON] CreateProjectReqBody :> Post '[JSON] Project
 
 data CreateProjectReqBody = CreateProjectReqBody
-  { projectName :: ProjectName
-  , projectDescription :: ProjectDescription
+  { name :: ProjectName
+  , description :: ProjectDescription
   }
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON, ToJSON) 
 
 createProjectHandler :: RouteHandler CreateProject
 createProjectHandler CreateProjectReqBody {..} = do
-  result <- createProject projectName projectDescription
+  result <- createProject name description
   case result of
     Left _ -> undefined  -- TODO map errors into ServantError
     Right project -> pure project
@@ -66,15 +66,15 @@ type UpdateProject =
   :> Patch '[JSON] Project
 
 data UpdateProjectReqBody = UpdateProjectReqBody
-  { projectName :: Maybe ProjectName
-  , projectDescription :: Maybe ProjectDescription
+  { name :: Maybe ProjectName
+  , description :: Maybe ProjectDescription
   }
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON, ToJSON) 
 
 updateProjectHandler :: RouteHandler UpdateProject
 updateProjectHandler projectId UpdateProjectReqBody {..} = do
-  result <- updateProject projectId projectName projectDescription
+  result <- updateProject projectId name description
   case result of
     Left _ -> undefined  -- TODO map errors into ServantError
     Right project -> pure project

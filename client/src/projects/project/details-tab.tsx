@@ -27,12 +27,6 @@ const Root = styled.div`
     border: 1px solid #AAA;
   }
 `
-
-const save = ({ projectId, name }: { projectId: ProjectId, name: string }, dispatch: any) =>
-    ({ value }: { value: string }) => {
-        dispatch(updateProject(projectId, { projectName: name }));
-    }
-
 const View = ({ project, saveDescription, saveTitle }: { project: Project, saveDescription: any, saveTitle: any }) =>
   <Root>
     <div>Title</div>
@@ -56,11 +50,15 @@ export default ({ projectId }: { projectId: ProjectId }) => {
   useEffect(() => { dispatch(loadProject(projectId)) }, [projectId]);
 
   const saveTitle = useCallback(
-      save({ projectId, name: 'ProjectTitle' }, dispatch),
+      ({ value }: { value: string }) => {
+          dispatch(updateProject(projectId, { projectName: value || 'ProjectTitle' }));
+      },
       [projectId]
   )
   const saveDescription = useCallback(
-      (value: string) => save({ projectId, name: 'ProjectDescription' }, dispatch)({ value }),
+      (value: string) => {
+          dispatch(updateProject(projectId, { projectDescription: value || '' }));
+      },
       [projectId]
   );
 
@@ -70,3 +68,4 @@ export default ({ projectId }: { projectId: ProjectId }) => {
 
   return <View project={project} saveDescription={saveDescription} saveTitle={saveTitle} />
 }
+

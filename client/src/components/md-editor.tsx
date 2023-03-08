@@ -35,23 +35,25 @@ const Textarea = styled.textarea`
   border: none;
 `
 
+enum EditorMode { Write, Preview }
+
 export default ({ onSave, initialValue }: { onSave: (arg: string) => void, initialValue?: string }) => {
     const [markdown, setMarkdown] = useState(initialValue || '');
-    const [mode, setMode] = useState('preview');
+    const [mode, setMode] = useState(EditorMode.Preview);
 
     const toggleMode = useCallback(() => {
-        if (mode === 'preview') {
-            setMode('write');
+        if (mode === EditorMode.Preview) {
+            setMode(EditorMode.Write);
         } else {
-            setMode('preview');
-            onSave(markdown)
+            onSave(markdown);
+            setMode(EditorMode.Preview);
         }
-    }, [markdown]);
+    }, [markdown, mode, setMode]);
 
     return (
       <Root>
         <Editor>
-          {mode === 'preview' ? (
+          {mode === EditorMode.Preview ? (
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {markdown}
             </ReactMarkdown>
@@ -63,7 +65,7 @@ export default ({ onSave, initialValue }: { onSave: (arg: string) => void, initi
           )}
         </Editor>
         <button onClick={toggleMode}>
-          {mode === 'preview' ? "Edit" : "Preview (save changes)"}
+          {mode === EditorMode.Preview ? "Edit" : "Preview (save changes)"}
         </button>
       </Root>
     );
