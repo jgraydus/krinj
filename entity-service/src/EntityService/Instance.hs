@@ -15,7 +15,8 @@ import GHC.Records (getField, HasField)
 
 type Reqs r m = ( Monad m
                 , MonadIO m
-                , MonadReader r m, HasField "databaseConnectionPool" r (Pool Connection)
+                , MonadReader r m
+                , HasField "databaseConnectionPool" r (Pool Connection)
                 )
 
 withConnection :: Reqs r m => (Connection -> IO a) -> m a
