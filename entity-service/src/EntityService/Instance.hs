@@ -134,3 +134,25 @@ instance Reqs r m => EntityService m where
     withConnection $ \conn ->
       Query.getAttributes conn entityId
 
+-- | Relationships
+
+  createRelationship :: EntityId -> EntityId -> RelationshipType -> m (Result Relationship)
+  createRelationship subjectId objectId relationshipType =
+    withConnection $ \conn ->
+      Command.createRelationship conn subjectId objectId relationshipType
+
+  deleteRelationship :: RelationshipId -> m (Result ())
+  deleteRelationship relationshipId =
+    withConnection $ \conn ->
+      Command.deleteRelationship conn relationshipId
+
+  getRelationship :: RelationshipId -> m (Result Relationship)
+  getRelationship relationshipId =
+    withConnection $ \conn ->
+      Query.getRelationship conn relationshipId
+
+  getRelationships :: EntityId -> m (Result [Relationship])
+  getRelationships entityId = 
+    withConnection $ \conn ->
+      Query.getRelationships conn entityId
+

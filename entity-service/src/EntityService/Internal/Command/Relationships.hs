@@ -2,7 +2,6 @@ module EntityService.Internal.Command.Relationships (
     createRelationship, deleteRelationship
 ) where
 
-import Data.Text (Text)
 import Database.PostgreSQL.Simple (Connection)
 import EntityService.Internal
 import EntityService.Internal.Model
@@ -10,8 +9,8 @@ import GHC.Records (getField)
 import Opaleye
 
 -- |
-createRelationship :: Connection -> EntityId -> EntityId -> Text -> IO (Result Relationship)
-createRelationship conn subjectId objectId description = do
+createRelationship :: Connection -> EntityId -> EntityId -> RelationshipType -> IO (Result Relationship)
+createRelationship conn subjectId objectId relationshipType = do
   result <- runInsert conn insert
   pure $ case result of
     relationship : _ -> Right relationship
@@ -19,7 +18,7 @@ createRelationship conn subjectId objectId description = do
   where
     insert = Insert
       { iTable = relationshipsTable
-      , iRows = [RelationshipsRowT Nothing (toFields subjectId) (toFields objectId) (toFields description)]
+      , iRows = [RelationshipsRowT Nothing (toFields subjectId) (toFields objectId) (toFields relationshipType)]
       , iReturning = rReturning id
       , iOnConflict = Nothing
       }

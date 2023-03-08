@@ -2,7 +2,6 @@
 module EntityService.Internal.Model.Relationships where
 
 import Data.Profunctor.Product.TH
-import Data.Text (Text)
 import EntityService.Internal.Model.Newtypes
 import Opaleye
 
@@ -27,5 +26,5 @@ relationshipsTable = table "relationships" $
   , relationship   = tableField "relationship"
   }
 
-type Relationship = RelationshipsRowT RelationshipId EntityId EntityId Text
+type Relationship = RelationshipsRowT RelationshipId EntityId EntityId RelationshipType
 

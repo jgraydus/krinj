@@ -28,5 +28,8 @@ class Monad m => EntityService m where
   getAttribute     :: AttributeId -> m (Result Attribute)
   getAttributes    :: EntityId -> m (Result [Attribute])
   
-  -- TODO relationships
+  createRelationship :: EntityId -> EntityId -> RelationshipType -> m (Result Relationship)
+  deleteRelationship :: RelationshipId -> m (Result ())
+  getRelationship :: RelationshipId -> m (Result Relationship)
+  getRelationships :: EntityId -> m (Result [Relationship])
 

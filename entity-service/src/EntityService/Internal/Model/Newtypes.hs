@@ -88,3 +88,10 @@ newtype RelationshipId = RelationshipId UUID
 instance Default ToFields RelationshipId (Field SqlUuid) where
   def = toToFields (sqlUUID . coerce)
 
+newtype RelationshipType = RelationshipType Text
+  deriving stock (Generic, Show)
+  deriving newtype (DefaultFromField SqlText, Eq, FromJSON, Ord, ToJSON)
+
+instance Default ToFields RelationshipType (Field SqlText) where
+  def = toToFields (sqlStrictText . coerce)
+
