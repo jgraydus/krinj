@@ -11,7 +11,12 @@ import Network.Wai.Handler.Warp qualified as Warp
 import System.Exit (ExitCode(ExitFailure), exitSuccess, exitWith)
 
 connectInfo :: ConnectInfo
-connectInfo = defaultConnectInfo { connectPort = 15432 }
+connectInfo = defaultConnectInfo
+  { connectPort = 15432
+  , connectUser = "postgres"
+  , connectPassword = "password"
+  , connectDatabase = "main"
+  }
 
 main :: IO ()
 main = do
