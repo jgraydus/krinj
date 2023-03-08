@@ -14,8 +14,31 @@ interface Issue {
     attributes: any,
 }
 
+type EntityTypeId = string
 
+interface EntityType {
+    entityTypeId: EntityTypeId,
+    projectId: ProjectId,
+    name: string,
+    descriptor: any
+}
 
+type EntityId = string
+
+interface Entity {
+    entityId: EntityId,
+    projectId: ProjectId,
+    entityTypeId: EntityTypeId
+}
+
+type AttributeId = string
+
+interface Attribute {
+    attributeId: AttributeId,
+    entityId: EntityId,
+    name: string,
+    value: any
+}
 
 
 
