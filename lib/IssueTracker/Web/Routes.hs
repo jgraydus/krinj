@@ -1,14 +1,15 @@
 module IssueTracker.Web.Routes where
 
+import IssueTracker.Web.Routes.EntityTypes
 import IssueTracker.Web.Routes.Projects
 import IssueTracker.Web.Routes.Site
 import IssueTracker.Web.RouteHandler
 import Servant
 
-type API = "api" :> ProjectsAPI
+type API = "api" :> (ProjectsApi :<|> EntityTypesApi)
 
 apiHandler :: RouteHandler API
-apiHandler = projectsAPIHandler
+apiHandler = projectsApiHandler :<|> entityTypesApiHandler
 
 type APIAndSite = API :<|> Site
 

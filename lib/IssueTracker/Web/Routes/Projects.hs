@@ -6,15 +6,17 @@ import GHC.Generics (Generic)
 import IssueTracker.Web.RouteHandler
 import Servant
 
-type ProjectsAPI =
+type ProjectsApi =
+  "projects" :> (
        GetProjects
   :<|> GetProject
   :<|> CreateProject
   :<|> UpdateProject
   :<|> DeleteProject
+  )
 
-projectsAPIHandler :: RouteHandler ProjectsAPI
-projectsAPIHandler =
+projectsApiHandler :: RouteHandler ProjectsApi
+projectsApiHandler =
        getProjectsHandler
   :<|> getProjectHandler
   :<|> createProjectHandler
@@ -22,7 +24,7 @@ projectsAPIHandler =
   :<|> deleteProjectHandler
 
 -----------------------------------------------------------------------------------------
-type GetProjects = "projects" :> Get '[JSON] [Project]
+type GetProjects = Get '[JSON] [Project]
 
 getProjectsHandler :: RouteHandler GetProjects
 getProjectsHandler = do
@@ -32,7 +34,7 @@ getProjectsHandler = do
     Right projects -> pure projects
 
 -----------------------------------------------------------------------------------------
-type GetProject = "projects" :> Capture "projectId" ProjectId :> Get '[JSON] Project
+type GetProject = Capture "projectId" ProjectId :> Get '[JSON] Project
 
 getProjectHandler :: RouteHandler GetProject
 getProjectHandler projectId = do
@@ -42,7 +44,7 @@ getProjectHandler projectId = do
     Right project -> pure project
 
 -----------------------------------------------------------------------------------------
-type CreateProject = "projects" :> ReqBody '[JSON] CreateProjectReqBody :> Post '[JSON] Project
+type CreateProject = ReqBody '[JSON] CreateProjectReqBody :> Post '[JSON] Project
 
 data CreateProjectReqBody = CreateProjectReqBody
   { name :: ProjectName
@@ -60,8 +62,7 @@ createProjectHandler CreateProjectReqBody {..} = do
 
 -----------------------------------------------------------------------------------------
 type UpdateProject =
-  "projects"
-  :> Capture "projectId" ProjectId
+     Capture "projectId" ProjectId
   :> ReqBody '[JSON] UpdateProjectReqBody
   :> Patch '[JSON] Project
 
@@ -80,7 +81,7 @@ updateProjectHandler projectId UpdateProjectReqBody {..} = do
     Right project -> pure project
 
 -----------------------------------------------------------------------------------------
-type DeleteProject = "projects" :> Capture "projectId" ProjectId :> Delete '[JSON] ()
+type DeleteProject = Capture "projectId" ProjectId :> Delete '[JSON] ()
 
 deleteProjectHandler :: RouteHandler DeleteProject
 deleteProjectHandler projectId = do
