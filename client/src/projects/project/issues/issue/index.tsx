@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -5,7 +6,7 @@ import styled from 'styled-components'
 import InlineEdit from '../../../../components/inline-edit'
 import Loading from '../../../../components/loading'
 import MdEditor from '../../../../components/md-editor'
-import { loadIssue, useDispatch, useSelector, updateIssue, selectIssue } from '../../../../redux'
+import { loadEntity, selectEntity, updateEntity, useDispatch, useSelector } from '../../../../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -63,24 +64,24 @@ const BackButton = styled(({ className, onClick }) =>
 export default () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { issueId, projectId }: any = useParams()
-  const issue: Issue | null = useSelector(state => selectIssue(state, issueId))
+  const { entityId, projectId }: any = useParams()
+  const issue: Entity | null = useSelector(state => selectEntity(state, entityId))
 
   useEffect(() => {
-    dispatch(loadIssue(issueId));
-  }, [issueId]);
+    dispatch(loadEntity(entityId));
+  }, [entityId]);
 
   const back = useCallback(() => {
     navigate(`/projects/${projectId}/issues`);
   }, [projectId]);
 
   const updateName = useCallback((name: string) => {
-    dispatch(updateIssue(issueId, [{ tag: 'Title', contents: name }]));
-  }, [issueId]);
+    dispatch(updateEntity(entityId, [{ tag: 'Title', contents: name }]));
+  }, [entityId]);
 
   const updateDescription = useCallback((desc: string) => {
-    dispatch(updateIssue(issueId, [{ tag: 'Description', contents: desc }]));
-  }, [issueId]);
+    dispatch(updateEntity(entityId, [{ tag: 'Description', contents: desc }]));
+  }, [entityId]);
 
   return issue ? (
     <Root>
@@ -90,37 +91,53 @@ export default () => {
 
       <Row>
         <Label>Name</Label>
-        <Cell><InlineEdit initialValue={issue.attributes['title'] || '--'} onSave={updateName} /></Cell>
+        <Cell>
+         <InlineEdit
+           initialValue={R.pathOr('--', ['attributes', 'title', 'value'], issue)}
+           onSave={updateName} />
+        </Cell>
       </Row>
 
       <Row>
         <Label>State</Label>
-        <Cell><InlineEdit initialValue={issue.attributes['state'] || '--'} onSave={console.log}/></Cell>
+        <Cell>
+          <InlineEdit
+            initialValue={R.pathOr('--', ['attributes', 'state', 'value'], issue)}
+            onSave={console.log}/>
+        </Cell>
       </Row>
 
       <Row>
         <Label>Assignee</Label>
-        <Cell><InlineEdit initialValue={issue.attributes['assignee'] || '--'} onSave={console.log}/></Cell>
+        <Cell>
+          <InlineEdit
+            initialValue={R.pathOr('--', ['attributes', 'assignee', 'value'], issue)}
+            onSave={console.log}/>
+        </Cell>
       </Row>
 
       <BigRow>
         <Label>Description</Label>
-        <BigCell><MdEditor initialValue={issue.attributes['description'] || '--'} onSave={updateDescription} /></BigCell>
+        <BigCell>
+          <MdEditor
+            initialValue={R.pathOr('--', ['attributes', 'description', 'value'], issue)}
+            onSave={updateDescription} />
+        </BigCell>
       </BigRow>
 
       <Row>
         <Label>Owner</Label>
-        <Cell>{issue.attributes['owner'] || '--'}</Cell>
+        <Cell>{R.pathOr('--', ['attributes', 'owner', 'value'], issue)}</Cell>
       </Row>
 
       <Row>
         <Label>Created</Label>
-        <Cell>{issue.attributes['createdAt'] || '--'}</Cell>
+        <Cell>{R.pathOr('--', ['attributes', 'createdAt', 'value'], issue)}</Cell>
       </Row>
       
       <Row>
         <Label>Last Updated</Label>
-        <Cell>{issue.attributes['updatedAt'] || '--'}</Cell>
+        <Cell>{R.pathOr('--', ['attributes', 'updatedAt', 'value'], issue)}</Cell>
       </Row>
     </Root>
   ) : <Loading />

@@ -2,14 +2,14 @@ module EntityService.Internal.Util (
     groupBy, indexBy
 ) where
 
-import Data.Map (Map)
-import Data.Map qualified as Map
+import Data.Map.Strict (Map)
+import Data.Map.Strict qualified as Map
 
-groupBy :: Ord k => [v] -> (v -> k) -> Map k [v]
-groupBy vs f = (Map.unionsWith (<>) . fmap g) vs
+groupBy :: Ord k => (v -> k) -> [v] -> Map k [v]
+groupBy f = Map.unionsWith (<>) . fmap g
   where g v = Map.singleton (f v) [v]
 
-indexBy :: Ord k => [v] -> (v -> k) -> Map k v
-indexBy vs f = (Map.fromList . map g) vs
+indexBy :: Ord k => (v -> k) -> [v] -> Map k v
+indexBy f = Map.fromList . map g
   where g x = (f x, x)
 

@@ -4,7 +4,7 @@ import * as A from './action-types'
 
 const init: RootState = {
     projects: {},
-    issues: {},
+    entities: {},
 }
 
 const projectsReducer = {
@@ -25,31 +25,38 @@ const projectsReducer = {
     }),
 }
 
-/*
-const issuesReducer = {
-    [A.LOAD_ISSUES]: (
+
+const entitiesReducer = {
+    [A.LOAD_ENTITIES]: (
         state: RootState,
-        { payload: { projectId, issues } }: { payload: { projectId : ProjectId, issues: Array<Issue> }}
-    ) => R.set(
-      R.compose(projectsLens, R.lensProp(projectId), issuesLens),
-      R.indexBy(R.prop('issueId'), issues),
-      state
-    ),
-    [A.UPDATE_ISSUE]: (state: RootState, { payload: issue }: { payload: Issue }) => R.over(
-      R.compose(projectsLens, R.lensProp(issue.projectId), issuesLens),
-      R.mergeLeft({ [issue.issueId]: issue }),
-      state
-    ),
-    [A.DELETE_ISSUE]: (
+        { payload: { projectId, entities } }: { payload: { projectId : ProjectId, entities: Array<Entity> }}
+    ) =>({ 
+        ...state,
+        entities: R.indexBy(R.prop('entityId'), entities),
+    }),
+    [A.LOAD_ENTITY]: (state: RootState, { payload: entity }: { payload: Entity }) => ({
+        ...state,
+        entities: {
+            ...state.entities,
+            [entity.entityId]: entity,
+        },
+    }),
+    [A.UPDATE_ENTITY]: (state: RootState, { payload: entity }: { payload: Entity }) => ({
+        ...state,
+        entities: {
+            ...state.entities,
+            [entity.entityId]: entity,
+        },
+    }),
+    [A.DELETE_ENTITY]: (
         state: RootState,
-        { payload: { projectId, issueId } }: { payload: { projectId: ProjectId, issueId: IssueId } }
-    ) => R.over(
-      R.compose(projectsLens, R.lensProp(projectId), issuesLens),
-      R.omit([issueId]),
-      state
-    )
+        { payload: { projectId, entityId } }: { payload: { projectId: ProjectId, entityId: EntityId } }
+    ) => ({
+        ...state,
+        entities: R.omit([entityId], state.entities),
+    })
 }
-*/
+
 
 const reducer = (state: RootState = init, action: AnyAction) => R.pathOr(
   (state: RootState, action: AnyAction) => {
@@ -62,7 +69,7 @@ const reducer = (state: RootState = init, action: AnyAction) => R.pathOr(
   [action.type],  
   {
       ...projectsReducer,
-      // ...issuesReducer
+      ...entitiesReducer
   }
 )(state, action)
 

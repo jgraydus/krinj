@@ -4,6 +4,7 @@ module EntityService.Instance where
 
 import Control.Monad.IO.Class (liftIO, MonadIO)
 import Control.Monad.Reader (asks, MonadReader)
+import Data.Map (Map)
 import Data.Pool (Pool, withResource)
 import Database.PostgreSQL.Simple (Connection)
 import EntityService.Class
@@ -75,10 +76,10 @@ instance Reqs r m => EntityService m where
     withConnection $ \conn ->
       Query.getEntityType conn entityTypeId
 
-  getEntityTypes :: ProjectId -> m (Result [EntityType])
-  getEntityTypes projectId =
+  getEntityTypes :: [ProjectId] -> m (Result (Map ProjectId [EntityType]))
+  getEntityTypes projectIds =
     withConnection $ \conn ->
-      Query.getEntityTypes conn projectId
+      Query.getEntityTypes conn projectIds
 
   -- Entities
 
@@ -129,10 +130,10 @@ instance Reqs r m => EntityService m where
     withConnection $ \conn ->
       Query.getAttribute conn attributeId
 
-  getAttributes :: EntityId -> m (Result [Attribute])
-  getAttributes entityId =
+  getAttributes :: [EntityId] -> m (Result (Map EntityId [Attribute]))
+  getAttributes entityIds =
     withConnection $ \conn ->
-      Query.getAttributes conn entityId
+      Query.getAttributes conn entityIds
 
 -- | Relationships
 

@@ -1,7 +1,7 @@
 {-# LANGUAGE DerivingVia #-}
 module EntityService.Internal.Model.Newtypes where
 
-import Data.Aeson (FromJSON, ToJSON, Value)
+import Data.Aeson (FromJSON, ToJSON, ToJSONKey, Value)
 import Data.Coerce (coerce)
 import Data.Profunctor.Product.Default (Default(..))
 import Data.Text (Text)
@@ -69,7 +69,7 @@ instance Default ToFields AttributeId (Field SqlUuid) where
 
 newtype AttributeName = AttributeName Text
   deriving stock (Generic, Show)
-  deriving newtype (DefaultFromField SqlText, Eq, FromJSON, Ord, ToJSON)
+  deriving newtype (DefaultFromField SqlText, Eq, FromJSON, Ord, ToJSON, ToJSONKey)
 
 instance Default ToFields AttributeName (Field SqlText) where
   def = toToFields (sqlStrictText . coerce)

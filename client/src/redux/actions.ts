@@ -4,6 +4,9 @@ import { store } from './store'
 type API = any
 type AppAction<T> = (dispatch: (arg: any) => typeof store.dispatch, getState: () => RootState, api: API) => Promise<T>;
 
+// --------------------------------------------------------------------------------------------
+// projects
+
 export const loadProjects: AppAction<void>
 = async (dispatch, _getState, api) => {
   const projects = await api.getProjects();
@@ -35,29 +38,49 @@ export const deleteProject: (projectId: ProjectId) => AppAction<any>
   dispatch({ type: A.DELETE_PROJECT, payload: projectId });
 }
 
-export const loadIssues: (projectId: ProjectId) => AppAction<void>
-= projectId => async (_dispatch, _getState, _api) => {
+// --------------------------------------------------------------------------------------------
+// entities
+
+export const loadEntities: (projectId: ProjectId) => AppAction<void>
+= projectId => async (dispatch, _getState, api) => {
+    const entities = await api.getEntities(projectId);
+    dispatch({ type: A.LOAD_ENTITIES, payload: entities });
+}
+
+export const loadEntity: (entityId: EntityId) => AppAction<void>
+= entityId => async (_dispatch, _getState, _api) => {
     // TODO
 }
 
-export const loadIssue: (issueId: IssueId) => AppAction<void>
-= issueId => async (_dispatch, _getState, _api) => {
+export const createEntity: (
+    projectId: ProjectId,
+    args: { entityTypeId: EntityTypeId, attributes: { [attributeName: string]: any } }
+) => AppAction<EntityId>
+= (projectId, args) => async (_dispatch, _getState, api) => {
+    const { entityId } = await api.createEntity(projectId, args);
+    return entityId
+}
+
+export const updateEntity: (entityId: EntityId, updates: any) => AppAction<void>
+= (entityId, update) => async (_dispatch, _getState, _api) => {
     // TODO
 }
 
-export const createIssue: (projectId: ProjectId, args: any) => AppAction<ProjectId>
-= projectId => async (_dispatch, _getState, _api) => {
-    // TODO
-    return "UNIMPLEMENTED"
-}
-
-export const updateIssue: (issueId: IssueId, updates: any) => AppAction<void>
-= (issueId, update) => async (_dispatch, _getState, _api) => {
+export const deleteEntity: (entityId: EntityId) => AppAction<void>
+= entityId => async (_dipatch, _getState, _api) => {
     // TODO
 }
 
-export const deleteIssue: (issueId: IssueId) => AppAction<void>
-= issueId => async (_dipatch, _getState, _api) => {
-    // TODO
-}
+// --------------------------------------------------------------------------------------------
+// attributes
+
+const loadAttributes = ""
+
+const loadAttribute = ""
+
+const createAttribute = ""
+
+const updateIssue = ""
+
+const deleteIssue = ""
 

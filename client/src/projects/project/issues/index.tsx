@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import Loading from '../../../components/loading'
-import { loadIssues, selectIssuesForProject, useDispatch, useSelector } from '../../../redux'
+import { loadEntities, selectEntitiesForProject, useDispatch, useSelector } from '../../../redux'
 import Table from './table'
 
 const NoIssues = styled(({ className }) => <div className={className}>No Issues</div>)`
@@ -14,7 +14,7 @@ const NoIssues = styled(({ className }) => <div className={className}>No Issues<
   align-items: center;
   justify-content: center;
 `
-const Content = ({ issues, projectId }: { issues: Array<Issue>, projectId: ProjectId }) => {
+const Content = ({ issues, projectId }: { issues: Array<Entity>, projectId: ProjectId }) => {
   if (issues == null) {
       return <Loading />;
   }
@@ -26,9 +26,9 @@ const Content = ({ issues, projectId }: { issues: Array<Issue>, projectId: Proje
 
 export default ({ projectId }: { projectId: ProjectId }) => {
   const dispatch = useDispatch();
-  const issues = useSelector(state => selectIssuesForProject(state, projectId));
+  const issues = useSelector(state => selectEntitiesForProject(state, projectId));
 
-  useEffect(() => { dispatch(loadIssues(projectId)); }, []);
+  useEffect(() => { dispatch(loadEntities(projectId)); }, []);
 
   return <Content issues={issues} projectId={projectId} />
 }

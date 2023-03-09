@@ -50,14 +50,14 @@ const Cell = styled.div<{ width: string }>`
   width: ${props => props.width};
 `
 
-const Row = ({ issue, onClick }: { issue: Issue, onClick: any }) =>
+const Row = ({ issue, onClick }: { issue: Entity, onClick: any }) =>
   <TableRow onClick={onClick}>
-    <Cell width="30%">{issue.attributes['title'] || '--'}</Cell>
-    <Cell width="20%">{issue.attributes['owner'] || '--'}</Cell>
-    <Cell width="20%">{issue.attributes['assignee'] || 'No assignee'}</Cell>
-    <Cell width="10%">{issue.attributes['state'] || '--'}</Cell>
-    <Cell width="10%">{issue.attributes['createdAt'] || '--'}</Cell>
-    <Cell width="10%">{issue.attributes['updatedAt'] || '--'}</Cell>
+    <Cell width="30%">{R.pathOr('--', ['attributes', 'title', 'value'], issue)}</Cell>
+    <Cell width="20%">{R.pathOr('--', ['attributes', 'owner', 'value'], issue)}</Cell>
+    <Cell width="20%">{R.pathOr('No assignee', ['attributes', 'assignee', 'value'], issue)}</Cell>
+    <Cell width="10%">{R.pathOr('--', ['attributes', 'state', 'value'], issue)}</Cell>
+    <Cell width="10%">{R.pathOr('--', ['attributes', 'createdAt', 'value'], issue)}</Cell>
+    <Cell width="10%">{R.pathOr('--', ['attributes', 'updatedAt', 'value'], issue)}</Cell>
   </TableRow>
 
 export default ({ issues, projectId }: { issues: Array<Issue>, projectId: ProjectId }) => {
@@ -76,9 +76,9 @@ export default ({ issues, projectId }: { issues: Array<Issue>, projectId: Projec
       {R.map(
         issue =>
           <Row
-            key={issue.issueId}
+            key={issue.entityId}
             issue={issue}
-            onClick={() => navigate(`/projects/${projectId}/issues/${issue.issueId}`)}
+            onClick={() => navigate(`/projects/${projectId}/issues/${issue.entityId}`)}
           />,
         issues
       )}

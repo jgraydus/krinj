@@ -2,10 +2,13 @@ module EntityService.Internal.Query.Attributes (
     getAttribute, getAttributes
 ) where
 
+import Data.Map.Strict (Map)
 import Database.PostgreSQL.Simple (Connection)
 import EntityService.Internal
 import EntityService.Internal.Model
-import Opaleye
+import EntityService.Internal.Util
+import GHC.Records (getField)
+import Opaleye hiding (groupBy)
 
 -- |
 getAttribute :: Connection -> AttributeId -> IO (Result Attribute)
@@ -21,11 +24,13 @@ getAttribute conn attributeId = do
       pure row
 
 -- |
-getAttributes :: Connection -> EntityId -> IO (Result [Attribute])
-getAttributes conn entityId = Right <$> runSelect conn select
+getAttributes :: Connection -> [EntityId] -> IO (Result (Map EntityId [Attribute]))
+getAttributes conn entityIds = do
+  attributes :: [Attribute] <- runSelect conn select
+  pure . Right $ groupBy (getField @"entityId") attributes
   where
     select = do
       row@(AttributesRowT _ entityId1 _ _) <- selectTable attributesTable
-      where_ $ entityId1 .== toFields entityId
+      where_ $ in_ (fmap toFields entityIds) entityId1
       pure row
 

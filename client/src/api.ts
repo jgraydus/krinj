@@ -115,6 +115,7 @@ const deleteAttribute = (attributeId: AttributeId): Promise<void> =>
         .then(x => x.data);
 
 export default {
+    getAttributes, getAttribute, createAttribute, updateAttribute, deleteAttribute,
     getEntities, getEntity, createEntity, updateEntity, deleteEntity,
     getEntityType, getEntityTypes, createEntityType, updateEntityType, deleteEntityType,
     getProjects, getProject, createProject, updateProject, deleteProject,

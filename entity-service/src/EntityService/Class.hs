@@ -1,5 +1,6 @@
 module EntityService.Class where
 
+import Data.Map (Map)
 import EntityService.Internal
 import EntityService.Internal.Model
 
@@ -14,7 +15,7 @@ class Monad m => EntityService m where
   updateEntityType :: EntityTypeId -> Maybe EntityTypeName -> Maybe EntityTypeDescriptor -> m (Result EntityType)
   deleteEntityType :: EntityTypeId -> m (Result ())
   getEntityType    :: EntityTypeId -> m (Result EntityType)
-  getEntityTypes   :: ProjectId -> m (Result [EntityType])
+  getEntityTypes   :: [ProjectId] -> m (Result (Map ProjectId [EntityType]))
 
   createEntity :: ProjectId -> EntityTypeId -> m (Result Entity)
   updateEntity :: EntityId -> Maybe ProjectId -> Maybe EntityTypeId -> m (Result Entity)
@@ -26,7 +27,7 @@ class Monad m => EntityService m where
   updateAttribute  :: AttributeId -> Maybe AttributeName -> Maybe AttributeValue -> m (Result Attribute)
   deleteAttribute  :: AttributeId -> m (Result ())
   getAttribute     :: AttributeId -> m (Result Attribute)
-  getAttributes    :: EntityId -> m (Result [Attribute])
+  getAttributes    :: [EntityId] -> m (Result (Map EntityId [Attribute]))
   
   createRelationship :: EntityId -> EntityId -> RelationshipType -> m (Result Relationship)
   deleteRelationship :: RelationshipId -> m (Result ())

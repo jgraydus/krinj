@@ -6,14 +6,6 @@ interface Project {
     description: string
 }
 
-type IssueId = string
-
-interface Issue {
-    issueId: EntityId,
-    projectId: ProjectId,
-    attributes: any,
-}
-
 type EntityTypeId = string
 
 interface EntityType {
@@ -21,14 +13,6 @@ interface EntityType {
     projectId: ProjectId,
     name: string,
     descriptor: any
-}
-
-type EntityId = string
-
-interface Entity {
-    entityId: EntityId,
-    projectId: ProjectId,
-    entityTypeId: EntityTypeId
 }
 
 type AttributeId = string
@@ -40,13 +24,25 @@ interface Attribute {
     value: any
 }
 
+type EntityId = string
+
+interface Entity {
+    entityId: EntityId,
+    projectId: ProjectId,
+    entityType: EntityType,
+    attributes: { [attributeName: string]: Attribute }
+}
+
+type Issue = Entity
+type IssueId = EntityId
+
 
 
 type ProjectsById = { [projectId: ProjectId]: Project }
-type IssuesById = { [issueId: IssueId]: Issue }
+type EntitiesById = { [entityId: EntityId]: Entity }
 
 interface RootState {
     projects: ProjectsById,
-    issues: IssuesById
+    entities: EntitiesById
 }
 

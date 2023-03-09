@@ -3,6 +3,7 @@ module IssueTracker.Web.Routes.Attributes (
 ) where
 
 import Data.Aeson (FromJSON, ToJSON)
+import Data.Map.Strict qualified as Map
 import EntityService
 import GHC.Generics (Generic)
 import IssueTracker.Web.RouteHandler
@@ -31,10 +32,10 @@ type GetAttributes = QueryParam "entityId" EntityId :> Get '[JSON] [Attribute]
 getAttributesHandler :: RouteHandler GetAttributes
 getAttributesHandler Nothing = error "TODO proper error. entityId required"
 getAttributesHandler (Just entityId) = do
-  result <- getAttributes entityId
+  result <- getAttributes [entityId]
   case result of
     Left _ -> error "TODO proper error"
-    Right attributes -> pure attributes
+    Right attributes -> pure $ Map.findWithDefault [] entityId attributes
 
 -----------------------------------------------------------------------------------------
 type GetAttribute = Capture "attributeId" AttributeId :> Get '[JSON] Attribute

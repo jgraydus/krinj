@@ -22,41 +22,41 @@ export const selectProject: (state: RootState, projectId: ProjectId) => Project 
     (projects: ProjectsById, projectId) => projects[projectId] || null
 );
 
-const selectIssuesById: (state: RootState) => IssuesById
+const selectEntitiesById: (state: RootState) => EntitiesById
 = createSelector(
-    (state: RootState) => state.issues,
-    (issuesById: IssuesById) => R.defaultTo({}, issuesById)
+    (state: RootState) => state.entities,
+    (entitiesById: EntitiesById) => R.defaultTo({}, entitiesById)
 );
 
-const selectAllIssues: (state: RootState) => Array<Issue>
+const selectAllEntities: (state: RootState) => Array<Entity>
 = createSelector(
-    (state: RootState) => state.issues,
-    (issuesById: IssuesById) => R.values(issuesById)
+    (state: RootState) => state.entities,
+    (entitiesById: EntitiesById) => R.values(entitiesById)
 );
 
-type IssuesByProjectId = { [projectId: ProjectId]: Array<Issue> }
+type EntitiesByProjectId = { [projectId: ProjectId]: Array<Entity> }
 
-const selectIssuesByProjectId: (state: RootState) => IssuesByProjectId
+const selectEntitiesByProjectId: (state: RootState) => EntitiesByProjectId
 = createSelector(
-    selectAllIssues,
-    (issues: Array<Issue>) => R.groupBy(issue => issue.projectId, issues)
+    selectAllEntities,
+    (entities: Array<Entity>) => R.groupBy(entity => entity.projectId, entities)
 );
 
-export const selectIssuesForProject: (state: RootState, projectId: ProjectId) => Array<Issue>
+export const selectEntitiesForProject: (state: RootState, projectId: ProjectId) => Array<Entity>
 = createSelector(
     [
-        selectIssuesByProjectId,
+        selectEntitiesByProjectId,
         (_state: RootState, projectId: ProjectId) => projectId
     ],
-    (issuesByProjectId: IssuesByProjectId, projectId: ProjectId) => issuesByProjectId[projectId] || []
+    (entitiesByProjectId: EntitiesByProjectId, projectId: ProjectId) => entitiesByProjectId[projectId] || []
 );
 
-export const selectIssue: (state: RootState, issueId: IssueId) => Issue | null
+export const selectEntity: (state: RootState, entityId: EntityId) => Entity | null
 = createSelector(
     [
-        selectIssuesById,
-        (_state: RootState, issueId: IssueId) => issueId
+        selectEntitiesById,
+        (_state: RootState, entityId: EntityId) => entityId
     ],
-    (issuesById: IssuesById, issueId: IssueId) => issuesById[issueId] || null
+    (entitiesById: EntitiesById, entityId: EntityId) => entitiesById[entityId] || null
 );
 

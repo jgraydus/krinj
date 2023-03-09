@@ -2,10 +2,13 @@ module EntityService.Internal.Query.EntityTypes (
     getEntityType, getEntityTypes
 ) where
 
+import Data.Map.Strict (Map)
 import Database.PostgreSQL.Simple (Connection)
 import EntityService.Internal
 import EntityService.Internal.Model
-import Opaleye
+import EntityService.Internal.Util (groupBy)
+import GHC.Records (getField)
+import Opaleye hiding (groupBy)
 
 -- |
 getEntityType :: Connection -> EntityTypeId -> IO (Result EntityType)
@@ -22,12 +25,15 @@ getEntityType conn entityTypeId = do
       pure row
 
 -- |
-getEntityTypes :: Connection -> ProjectId -> IO (Result [EntityType])
-getEntityTypes conn projectId = Right <$> runSelect conn select
+getEntityTypes :: Connection -> [ProjectId] -> IO (Result (Map ProjectId [EntityType]))
+getEntityTypes conn projectIds = do
+  entityTypes :: [EntityType] <- runSelect conn select
+  let entityTypesByProjectId = groupBy (getField @"projectId") entityTypes
+  pure $ Right entityTypesByProjectId
   where
     select :: Select EntityTypesRowR
     select = do
       row@(EntityTypesRowT _ projectId' _ _) <- selectTable entityTypesTable
-      where_ $ projectId' .== toFields projectId
+      where_ $ in_ (fmap toFields projectIds) projectId'
       pure row
-  
+ 

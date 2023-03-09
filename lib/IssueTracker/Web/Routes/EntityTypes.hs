@@ -3,6 +3,7 @@ module IssueTracker.Web.Routes.EntityTypes (
 ) where
 
 import Data.Aeson (FromJSON, ToJSON)
+import Data.Map.Strict qualified as Map
 import EntityService
 import GHC.Generics (Generic)
 import IssueTracker.Web.RouteHandler
@@ -31,10 +32,10 @@ type GetEntityTypes = QueryParam "projectId" ProjectId :> Get '[JSON] [EntityTyp
 getEntityTypesHandler :: RouteHandler GetEntityTypes
 getEntityTypesHandler Nothing = error "projectId is required"   -- TODO proper error response
 getEntityTypesHandler (Just projectId) = do
-  result <- getEntityTypes projectId
+  result <- getEntityTypes [projectId]
   case result of
     Left _ -> undefined  -- TODO map errors into ServantError
-    Right entityTypes -> pure entityTypes
+    Right entityTypes -> pure $ Map.findWithDefault [] projectId entityTypes
 
 -----------------------------------------------------------------------------------------
 type GetEntityType = Capture "entityTypeId" EntityTypeId :> Get '[JSON] EntityType
