@@ -34,7 +34,13 @@ export default ({ close, isOpen, project }: { close: any, isOpen: boolean, proje
   const [entityType, setEntityType] = useState(project.entityTypes[0]);
 
   const newIssue = useCallback(async () => {
-    const args = { entityTypeId: entityType.entityTypeId, attributes: { name } };
+    const args = {
+        entityTypeId: entityType.entityTypeId,
+        attributes: {
+            name,
+            state: 'OPEN',
+        }
+    };
     dispatch(createEntity(project.projectId, args));
     close()
   }, [name, project.projectId]);

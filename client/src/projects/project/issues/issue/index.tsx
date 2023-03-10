@@ -93,7 +93,7 @@ export default () => {
         <Label>Name</Label>
         <Cell>
          <InlineEdit
-           initialValue={R.pathOr('--', ['attributes', 'title', 'value'], issue)}
+           initialValue={R.pathOr('--', ['attributes', 'name', 'value'], issue)}
            onSave={updateName} />
         </Cell>
       </Row>

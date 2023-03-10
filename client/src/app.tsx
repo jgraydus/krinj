@@ -15,7 +15,7 @@ export default () =>
            <Route path="" element={<Project />} />
            <Route path="issues">
              <Route path="" element={<Issues />} />
-             <Route path=":issueId" element={<Issue />} />
+             <Route path=":entityId" element={<Issue />} />
            </Route>
          </Route>
        </Route>

@@ -85,8 +85,21 @@ const getEntity = (entityId: EntityId): Promise<Entity> =>
     axios.get(`/api/entities/${entityId}`)
         .then(x => x.data);
 
-const createEntity = (arg: { projectId: ProjectId, entityTypeId: EntityTypeId }): Promise<Entity> =>
-    axios.post('/api/entities', arg).then(x => x.data);
+const createEntity = (
+    projectId: ProjectId,
+    arg: {
+        entityTypeId: EntityTypeId,
+        attributes: Array<{ attributeName: AttributeName, attributeValue: AttributeValue }>
+    }
+): Promise<Entity> =>
+    axios.post('/api/entities', {
+        projectId,
+        entityTypeId: arg.entityTypeId,
+        attributes: R.map(
+            ({ attributeName, attributeValue }) => [attributeName, attributeValue],
+            arg.attributes
+        )
+    }).then(x => x.data);
 
 const updateEntity = (
     entityId: EntityId,

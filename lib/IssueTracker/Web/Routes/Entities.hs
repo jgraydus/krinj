@@ -2,6 +2,7 @@ module IssueTracker.Web.Routes.Entities (
     EntitiesApi, entitiesApiHandler
 ) where
 
+import Control.Monad.Except (ExceptT(..), runExceptT)
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Foldable (toList)
 import Data.Either (fromRight)
@@ -94,13 +95,17 @@ type CreateEntity = ReqBody '[JSON] CreateEntityReqBody :> Post '[JSON] Decorate
 data CreateEntityReqBody = CreateEntityReqBody
   { projectId :: ProjectId
   , entityTypeId :: EntityTypeId
+  , attributes :: [(AttributeName, AttributeValue)]
   }
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON, ToJSON)
 
 createEntityHandler :: RouteHandler CreateEntity
 createEntityHandler CreateEntityReqBody {..} = do
-  result <- createEntity projectId entityTypeId
+  result <- runExceptT $ do
+    entity <- ExceptT $ createEntity projectId entityTypeId
+    _ <- ExceptT $ createAttributes (getField @"entityId" entity) attributes
+    pure entity
   case result of
     Left _ -> error "TODO proper error response"
     Right entity -> decorateEntity entity

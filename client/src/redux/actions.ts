@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import * as A from './action-types'
 import { store } from './store'
 
@@ -35,7 +36,10 @@ export const createProject: (
   return project.projectId
 }
 
-export const updateProject: (projectId: ProjectId, arg: { projectName?: string, projectDescription?: string }) => AppAction<any>
+export const updateProject: (
+    projectId: ProjectId,
+    arg: { projectName?: string, projectDescription?: string }
+) => AppAction<any>
 = (projectId, arg) => async (dispatch, _getState, api) => {
   const project = await api.updateProject(projectId, arg);
   dispatch({ type: A.UPDATE_PROJECT, payload: project });
@@ -57,17 +61,29 @@ export const loadEntities: (projectId: ProjectId) => AppAction<void>
 }
 
 export const loadEntity: (entityId: EntityId) => AppAction<void>
-= entityId => async (_dispatch, _getState, _api) => {
-    // TODO
+= entityId => async (dispatch, _getState, api) => {
+    const entity = await api.getEntity(entityId);
+    dispatch({ type: A.LOAD_ENTITY, payload: entity });
 }
 
 export const createEntity: (
     projectId: ProjectId,
-    args: { entityTypeId: EntityTypeId, attributes: { [attributeName: string]: any } }
+    args: {
+        entityTypeId: EntityTypeId,
+        attributes: { [attributeName: string]: any }
+    }
 ) => AppAction<EntityId>
-= (projectId, args) => async (_dispatch, _getState, api) => {
-    const { entityId } = await api.createEntity({ projectId, entityTypeId: args.entityTypeId });
-    return entityId
+= (projectId, args) => async (dispatch, _getState, api) => {
+    const attributes = R.map(
+        ([ attributeName, attributeValue ]) => ({ attributeName, attributeValue }),
+        R.toPairs(args.attributes)
+    );
+    const entity = await api.createEntity(
+        projectId,
+        { entityTypeId: args.entityTypeId, attributes }
+    );
+    dispatch({ type: A.LOAD_ENTITY, payload: entity });
+    return entity.entityId
 }
 
 export const updateEntity: (entityId: EntityId, updates: any) => AppAction<void>

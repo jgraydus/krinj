@@ -52,7 +52,7 @@ const Cell = styled.div<{ width: string }>`
 
 const Row = ({ issue, onClick }: { issue: Entity, onClick: any }) =>
   <TableRow onClick={onClick}>
-    <Cell width="30%">{R.pathOr('--', ['attributes', 'title', 'value'], issue)}</Cell>
+    <Cell width="30%">{R.pathOr('--', ['attributes', 'name', 'value'], issue)}</Cell>
     <Cell width="20%">{R.pathOr('--', ['attributes', 'owner', 'value'], issue)}</Cell>
     <Cell width="20%">{R.pathOr('No assignee', ['attributes', 'assignee', 'value'], issue)}</Cell>
     <Cell width="10%">{R.pathOr('--', ['attributes', 'state', 'value'], issue)}</Cell>
