@@ -1,27 +1,34 @@
 type ProjectId = string
+type ProjectName = string
+type ProjectDescription = string
 
 interface Project {
     projectId: ProjectId,
-    name: string,
-    description: string
+    name: ProjectName,
+    description: ProjectDescription,
+    entityTypes: Array<EntityType>
 }
 
 type EntityTypeId = string
+type EntityTypeName = string
+type EntityTypeDescriptor = any
 
 interface EntityType {
     entityTypeId: EntityTypeId,
     projectId: ProjectId,
-    name: string,
-    descriptor: any
+    name: EntityTypeName,
+    descriptor: EntityTypeDescriptor
 }
 
 type AttributeId = string
+type AttributeName = string
+type AttributeValue = any
 
 interface Attribute {
     attributeId: AttributeId,
     entityId: EntityId,
-    name: string,
-    value: any
+    name: AttributeName,
+    value: AttributeValue
 }
 
 type EntityId = string
@@ -30,7 +37,7 @@ interface Entity {
     entityId: EntityId,
     projectId: ProjectId,
     entityType: EntityType,
-    attributes: { [attributeName: string]: Attribute }
+    attributes: { [attributeName: AttributeName]: Attribute }
 }
 
 type Issue = Entity

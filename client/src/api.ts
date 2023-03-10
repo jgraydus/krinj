@@ -13,10 +13,23 @@ const getProject = (projectId: ProjectId): Promise<Project> =>
         .then(x => x.data);
 
 const createProject = (
-    arg: { projectName: string, projectDescription: string }
+    arg: {
+        projectName: string,
+        projectDescription: string,
+        entityTypes: Array<{ entityTypeName: EntityTypeName, entityTypeDescriptor: EntityTypeDescriptor }>
+    }
 ): Promise<Project> =>
-    axios.post(`/api/projects`, { name: arg.projectName, description: arg.projectDescription })
-        .then(x => x.data);
+    axios.post(
+        `/api/projects`,
+        {
+            name: arg.projectName,
+            description: arg.projectDescription,
+            entityTypes: R.map(
+                ({ entityTypeName, entityTypeDescriptor}) => [entityTypeName, entityTypeDescriptor],
+                arg.entityTypes
+            )
+        }
+    ).then(x => x.data);
 
 const updateProject = (
     projectId: ProjectId,
@@ -73,7 +86,7 @@ const getEntity = (entityId: EntityId): Promise<Entity> =>
         .then(x => x.data);
 
 const createEntity = (arg: { projectId: ProjectId, entityTypeId: EntityTypeId }): Promise<Entity> =>
-    axios.post('/api/projects', arg).then(x => x.data);
+    axios.post('/api/entities', arg).then(x => x.data);
 
 const updateEntity = (
     entityId: EntityId,

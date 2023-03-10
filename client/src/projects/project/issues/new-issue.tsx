@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import api from '../../../api'
@@ -27,14 +28,16 @@ const Footer = styled.div`
   justify-content: flex-end;
 `
 
-export default ({ close, isOpen, projectId }: { close: any, isOpen: boolean, projectId: ProjectId }) => {
+export default ({ close, isOpen, project }: { close: any, isOpen: boolean, project: Project }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
+  const [entityType, setEntityType] = useState(project.entityTypes[0]);
 
   const newIssue = useCallback(async () => {
-    dispatch(createEntity(projectId, { entityTypeId: "", attributes: { name }})); // TODO entityTypeId
+    const args = { entityTypeId: entityType.entityTypeId, attributes: { name } };
+    dispatch(createEntity(project.projectId, args));
     close()
-  }, [name, projectId]);
+  }, [name, project.projectId]);
 
   return (
     <Modal isOpen={isOpen} close={close}>
@@ -45,6 +48,21 @@ export default ({ close, isOpen, projectId }: { close: any, isOpen: boolean, pro
             <div>Issue name</div>
             <InlineEdit onSave={setName} />
           </div>
+          <select
+            value={entityType.name}
+            onChange={(evt) => {
+              const value = evt.target.value;
+              const entityType = R.find(R.propEq('name', value), project.entityTypes);
+              if (entityType) {
+                  setEntityType(entityType);
+              }
+            }}
+          >
+            {R.map(
+                (entityType: EntityType) => <option key={entityType.entityTypeId}>{entityType.name}</option>,
+                project.entityTypes
+            )}
+          </select>
         </Content>
         <Footer>
           <button onClick={close}>Cancel</button>

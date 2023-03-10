@@ -1,5 +1,7 @@
 module IssueTracker.Web.Routes.Projects where
 
+import Control.Monad (forM_)
+import Control.Monad.Except (ExceptT(..), runExceptT)
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Either (fromRight)
 import Data.Foldable (toList)
@@ -82,13 +84,17 @@ type CreateProject = ReqBody '[JSON] CreateProjectReqBody :> Post '[JSON] Decora
 data CreateProjectReqBody = CreateProjectReqBody
   { name :: ProjectName
   , description :: ProjectDescription
+  , entityTypes :: [(EntityTypeName, EntityTypeDescriptor)]
   }
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON, ToJSON) 
 
 createProjectHandler :: RouteHandler CreateProject
 createProjectHandler CreateProjectReqBody {..} = do
-  result <- createProject name description
+  result <- runExceptT $ do
+    project <- ExceptT $ createProject name description
+    forM_ entityTypes $ ExceptT . uncurry (createEntityType project.projectId)
+    pure project
   case result of
     Left _ -> undefined  -- TODO map errors into ServantError
     Right project -> decorateProject project

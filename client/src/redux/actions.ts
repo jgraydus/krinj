@@ -19,9 +19,18 @@ export const loadProject: (projectId: ProjectId) => AppAction<void>
   dispatch({ type: A.UPDATE_PROJECT, payload: project });
 }
 
-export const createProject: (arg: { projectName: string, projectDescription: string }) => AppAction<ProjectId>
+export const createProject: (
+    arg: {
+        projectName: string,
+        projectDescription: string,
+    }
+) => AppAction<ProjectId>
 = arg => async (dispatch, _getState, api) => {
-  const project = await api.createProject(arg);
+  const entityTypes = [
+      { entityTypeName: "ISSUE", entityTypeDescriptor: {} },
+      { entityTypeName: "TASK", entityTypeDescriptor: {} },
+  ]
+  const project = await api.createProject({ ...arg, entityTypes });
   dispatch({ type: A.UPDATE_PROJECT, payload: project });
   return project.projectId
 }
@@ -44,7 +53,7 @@ export const deleteProject: (projectId: ProjectId) => AppAction<any>
 export const loadEntities: (projectId: ProjectId) => AppAction<void>
 = projectId => async (dispatch, _getState, api) => {
     const entities = await api.getEntities(projectId);
-    dispatch({ type: A.LOAD_ENTITIES, payload: entities });
+    dispatch({ type: A.LOAD_ENTITIES, payload: { projectId, entities } });
 }
 
 export const loadEntity: (entityId: EntityId) => AppAction<void>
@@ -57,7 +66,7 @@ export const createEntity: (
     args: { entityTypeId: EntityTypeId, attributes: { [attributeName: string]: any } }
 ) => AppAction<EntityId>
 = (projectId, args) => async (_dispatch, _getState, api) => {
-    const { entityId } = await api.createEntity(projectId, args);
+    const { entityId } = await api.createEntity({ projectId, entityTypeId: args.entityTypeId });
     return entityId
 }
 

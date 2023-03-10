@@ -69,18 +69,22 @@ const View = ({ selectedTab }: { selectedTab: ProjectPageTab } ) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { projectId }: any = useParams();
-  const project = useSelector(state => selectProject(state, projectId));
+  const project: Project | null = useSelector(state => selectProject(state, projectId));
 
   useEffect(() => {
     dispatch(loadProject(projectId));
   }, [projectId]);
+
+  if (project === null) {
+      return null;
+  }
 
   const tab = (() => {
     if (selectedTab === ProjectPageTab.Details) {
       return <DetailsTab projectId={projectId} />
     }
     if (selectedTab === ProjectPageTab.Issues) {
-      return <IssuesTab projectId={projectId} />
+      return <IssuesTab project={project} />
     }
   })()
 

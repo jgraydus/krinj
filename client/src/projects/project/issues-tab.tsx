@@ -20,7 +20,7 @@ const NewIssueButton = styled(({ className, onClick }) =>
  padding: 5px;
 `
 
-export default ({ projectId }: { projectId: ProjectId }) => {
+export default ({ project }: { project: Project }) => {
   const [newIssueModalIsOpen, setNewIssueModalIsOpen] = useState(false);
 
   const closeNewIssueModal = useCallback(() => setNewIssueModalIsOpen(false), [setNewIssueModalIsOpen]);
@@ -29,11 +29,11 @@ export default ({ projectId }: { projectId: ProjectId }) => {
   return (
     <Root>
       <NewIssueButton onClick={openNewIssueModal} />
-      <IssuesTable projectId={projectId} />
+      <IssuesTable projectId={project.projectId} />
       <NewIssueModal
         close={closeNewIssueModal}
         isOpen={newIssueModalIsOpen}
-        projectId={projectId}
+        project={project}
       />
     </Root>
   )
