@@ -46,6 +46,7 @@ library
         product-profunctors,
         resource-pool,
         text,
+        time,
         uuid
     hs-source-dirs:   src
     default-language: GHC2021

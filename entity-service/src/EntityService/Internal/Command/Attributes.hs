@@ -11,7 +11,7 @@ import Opaleye
 createAttributes :: Connection -> EntityId -> [(AttributeName, AttributeValue)] -> IO (Result [Attribute])
 createAttributes conn entityId args = Right <$> runInsert conn insert
   where
-    toRow (name, value) = AttributesRowT (toFields entityId) (toFields name) (toFields value)
+    toRow (name, value) = AttributesRowT (toFields entityId) (toFields name) (toFields value) Nothing Nothing
     insert = Insert
       { iTable = attributesTable
       , iRows = map toRow args

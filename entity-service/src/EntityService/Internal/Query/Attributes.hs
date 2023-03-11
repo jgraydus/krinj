@@ -19,7 +19,7 @@ getAttribute conn entityId attributeName = do
     _             -> Left NotFound
   where
     select = do
-      row@(AttributesRowT entityId' attributeName' _) <- selectTable attributesTable
+      row@(AttributesRowT entityId' attributeName' _ _ _) <- selectTable attributesTable
       where_ $ entityId' .== toFields entityId .&& attributeName' .== toFields attributeName
       pure row
 
@@ -30,7 +30,7 @@ getAttributes conn entityIds = do
   pure . Right $ groupBy (getField @"entityId") attributes
   where
     select = do
-      row@(AttributesRowT entityId1 _ _) <- selectTable attributesTable
+      row@(AttributesRowT entityId1 _ _ _ _) <- selectTable attributesTable
       where_ $ in_ (fmap toFields entityIds) entityId1
       pure row
 

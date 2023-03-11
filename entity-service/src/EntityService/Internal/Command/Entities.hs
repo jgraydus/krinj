@@ -17,7 +17,7 @@ createEntity conn projectId entityTypeId = do
   where
     insert = Insert
       { iTable = entitiesTable
-      , iRows = [EntitiesRowT Nothing (toFields projectId) (toFields entityTypeId)]
+      , iRows = [EntitiesRowT Nothing (toFields projectId) (toFields entityTypeId) Nothing Nothing]
       , iReturning = rReturning id
       , iOnConflict = Nothing
       }

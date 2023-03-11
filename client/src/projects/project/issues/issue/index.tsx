@@ -93,7 +93,7 @@ export default () => {
         <Label>Name</Label>
         <Cell>
          <InlineEdit
-           initialValue={R.pathOr('--', ['attributes', 'name', 'value'], issue)}
+           initialValue={R.pathOr('--', ['attributes', 'name'], issue)}
            onSave={updateName} />
         </Cell>
       </Row>
@@ -102,7 +102,7 @@ export default () => {
         <Label>State</Label>
         <Cell>
           <InlineEdit
-            initialValue={R.pathOr('--', ['attributes', 'state', 'value'], issue)}
+            initialValue={R.pathOr('--', ['attributes', 'state'], issue)}
             onSave={console.log}/>
         </Cell>
       </Row>
@@ -111,7 +111,7 @@ export default () => {
         <Label>Assignee</Label>
         <Cell>
           <InlineEdit
-            initialValue={R.pathOr('--', ['attributes', 'assignee', 'value'], issue)}
+            initialValue={R.pathOr('--', ['attributes', 'assignee'], issue)}
             onSave={console.log}/>
         </Cell>
       </Row>
@@ -120,24 +120,24 @@ export default () => {
         <Label>Description</Label>
         <BigCell>
           <MdEditor
-            initialValue={R.pathOr('--', ['attributes', 'description', 'value'], issue)}
+            initialValue={R.pathOr('--', ['attributes', 'description'], issue)}
             onSave={updateDescription} />
         </BigCell>
       </BigRow>
 
       <Row>
         <Label>Owner</Label>
-        <Cell>{R.pathOr('--', ['attributes', 'owner', 'value'], issue)}</Cell>
+        <Cell>{R.pathOr('--', ['attributes', 'owner'], issue)}</Cell>
       </Row>
 
       <Row>
         <Label>Created</Label>
-        <Cell>{R.pathOr('--', ['attributes', 'createdAt', 'value'], issue)}</Cell>
+        <Cell>{R.pathOr('--', ['attributes', 'createdAt'], issue)}</Cell>
       </Row>
       
       <Row>
         <Label>Last Updated</Label>
-        <Cell>{R.pathOr('--', ['attributes', 'updatedAt', 'value'], issue)}</Cell>
+        <Cell>{R.pathOr('--', ['attributes', 'modifiedAt'], issue)}</Cell>
       </Row>
     </Root>
   ) : <Loading />

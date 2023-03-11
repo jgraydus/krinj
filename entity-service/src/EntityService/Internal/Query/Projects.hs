@@ -17,7 +17,7 @@ getProject conn (ProjectId projectId) = do
     _           -> Left NotFound 
   where
     select = do
-      row@(ProjectsRowT projectId1 _ _) <- selectTable projectsTable
+      row@(ProjectsRowT projectId1 _ _ _ _) <- selectTable projectsTable
       where_ $ projectId1 .== toFields projectId
       pure row
 

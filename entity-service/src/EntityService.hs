@@ -1,6 +1,6 @@
 module EntityService (
     EntityService(..)
-  , Attribute, AttributeName, AttributeValue, AttributesRowT(..)
+  , Attribute, AttributeName(..), AttributeValue(..), AttributesRowT(..)
   , Entity, EntityId, EntitiesRowT(..)
   , EntityType, EntityTypeId, EntityTypeName, EntityTypeDescriptor, EntityTypesRowT(..)
   , Project, ProjectId, ProjectName, ProjectDescription, ProjectsRowT(..)

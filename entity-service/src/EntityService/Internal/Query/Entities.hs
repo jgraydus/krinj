@@ -16,7 +16,7 @@ getEntity conn entityId = do
     _          -> Left NotFound
   where
     select = do
-      row@(EntitiesRowT entityId1 _ _) <- selectTable entitiesTable
+      row@(EntitiesRowT entityId1 _ _ _ _) <- selectTable entitiesTable
       where_ $ (entityId1 .== toFields entityId)
       pure row
 
@@ -25,7 +25,7 @@ getEntities :: Connection -> ProjectId -> IO (Result [Entity])
 getEntities conn projectId = Right <$> runSelect conn select
   where
     select = do
-      row@(EntitiesRowT _ projectId1 _) <- selectTable entitiesTable
+      row@(EntitiesRowT _ projectId1 _ _ _) <- selectTable entitiesTable
       where_ $ (projectId1 .== toFields projectId)
       pure row
 

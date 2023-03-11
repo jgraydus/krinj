@@ -18,7 +18,7 @@ createProject conn name description = do
   where
     insert = Insert
       { iTable = projectsTable
-      , iRows = [ProjectsRowT Nothing (toFields name) (toFields description)]
+      , iRows = [ProjectsRowT Nothing (toFields name) (toFields description) Nothing Nothing]
       , iReturning = rReturning id
       , iOnConflict = Nothing
       }

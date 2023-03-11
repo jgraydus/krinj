@@ -28,7 +28,9 @@ interface Attribute {
     attributeId: AttributeId,
     entityId: EntityId,
     name: AttributeName,
-    value: AttributeValue
+    value: AttributeValue,
+    createdAt: string,
+    modifiedAt: string | null,
 }
 
 type EntityId = string
@@ -37,7 +39,9 @@ interface Entity {
     entityId: EntityId,
     projectId: ProjectId,
     entityType: EntityType,
-    attributes: { [attributeName: AttributeName]: Attribute }
+    attributes: { [attributeName: AttributeName]: Attribute },
+    createdAt: string,
+    modifiedAt: string | null
 }
 
 type Issue = Entity

@@ -52,12 +52,12 @@ const Cell = styled.div<{ width: string }>`
 
 const Row = ({ issue, onClick }: { issue: Entity, onClick: any }) =>
   <TableRow onClick={onClick}>
-    <Cell width="30%">{R.pathOr('--', ['attributes', 'name', 'value'], issue)}</Cell>
-    <Cell width="20%">{R.pathOr('--', ['attributes', 'owner', 'value'], issue)}</Cell>
-    <Cell width="20%">{R.pathOr('No assignee', ['attributes', 'assignee', 'value'], issue)}</Cell>
-    <Cell width="10%">{R.pathOr('--', ['attributes', 'state', 'value'], issue)}</Cell>
-    <Cell width="10%">{R.pathOr('--', ['attributes', 'createdAt', 'value'], issue)}</Cell>
-    <Cell width="10%">{R.pathOr('--', ['attributes', 'updatedAt', 'value'], issue)}</Cell>
+    <Cell width="30%">{R.pathOr('--', ['attributes', 'name'], issue)}</Cell>
+    <Cell width="20%">{R.pathOr('--', ['attributes', 'owner'], issue)}</Cell>
+    <Cell width="20%">{R.pathOr('No assignee', ['attributes', 'assignee'], issue)}</Cell>
+    <Cell width="10%">{R.pathOr('--', ['attributes', 'state'], issue)}</Cell>
+    <Cell width="10%">{R.pathOr('--', ['attributes', 'createdAt'], issue)}</Cell>
+    <Cell width="10%">{R.pathOr('--', ['attributes', 'updatedAt'], issue)}</Cell>
   </TableRow>
 
 export default ({ issues, projectId }: { issues: Array<Issue>, projectId: ProjectId }) => {

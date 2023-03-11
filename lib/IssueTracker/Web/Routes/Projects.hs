@@ -8,6 +8,7 @@ import Data.Foldable (toList)
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.List.NonEmpty qualified as NonEmpty
 import Data.Map.Strict qualified as Map
+import Data.Time.Clock (UTCTime)
 import EntityService
 import GHC.Generics (Generic)
 import GHC.Records (getField)
@@ -37,6 +38,8 @@ data DecoratedProject = DecoratedProject
   , name :: ProjectName
   , description :: ProjectDescription
   , entityTypes :: [EntityType]
+  , createdAt :: UTCTime
+  , modifiedAt :: Maybe UTCTime
   }
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON, ToJSON)
@@ -53,6 +56,8 @@ decorateProjects projects = do
       , name = project.name
       , description = project.description
       , entityTypes = Map.findWithDefault [] project.projectId entityTypesByProjectId
+      , createdAt = project.createdAt
+      , modifiedAt = project.modifiedAt
       }
 
 decorateProject :: (Monad m, EntityService m) => Project -> m DecoratedProject
