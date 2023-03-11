@@ -7,6 +7,7 @@ import EntityService.Internal
 import EntityService.Internal.Model
 import GHC.Records (getField)
 import Opaleye
+import Opaleye.Exists
 
 createAttributes :: Connection -> EntityId -> [(AttributeName, AttributeValue)] -> IO (Result [Attribute])
 createAttributes conn entityId args = Right <$> runInsert conn insert
@@ -21,7 +22,13 @@ createAttributes conn entityId args = Right <$> runInsert conn insert
 
 updateAttribute :: Connection -> EntityId -> AttributeName -> AttributeValue -> IO (Result Attribute)
 updateAttribute conn entityId' attributeName' attributeValue' = do
-  result <- runUpdate conn update
+  [attributeExists] :: [Bool] <- runSelect conn $ exists $ do
+    row@(AttributesRowT entityId attributeName _ _ _) <- selectTable attributesTable
+    where_ $ (entityId .== toFields entityId') .&& (attributeName .== toFields attributeName')
+    pure row
+  result <- if attributeExists
+            then runUpdate conn update
+            else runInsert conn insert
   pure $ case result of
     attribute : _ -> Right attribute
     _             -> Left UpdateFailed
@@ -34,6 +41,13 @@ updateAttribute conn entityId' attributeName' attributeValue' = do
       , uUpdateWith = updateEasy updateWith
       , uWhere = \row -> entityIdEq row .&& attributeNameEq row
       , uReturning = rReturning id
+      }
+    insert = Insert
+      { iTable = attributesTable
+      , iRows = [AttributesRowT (toFields entityId') (toFields attributeName')
+                                (toFields attributeValue') Nothing Nothing]
+      , iReturning = rReturning id
+      , iOnConflict = Nothing
       }
 
 deleteAttribute :: Connection -> EntityId -> AttributeName -> IO (Result ())
