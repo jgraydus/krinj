@@ -105,7 +105,14 @@ const loadAttribute = ""
 
 const createAttribute = ""
 
-const updateIssue = ""
+export const updateAttribute: (
+    entityId: EntityId,
+    args: { attributeName: AttributeName, attributeValue: AttributeValue }
+) => AppAction<void>
+= (entityId, args) => async (dispatch, _getState, api) => {
+    const attribute = await api.updateAttribute(entityId, args);
+    dispatch({ type: A.LOAD_ATTRIBUTE, payload: attribute });
+}
 
-const deleteIssue = ""
+const deleteAttribute = ""
 

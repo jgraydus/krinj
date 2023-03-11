@@ -11,16 +11,16 @@ import GHC.Records (getField)
 import Opaleye hiding (groupBy)
 
 -- |
-getAttribute :: Connection -> AttributeId -> IO (Result Attribute)
-getAttribute conn attributeId = do
+getAttribute :: Connection -> EntityId -> AttributeName -> IO (Result Attribute)
+getAttribute conn entityId attributeName = do
   result <- runSelect conn select
   pure $ case result of
     attribute : _ -> Right attribute
     _             -> Left NotFound
   where
     select = do
-      row@(AttributesRowT attributeId1 _ _ _) <- selectTable attributesTable
-      where_ $ attributeId1 .== toFields attributeId
+      row@(AttributesRowT entityId' attributeName' _) <- selectTable attributesTable
+      where_ $ entityId' .== toFields entityId .&& attributeName' .== toFields attributeName
       pure row
 
 -- |
@@ -30,7 +30,7 @@ getAttributes conn entityIds = do
   pure . Right $ groupBy (getField @"entityId") attributes
   where
     select = do
-      row@(AttributesRowT _ entityId1 _ _) <- selectTable attributesTable
+      row@(AttributesRowT entityId1 _ _) <- selectTable attributesTable
       where_ $ in_ (fmap toFields entityIds) entityId1
       pure row
 

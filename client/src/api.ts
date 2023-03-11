@@ -116,28 +116,40 @@ const deleteEntity = (entityId: EntityId): Promise<void> =>
 // attributes
 
 const getAttributes = (entityId: EntityId): Promise<Array<Attribute>> =>
-    axios.get(`/api/attributes?entityId=${entityId}`)
+    axios
+        .get(`/api/entities/${entityId}/attributes`)
         .then(x => x.data)
 
-const getAttribute = (attributeId: AttributeId): Promise<Attribute> =>
-    axios.get(`/api/attributes/${attributeId}`)
+const getAttribute = (entityId: EntityId, attributeName: AttributeName): Promise<Attribute> =>
+    axios
+        .get(`/api/entities/${entityId}/attributes?name=${attributeName}`)
         .then(x => x.data);
 
 const createAttribute = (
-    arg: { entityId: EntityId, attributeName: string, attributeValue: any }
+    entityId: EntityId,
+    arg: { attributeName: string, attributeValue: any }
 ): Promise<Attribute> =>
-    axios.post('/api/attributes', { entityId: arg.entityId, name: arg.attributeName, value: arg.attributeValue })
+    axios
+        .post(
+            `/api/entities/${entityId}/attributes`, 
+            [[arg.attributeName, arg.attributeValue]]
+        )
         .then(x => x.data);
 
 const updateAttribute = (
-    attributeId: AttributeId,
-    arg: { attributeName?: string, attributeValue?: any }
+    entityId: EntityId,
+    arg: { attributeName: string, attributeValue: any }
 ): Promise<Attribute> =>
-    axios.patch(`/api/attributes/${attributeId}`, { name: arg.attributeName, value: arg.attributeValue })
-        .then(x => x.data);
+    axios
+        .patch(
+            `/api/entities/${entityId}/attributes`, 
+            [[arg.attributeName, arg.attributeValue]]
+        )
+        .then(x => x.data[0]);
 
-const deleteAttribute = (attributeId: AttributeId): Promise<void> =>
-    axios.delete(`/api/attributes/${attributeId}`)
+const deleteAttribute = (entityId: EntityId, attributeName: AttributeName): Promise<void> =>
+    axios
+        .delete(`/api/entities/${entityId}/attributes?name=${attributeName}`)
         .then(x => x.data);
 
 export default {

@@ -2,95 +2,74 @@ module IssueTracker.Web.Routes.Attributes (
     AttributesApi, attributesApiHandler
 ) where
 
-import Data.Aeson (FromJSON, ToJSON)
+import Control.Monad.Except (ExceptT(..), runExceptT)
 import Data.Map.Strict qualified as Map
 import EntityService
-import GHC.Generics (Generic)
 import IssueTracker.Web.RouteHandler
 import Servant
 
 type AttributesApi =
-  "attributes" :> (
+  "entities" :> Capture "entityId" EntityId :> "attributes" :> (
        GetAttributes
-  :<|> GetAttribute
   :<|> CreateAttributes
-  :<|> UpdateAttribute
+  :<|> UpdateAttributes
   :<|> DeleteAttribute
   )
 
 attributesApiHandler :: RouteHandler AttributesApi
-attributesApiHandler =
-       getAttributesHandler
-  :<|> getAttributeHandler
-  :<|> createAttributesHandler
-  :<|> updateAttributeHandler
-  :<|> deleteAttributeHandler
+attributesApiHandler entityId =
+       getAttributesHandler entityId
+  :<|> createAttributesHandler entityId
+  :<|> updateAttributeHandler entityId
+  :<|> deleteAttributeHandler entityId
 
 -----------------------------------------------------------------------------------------
-type GetAttributes = QueryParam "entityId" EntityId :> Get '[JSON] [Attribute]
+type GetAttributes =
+     QueryParam "name" AttributeName
+  :> Get '[JSON] [Attribute]
 
-getAttributesHandler :: RouteHandler GetAttributes
-getAttributesHandler Nothing = error "TODO proper error. entityId required"
-getAttributesHandler (Just entityId) = do
+getAttributesHandler :: EntityId -> RouteHandler GetAttributes
+getAttributesHandler entityId Nothing = do
   result <- getAttributes [entityId]
   case result of
     Left _ -> error "TODO proper error"
     Right attributes -> pure $ Map.findWithDefault [] entityId attributes
-
------------------------------------------------------------------------------------------
-type GetAttribute = Capture "attributeId" AttributeId :> Get '[JSON] Attribute
-
-getAttributeHandler :: RouteHandler GetAttribute
-getAttributeHandler attributeId = do
-  result <- getAttribute attributeId
+getAttributesHandler entityId (Just attributeName) = do
+  result <- getAttribute entityId attributeName
   case result of
     Left _ -> error "TODO proper error"
-    Right attribute -> pure attribute
+    Right attribute -> pure [attribute]
 
 -----------------------------------------------------------------------------------------
-type CreateAttributes = ReqBody '[JSON] CreateAttributesReqBody :> Post '[JSON] [Attribute]
+type CreateAttributes = ReqBody '[JSON] [(AttributeName, AttributeValue)] :> Post '[JSON] [Attribute]
 
-data CreateAttributesReqBody = CreateAttributesReqBody
-  { entityId :: EntityId
-  , attributes :: [(AttributeName, AttributeValue)]
-  }
-  deriving stock (Generic, Show)
-  deriving anyclass (FromJSON, ToJSON)
-
-createAttributesHandler :: RouteHandler CreateAttributes
-createAttributesHandler CreateAttributesReqBody {..} = do
+createAttributesHandler :: EntityId -> RouteHandler CreateAttributes
+createAttributesHandler entityId attributes = do
   result <- createAttributes entityId attributes
   case result of
     Left _ -> error "TODO proper error"
     Right attribute -> pure attribute
   
 -----------------------------------------------------------------------------------------
-type UpdateAttribute =
-     Capture "attributeId" AttributeId
-  :> ReqBody '[JSON] UpdateAttributeReqBody
-  :> Patch '[JSON] Attribute
+type UpdateAttributes = ReqBody '[JSON] [(AttributeName, AttributeValue)] :> Patch '[JSON] [Attribute]
 
-data UpdateAttributeReqBody = UpdateAttributeReqBody
-  { name :: Maybe AttributeName
-  , value :: Maybe AttributeValue
-  }
-  deriving stock (Generic, Show)
-  deriving anyclass (FromJSON, ToJSON)
-
-updateAttributeHandler :: RouteHandler UpdateAttribute
-updateAttributeHandler attributeId UpdateAttributeReqBody {..} = do
-  result <- updateAttribute attributeId name value
+updateAttributeHandler :: EntityId -> RouteHandler UpdateAttributes
+updateAttributeHandler entityId attributes = do
+  result <- runExceptT $ mapM (ExceptT . uncurry (updateAttribute entityId)) attributes
   case result of
     Left _ -> error "TODO proper error"
-    Right attribute -> pure attribute
+    Right attributes' -> pure attributes'
   
 -----------------------------------------------------------------------------------------
-type DeleteAttribute = Capture "attributeId" AttributeId :> Delete '[JSON] ()
+type DeleteAttribute =
+     QueryParam "name" AttributeName
+  :> Delete '[JSON] ()
 
-deleteAttributeHandler :: RouteHandler DeleteAttribute
-deleteAttributeHandler attributeId = do
-  result <- deleteAttribute attributeId
+deleteAttributeHandler :: EntityId -> RouteHandler DeleteAttribute
+deleteAttributeHandler entityId (Just attributeName) = do
+  result <- deleteAttribute entityId attributeName
   case result of
     Left _ -> error "TODO proper error"
     Right _ -> pure ()
+deleteAttributeHandler _ _ = error "attributeName is a required query param"
 

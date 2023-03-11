@@ -60,16 +60,9 @@ newtype EntityId = EntityId UUID
 instance Default ToFields EntityId (Field SqlUuid) where
   def = toToFields (sqlUUID . coerce)
 
-newtype AttributeId = AttributeId UUID
-  deriving stock (Generic, Show)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToJSON)
-
-instance Default ToFields AttributeId (Field SqlUuid) where
-  def = toToFields (sqlUUID . coerce)
-
 newtype AttributeName = AttributeName Text
   deriving stock (Generic, Show)
-  deriving newtype (DefaultFromField SqlText, Eq, FromJSON, Ord, ToJSON, ToJSONKey)
+  deriving newtype (DefaultFromField SqlText, Eq, FromHttpApiData, FromJSON, Ord, ToJSON, ToJSONKey)
 
 instance Default ToFields AttributeName (Field SqlText) where
   def = toToFields (sqlStrictText . coerce)

@@ -24,9 +24,9 @@ class Monad m => EntityService m where
   getEntities  :: ProjectId -> m (Result [Entity])
 
   createAttributes :: EntityId -> [(AttributeName, AttributeValue)] -> m (Result [Attribute])
-  updateAttribute  :: AttributeId -> Maybe AttributeName -> Maybe AttributeValue -> m (Result Attribute)
-  deleteAttribute  :: AttributeId -> m (Result ())
-  getAttribute     :: AttributeId -> m (Result Attribute)
+  updateAttribute  :: EntityId -> AttributeName -> AttributeValue -> m (Result Attribute)
+  deleteAttribute  :: EntityId -> AttributeName -> m (Result ())
+  getAttribute     :: EntityId -> AttributeName -> m (Result Attribute)
   getAttributes    :: [EntityId] -> m (Result (Map EntityId [Attribute]))
   
   createRelationship :: EntityId -> EntityId -> RelationshipType -> m (Result Relationship)

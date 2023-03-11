@@ -103,7 +103,7 @@ createProjectHandler CreateProjectReqBody {..} = do
 type UpdateProject =
      Capture "projectId" ProjectId
   :> ReqBody '[JSON] UpdateProjectReqBody
-  :> Patch '[JSON] Project
+  :> Patch '[JSON] DecoratedProject
 
 data UpdateProjectReqBody = UpdateProjectReqBody
   { name :: Maybe ProjectName
@@ -117,7 +117,7 @@ updateProjectHandler projectId UpdateProjectReqBody {..} = do
   result <- updateProject projectId name description
   case result of
     Left _ -> undefined  -- TODO map errors into ServantError
-    Right project -> pure project
+    Right project -> decorateProject project
 
 -----------------------------------------------------------------------------------------
 type DeleteProject = Capture "projectId" ProjectId :> Delete '[JSON] ()

@@ -57,6 +57,10 @@ const entitiesReducer = {
     })
 }
 
+const attributesReducer = {
+    [A.LOAD_ATTRIBUTE]: (state: RootState, { payload: attribute }: { payload: Attribute }) =>
+        R.set(R.lensPath(['entities', attribute.entityId, 'attributes', attribute.name]), attribute, state)
+}
 
 const reducer = (state: RootState = init, action: AnyAction) => R.pathOr(
   (state: RootState, action: AnyAction) => {
@@ -69,7 +73,8 @@ const reducer = (state: RootState = init, action: AnyAction) => R.pathOr(
   [action.type],  
   {
       ...projectsReducer,
-      ...entitiesReducer
+      ...entitiesReducer,
+      ...attributesReducer
   }
 )(state, action)
 

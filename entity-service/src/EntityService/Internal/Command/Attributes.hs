@@ -11,7 +11,7 @@ import Opaleye
 createAttributes :: Connection -> EntityId -> [(AttributeName, AttributeValue)] -> IO (Result [Attribute])
 createAttributes conn entityId args = Right <$> runInsert conn insert
   where
-    toRow (name, value) = AttributesRowT Nothing (toFields entityId) (toFields name) (toFields value)
+    toRow (name, value) = AttributesRowT (toFields entityId) (toFields name) (toFields value)
     insert = Insert
       { iTable = attributesTable
       , iRows = map toRow args
@@ -19,33 +19,33 @@ createAttributes conn entityId args = Right <$> runInsert conn insert
       , iOnConflict = Nothing
       }
 
-updateAttribute :: Connection -> AttributeId -> Maybe AttributeName -> Maybe AttributeValue -> IO (Result Attribute)
-updateAttribute conn attributeId' attributeNameMaybe attributeValueMaybe = do
+updateAttribute :: Connection -> EntityId -> AttributeName -> AttributeValue -> IO (Result Attribute)
+updateAttribute conn entityId' attributeName' attributeValue' = do
   result <- runUpdate conn update
   pure $ case result of
     attribute : _ -> Right attribute
     _             -> Left UpdateFailed
   where
-    updateWith row@AttributesRowT {..} = AttributesRowT
-      { name = maybe row.name toFields attributeNameMaybe
-      , value = maybe row.value toFields attributeValueMaybe
-      , ..
-      }
+    updateWith AttributesRowT {..} = AttributesRowT { value = toFields attributeValue', .. }
+    entityIdEq = (.== toFields entityId') . (getField @"entityId")
+    attributeNameEq = (.== toFields attributeName') . (getField @"name")
     update = Update
       { uTable = attributesTable
       , uUpdateWith = updateEasy updateWith
-      , uWhere = (.== toFields attributeId') . (getField @"attributeId")
+      , uWhere = \row -> entityIdEq row .&& attributeNameEq row
       , uReturning = rReturning id
       }
 
-deleteAttribute :: Connection -> AttributeId -> IO (Result ())
-deleteAttribute conn attributeId = do
+deleteAttribute :: Connection -> EntityId -> AttributeName -> IO (Result ())
+deleteAttribute conn entityId attributeName = do
   deleteCount <- runDelete conn delete
   pure $ if deleteCount == 1 then Right () else Left DeleteFailed
   where
+    entityIdEq = (.== toFields entityId) . (getField @"entityId")
+    attributeNameEq = (.== toFields attributeName) . (getField @"name")
     delete = Delete
       { dTable = attributesTable
-      , dWhere = (.== toFields attributeId) . (getField @"attributeId")
+      , dWhere = \row -> entityIdEq row .&& attributeNameEq row
       , dReturning = rCount
       }
 

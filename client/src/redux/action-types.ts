@@ -10,4 +10,5 @@ export const CREATE_ENTITY = 'issues/CREATE_ENTITY';
 export const UPDATE_ENTITY = 'issues/UPDATE_ENTITY';
 export const DELETE_ENTITY = 'issues/DELETE_ENTITY';
 
+export const LOAD_ATTRIBUTE = 'attributes/LOAD_ATTRIBUTE';
 

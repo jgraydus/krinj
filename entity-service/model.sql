@@ -26,7 +26,7 @@ CREATE TABLE entity_types (
     entity_type_id   UUID          DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
     project_id       UUID          REFERENCES projects(project_id) NOT NULL,
     name             TEXT          NOT NULL,
-    descriptor       JSON          NOT NULL,
+    descriptor       JSONB         NOT NULL,
     created_at       TIMESTAMP     WITH TIME ZONE DEFAULT NOW() NOT NULL,
     modified_at      TIMESTAMP     WITH TIME ZONE,
     UNIQUE (project_id, name)
@@ -47,13 +47,12 @@ CREATE TRIGGER update_trigger BEFORE UPDATE ON entities
 FOR EACH ROW EXECUTE FUNCTION entity_service_update_modified_at();
 
 CREATE TABLE attributes (
-    attribute_id     UUID          DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
     entity_id        UUID          REFERENCES entities(entity_id) NOT NULL,
     name             TEXT          NOT NULL,
-    value            JSON          NOT NULL,
+    value            JSONB         NOT NULL,
     created_at       TIMESTAMP     WITH TIME ZONE DEFAULT NOW() NOT NULL,
     modified_at      TIMESTAMP     WITH TIME ZONE,
-    UNIQUE (entity_id, name)
+    PRIMARY KEY (entity_id, name)
 );
 
 CREATE TRIGGER update_trigger BEFORE UPDATE ON attributes

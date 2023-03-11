@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import InlineEdit from '../../../../components/inline-edit'
 import Loading from '../../../../components/loading'
 import MdEditor from '../../../../components/md-editor'
-import { loadEntity, selectEntity, updateEntity, useDispatch, useSelector } from '../../../../redux'
+import { loadEntity, selectEntity, updateAttribute, useDispatch, useSelector } from '../../../../redux'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -76,11 +76,11 @@ export default () => {
   }, [projectId]);
 
   const updateName = useCallback((name: string) => {
-    dispatch(updateEntity(entityId, [{ tag: 'Title', contents: name }]));
+    dispatch(updateAttribute(entityId, { attributeName: 'name', attributeValue: name }));
   }, [entityId]);
 
   const updateDescription = useCallback((desc: string) => {
-    dispatch(updateEntity(entityId, [{ tag: 'Description', contents: desc }]));
+    dispatch(updateAttribute(entityId, { attributeName: 'description', attributeValue: desc }));
   }, [entityId]);
 
   return issue ? (

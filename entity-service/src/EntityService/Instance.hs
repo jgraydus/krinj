@@ -115,20 +115,20 @@ instance Reqs r m => EntityService m where
     withConnection $ \conn ->
       Command.createAttributes conn entityId args
 
-  updateAttribute :: AttributeId -> Maybe AttributeName -> Maybe AttributeValue -> m (Result Attribute)
-  updateAttribute attributeId attributeNameMaybe attributeValueMaybe =
+  updateAttribute :: EntityId -> AttributeName -> AttributeValue -> m (Result Attribute)
+  updateAttribute entityId attributeName attributeValue =
     withConnection $ \conn ->
-      Command.updateAttribute conn attributeId attributeNameMaybe attributeValueMaybe
+      Command.updateAttribute conn entityId attributeName attributeValue
 
-  deleteAttribute :: AttributeId -> m (Result ())
-  deleteAttribute attributeId =
+  deleteAttribute :: EntityId -> AttributeName -> m (Result ())
+  deleteAttribute entityId attributeName =
     withConnection $ \conn ->
-      Command.deleteAttribute conn attributeId
+      Command.deleteAttribute conn entityId attributeName
 
-  getAttribute :: AttributeId -> m (Result Attribute)
-  getAttribute attributeId =
+  getAttribute :: EntityId -> AttributeName -> m (Result Attribute)
+  getAttribute entityId attributeName =
     withConnection $ \conn ->
-      Query.getAttribute conn attributeId
+      Query.getAttribute conn entityId attributeName
 
   getAttributes :: [EntityId] -> m (Result (Map EntityId [Attribute]))
   getAttributes entityIds =
