@@ -17,7 +17,7 @@ export const loadProjects: AppAction<void>
 export const loadProject: (projectId: ProjectId) => AppAction<void>
 = projectId => async (dispatch, getState, api) => {
   const project = await api.getProject(projectId);
-  dispatch({ type: A.UPDATE_PROJECT, payload: project });
+  dispatch({ type: A.LOAD_PROJECT, payload: project });
 }
 
 export const createProject: (
@@ -32,7 +32,7 @@ export const createProject: (
       { entityTypeName: "TASK", entityTypeDescriptor: {} },
   ]
   const project = await api.createProject({ ...arg, entityTypes });
-  dispatch({ type: A.UPDATE_PROJECT, payload: project });
+  dispatch({ type: A.LOAD_PROJECT, payload: project });
   return project.projectId
 }
 
@@ -42,7 +42,7 @@ export const updateProject: (
 ) => AppAction<any>
 = (projectId, arg) => async (dispatch, _getState, api) => {
   const project = await api.updateProject(projectId, arg);
-  dispatch({ type: A.UPDATE_PROJECT, payload: project });
+  dispatch({ type: A.LOAD_PROJECT, payload: project });
 }
 
 export const deleteProject: (projectId: ProjectId) => AppAction<any>

@@ -7,54 +7,56 @@ const init: RootState = {
     entities: {},
 }
 
+const projectsLens = R.lensProp<RootState, 'projects'>('projects');
+const indexByProjectId = (projects: Array<Project>) => R.indexBy(R.prop('projectId'), projects)
+
 const projectsReducer = {
-    [A.LOAD_PROJECTS]: (state: RootState, { payload: projects }: { payload: Array<Project> }) => ({
-        ...state,
-        projects: R.indexBy(R.prop('projectId'), projects),
-    }),
-    [A.UPDATE_PROJECT]: (state: RootState, action: AnyAction) => ({
-        ...state,
-        projects: {
-            ...state.projects,
-            [action.payload.projectId]: action.payload
-        }
-    }),
-    [A.DELETE_PROJECT]: (state: RootState, { payload: projectId }: { payload: ProjectId }) => ({
-        ...state,
-        projects: R.omit([projectId], state.projects),
-    }),
+    [A.LOAD_PROJECTS]: (state: RootState, { payload: projects }: { payload: Array<Project> }) =>
+        R.set(
+            projectsLens,
+            indexByProjectId(projects),
+            state
+        ),
+    [A.LOAD_PROJECT]: (state: RootState, action: AnyAction) =>
+        R.over(
+            projectsLens,
+            R.mergeLeft({ [action.payload.projectId]: action.payload }),
+            state
+        ),
+    [A.DELETE_PROJECT]: (state: RootState, { payload: projectId }: { payload: ProjectId }) =>
+        R.over(
+            projectsLens,
+            R.omit([projectId]),
+            state
+        ),
 }
 
+const entitiesLens = R.lensProp<RootState, 'entities'>('entities');
+const indexByEntityId = (entities: Array<Entity>) => R.indexBy(R.prop('entityId'), entities)
 
 const entitiesReducer = {
     [A.LOAD_ENTITIES]: (
         state: RootState,
         { payload: { projectId, entities } }: { payload: { projectId : ProjectId, entities: Array<Entity> }}
-    ) =>({ 
-        ...state,
-        entities: R.indexBy(R.prop('entityId'), entities),
-    }),
-    [A.LOAD_ENTITY]: (state: RootState, { payload: entity }: { payload: Entity }) => ({
-        ...state,
-        entities: {
-            ...state.entities,
-            [entity.entityId]: entity,
-        },
-    }),
-    [A.UPDATE_ENTITY]: (state: RootState, { payload: entity }: { payload: Entity }) => ({
-        ...state,
-        entities: {
-            ...state.entities,
-            [entity.entityId]: entity,
-        },
-    }),
+    ) => R.set(
+             entitiesLens,
+             indexByEntityId(entities),
+             state
+         ),
+    [A.LOAD_ENTITY]: (state: RootState, { payload: entity }: { payload: Entity }) =>
+        R.over(
+            entitiesLens,
+            R.mergeLeft({ [entity.entityId]: entity }),
+            state
+        ),
     [A.DELETE_ENTITY]: (
         state: RootState,
         { payload: { projectId, entityId } }: { payload: { projectId: ProjectId, entityId: EntityId } }
-    ) => ({
-        ...state,
-        entities: R.omit([entityId], state.entities),
-    })
+    ) => R.over(
+             entitiesLens,
+             R.omit([entityId]),
+             state
+         ),
 }
 
 const attributesReducer = {
