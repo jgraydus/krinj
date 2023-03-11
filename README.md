@@ -1,5 +1,7 @@
 ## Issue Tracker
 
+This is a work in progress.
+
 - required software:
   - node (>= 16.10)
   - npm (>= 8.17)
