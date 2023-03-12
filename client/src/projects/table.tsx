@@ -41,7 +41,7 @@ const TableRow = ({ project }: { project: Project }) => {
   const navigate = useNavigate();
   
   return (
-    <_TableRow onClick={() => navigate(`/projects/${project.projectId}`)}>
+    <_TableRow onClick={() => navigate(`/projects/${project.projectId}/issues`)}>
       <ProjectName>{project.name}</ProjectName>
       <ProjectId>{project.projectId}</ProjectId>
     </_TableRow>

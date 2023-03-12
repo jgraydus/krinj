@@ -95,16 +95,16 @@ const View = ({ selectedTab }: { selectedTab: ProjectPageTab } ) => {
 
       <Tabs>
         <Tab
-          isSelected={selectedTab === ProjectPageTab.Details}
-          onClick={() => navigate(`/projects/${projectId}`)}
-        >
-          Project Details
-        </Tab>
-        <Tab
           isSelected={selectedTab === ProjectPageTab.Issues}
           onClick={() => navigate(`/projects/${projectId}/issues`)}
         >
           Issues
+        </Tab>
+        <Tab
+          isSelected={selectedTab === ProjectPageTab.Details}
+          onClick={() => navigate(`/projects/${projectId}`)}
+        >
+          Project Details
         </Tab>
       </Tabs>
 
