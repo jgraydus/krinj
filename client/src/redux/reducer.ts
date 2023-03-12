@@ -62,7 +62,7 @@ const entitiesReducer = {
 const attributesReducer = {
     [A.LOAD_ATTRIBUTE]: (state: RootState, { payload: attribute }: { payload: Attribute }) =>
         R.pipe(
-          R.set(R.lensPath(['entities', attribute.entityId, 'attributes', attribute.name]), attribute),
+          R.set(R.lensPath(['entities', attribute.entityId, 'attributes', attribute.name]), attribute.value),
           R.set(R.lensPath(['entities', attribute.entityId, 'attributes', 'modifiedAt']), attribute.modifiedAt)
         )(state)
 }
