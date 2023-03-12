@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 const enum InlineEditMode { VIEW, EDIT }
@@ -30,7 +30,7 @@ const View = styled.div`
   letter-spacing: 0px;
   border: 1px solid black;
 `
-const Edit = styled.input`
+const EditRoot = styled.input`
   box-sizing: border-box;
   width: 100%;
   height: 100%;
@@ -45,20 +45,57 @@ const Edit = styled.input`
   border: 1px solid black;
   outline: none;
 `
+const Edit = ({ save, value, setValue }: any) => {
+  const ref: any = useRef(null);
 
-export default ({ initialValue, onSave }: { initialValue?: string, onSave: any }) => {
-  const [mode, setMode] = useState(InlineEditMode.VIEW);
-  const [value, setValue] = useState(initialValue || '');
+  const keypressHandler = useCallback((evt: KeyboardEvent) => {
+      if (ref && ref.current && ref.current === evt.target && evt.key === "Enter") {
+          save(value);
+      }
+  }, [save, value]);
 
-  const toggle = useCallback(() => setMode(flip(mode)), [mode, setMode]);
-  const onChange: any = useCallback((e: any) => setValue(e.target.value), [setValue]);
-  const save = useCallback(() => { onSave(value); toggle(); }, [onSave, toggle, value]);
+  useEffect(() => {
+      document.addEventListener('keypress', keypressHandler, false);
+      return () => { document.removeEventListener('keypress', keypressHandler, false); }
+  }, [keypressHandler]);
 
-  return (
-    <Root>
-      {mode === InlineEditMode.VIEW
-        ? <View onClick={toggle}>{value}</View>
-        : <Edit value={value} onChange={onChange} autoFocus onBlur={save} />}
-    </Root>
-  )
+  return <EditRoot
+            autoFocus
+            ref={ref}
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            onBlur={() => save(value)} />
 }
+
+
+interface InlineEditParams {
+    initialValue?: string,
+    onSave?: (onSave: string) => any,
+    onChange?: (onChange: string) => any,
+}
+
+export default ({ 
+    initialValue = '',
+    onSave,
+    onChange,
+}: InlineEditParams) => {
+    const [mode, setMode] = useState(InlineEditMode.VIEW);
+    const [value, setValue] = useState(initialValue);
+
+    const toggle = useCallback(() => setMode(flip(mode)), [mode]);
+
+    const save = useCallback((val: string) => {
+        setValue(val);
+        if (onSave) { onSave(val); }
+        toggle();
+    }, [onSave, setValue, toggle]);
+
+    return (
+      <Root>
+        {mode === InlineEditMode.VIEW
+          ? <View onClick={toggle}>{value}</View>
+          : <Edit save={save} setValue={setValue} value={value} />}
+      </Root>
+    )
+}
+
