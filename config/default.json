@@ -1,9 +1,15 @@
 {
+    "databaseConfig": {
+        "database": "{{DATABASE_NAME}}",
+        "password": "{{DATABASE_PASSWORD}}",
+        "port": {{DATABASE_PORT || 5432}},
+        "user": "{{DATABASE_USER}}"
+    },
     "httpServerConfig": {
-        "protocol": {{HTTP_PROTOCOL || "http"}},
         "host": "{{HTTP_HOST}}",
+        "jwtKey": "{{JWT_KEY}}",
         "port": {{HTTP_PORT || 80}},
-        "jwtKey": "{{JWT_KEY}}"
+        "protocol": {{HTTP_PROTOCOL || "http"}}
     },
     "logLevel": "{{LOG_LEVEL}}"
 }

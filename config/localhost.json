@@ -1,4 +1,10 @@
 {
+    "databaseConfig": {
+        "database": "main",
+        "password": "password",
+        "port": 15432,
+        "user": "postgres"
+    },
     "httpServerConfig": {
         "protocol": "http",
         "host": "localhost",

@@ -31,6 +31,8 @@ library
         Krinj.Options,
         Krinj.Web.Application
     other-modules:
+        Krinj.Config.DatabaseConfig,
+        Krinj.Config.Newtypes,
         Krinj.TH,
         Krinj.Web.ContentTypes,
         Krinj.Web.Routes,
@@ -97,9 +99,12 @@ executable init
     import: shared-properties
     build-depends:
         krinj,
+        optparse-applicative,
         postgresql-migration,
         postgresql-simple,
         text
+    other-modules:
+        CommandLineArgs
     hs-source-dirs: app/init
     main-is:        Main.hs
     ghc-options:    -Wall -threaded -main-is Main

@@ -1,22 +1,13 @@
 module Main where
 
 import Data.Coerce (coerce)
-import Database.PostgreSQL.Simple (ConnectInfo(..), defaultConnectInfo)
 import Krinj.Logger (LogLevel(INFO), newLogger, toLogStr)
-import Krinj.Config (ApplicationConfig(..), HttpServerConfig(..), PortNumber(..), readConfig)
+import Krinj.Config (ApplicationConfig(..), HttpServerConfig(..), makeConnectInfo, PortNumber(..), readConfig)
 import Krinj.DatabaseConnectionPool
 import Krinj.Options (env, Options(..), parseOptions)
 import Krinj.Web.Application (app)
 import Network.Wai.Handler.Warp qualified as Warp
 import System.Exit (ExitCode(ExitFailure), exitSuccess, exitWith)
-
-connectInfo :: ConnectInfo
-connectInfo = defaultConnectInfo
-  { connectPort = 15432
-  , connectUser = "postgres"
-  , connectPassword = "password"
-  , connectDatabase = "main"
-  }
 
 main :: IO ()
 main = do
@@ -38,6 +29,7 @@ main = do
       logger INFO (toLogStr (show applicationConfig))
 
       databaseConnectionPoolConfig <- defaultConfig
+      connectInfo <- makeConnectInfo databaseConfig
       databaseConnectionPool <- create databaseConnectionPoolConfig connectInfo
 
       logger INFO (toLogStr $ "server listening on port " <> show port)

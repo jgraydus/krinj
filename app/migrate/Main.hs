@@ -5,16 +5,8 @@ import Data.Text (Text)
 import Data.Text.IO qualified as Text
 import Database.PostgreSQL.Simple
 import Database.PostgreSQL.Simple.Migration
-import Krinj.Config (readConfig)
+import Krinj.Config (ApplicationConfig(..), makeConnectInfo, readConfig)
 import System.Exit (exitFailure)
-
-connectInfo :: ConnectInfo
-connectInfo = defaultConnectInfo
-  { connectPort = 15432
-  , connectUser = "postgres"
-  , connectPassword = "password"
-  , connectDatabase = "main"
-  }
 
 migrationDirs :: [FilePath]
 migrationDirs = [
@@ -43,6 +35,8 @@ main = do
       exitFailure
 
     Right _config -> do
+      let ApplicationConfig {..} = _config
+      connectInfo <- makeConnectInfo databaseConfig
       print $ connectInfo { connectPassword = "*********" }
       conn <- connect connectInfo
 

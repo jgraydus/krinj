@@ -1,21 +1,15 @@
 module Main where
 
+import CommandLineArgs
 import Data.Int (Int64)
 import Database.PostgreSQL.Simple
-  (connect, ConnectInfo(..), defaultConnectInfo, execute, Only(..), query)
+  (connect, ConnectInfo(..), execute, Only(..), query)
 import Database.PostgreSQL.Simple.Types (Identifier(..))
 import Database.PostgreSQL.Simple.Migration
   (defaultOptions, MigrationCommand(..), runMigration)
 import Data.Text (pack)
-import System.Exit (exitSuccess)
-
-getConnectInfo :: IO ConnectInfo
-getConnectInfo = pure $ defaultConnectInfo
-  { connectPort = 15432
-  , connectUser = "postgres"
-  , connectPassword = "password"
-  , connectDatabase = "main"
-  }
+import Krinj.Config (ApplicationConfig(..), makeConnectInfo, readConfig)
+import System.Exit (exitFailure, exitSuccess)
 
 deleteDatabase :: ConnectInfo -> IO ()
 deleteDatabase connectInfo = do
@@ -46,34 +40,52 @@ createDatabase connectInfo = do
 
 main :: IO ()
 main = do
+  putStrLn "---------------------------------------------"
   putStrLn "--------------- DATABASE INIT ---------------"
-  putStrLn "WARNING: this will delete any existing data!"
-  putStrLn "are you sure you want to continue? y/n"
-  answer <- getChar
+  putStrLn "---------------------------------------------"
+  putStrLn ""
 
-  if answer == 'y' || answer == 'Y' then do
-    putStrLn "*** Initializing database ***"
+  CommandLineArgs {..} <- parseCommandLineArgs
+  putStrLn $ "environment:      " <> show _executionEnv
+  putStrLn $ "config directory: " <> _configFileDir
+  putStrLn ""
+  configOrErr <- readConfig _configFileDir (show _executionEnv)
 
-    connectInfo <- getConnectInfo
-    print $ connectInfo { connectPassword = "*********" }
+  case configOrErr of
+    Left err -> do
+      putStrLn "*********************** ERROR *************************"
+      print err
+      exitFailure
 
-    putStrLn "> deleting existing data <"
-    _ <- deleteDatabase connectInfo
-    putStrLn "done"
+    Right _config -> do
+      let ApplicationConfig {..} = _config
+      connectInfo <- makeConnectInfo databaseConfig
+      print $ connectInfo { connectPassword = "*********" }
+      putStrLn ""
 
-    putStrLn "> creating database <"
-    _ <- createDatabase connectInfo
-    putStrLn "done"
+      putStrLn "WARNING: this will delete any existing data!"
+      putStrLn "are you sure you want to continue? y/n"
+      answer <- getChar
 
-    conn <- connect connectInfo
+      if answer == 'y' || answer == 'Y' then do
+        putStrLn "********* Initializing database *********"
 
-    putStrLn "> creating migration metadata table <"
-    _ <- runMigration conn defaultOptions MigrationInitialization
-    putStrLn "done"
+        putStrLn "> deleting existing data <"
+        _ <- deleteDatabase connectInfo
+        putStrLn "done"
 
-    exitSuccess
+        putStrLn "> creating database <"
+        _ <- createDatabase connectInfo
+        putStrLn "done"
 
-  else do
-    putStrLn "ABORTING"
-    exitSuccess
+        putStrLn "> creating migration metadata table <"
+        conn <- connect connectInfo
+        _ <- runMigration conn defaultOptions MigrationInitialization
+        putStrLn "done"
+
+        exitSuccess
+
+      else do
+        putStrLn "ABORTING"
+        exitSuccess
 

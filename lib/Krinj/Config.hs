@@ -1,38 +1,31 @@
-module Krinj.Config where
+module Krinj.Config (
+    ApplicationConfig(..),
+    HttpServerConfig(..),
+    readConfig,
 
-import Data.Aeson (FromJSON, ToJSON)
-import Data.Text (Text)
+    module Krinj.Config.DatabaseConfig,
+    module Krinj.Config.Newtypes,
+) where
+
+import Data.Aeson (FromJSON)
 import GHC.Generics (Generic)
 import JsonConfig qualified
+import Krinj.Config.DatabaseConfig
+import Krinj.Config.Newtypes
 import Krinj.Logger (LogLevel(..))
 
-newtype HostName = HostName Text
-  deriving stock (Generic)
-  deriving newtype (Eq, FromJSON, Ord, Show, ToJSON)
-
-newtype PortNumber = PortNumber Int
-  deriving stock (Generic)
-  deriving newtype (Eq, FromJSON, Ord, Show, ToJSON)
-
-newtype Protocol = Protocol Text
-  deriving stock (Generic)
-  deriving newtype (Eq, FromJSON, Ord, Show, ToJSON)
-
-newtype JwtKey = JwtKey Text
-  deriving stock (Generic)
-  deriving newtype (Eq, FromJSON, Ord, Show, ToJSON)
-
 data HttpServerConfig = HttpServerConfig
-  { protocol :: Protocol
-  , host :: HostName
-  , port :: PortNumber
+  { host :: HostName
   , jwtKey :: JwtKey
+  , port :: PortNumber
+  , protocol :: Protocol
   }
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON)
 
 data ApplicationConfig = ApplicationConfig
-  { httpServerConfig :: HttpServerConfig
+  { databaseConfig :: DatabaseConfig
+  , httpServerConfig :: HttpServerConfig
   , logLevel :: LogLevel
   }
   deriving stock (Generic, Show)
