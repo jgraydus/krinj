@@ -1,6 +1,7 @@
 packages:
   ./krinj.cabal
   ./entity-service/entity-service.cabal
+  ./user-service/user-service.cabal
 
 source-repository-package
   type: git

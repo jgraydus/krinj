@@ -1,0 +1,32 @@
+cabal-version:      3.4
+name:               user-service
+version:            0.1.0.0
+author:             Josh
+maintainer:         josh@grayd.us
+category:           Web
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall
+
+library
+    import:           warnings
+    exposed-modules:  Krinj.UserService
+    -- other-modules:
+    -- other-extensions:
+    build-depends:    base ^>=4.17.2.0
+    hs-source-dirs:   src
+    default-language: GHC2021
+
+test-suite user-service-test
+    import:           warnings
+    default-language: GHC2021
+    -- other-modules:
+    -- other-extensions:
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Main.hs
+    build-depends:
+        base ^>=4.17.2.0,
+        user-service
+
