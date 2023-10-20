@@ -1,40 +1,20 @@
 version: '3.7'
 
 volumes:
-    issues-tracker-postgres:
-    issues-tracker-pgadmin:
+    dev-issues-tracker-postgres:
 
 services: 
     postgres:
-        container_name: postgres 
+        container_name: dev-issues-tracker-postgres 
         image: "postgres:14.2-alpine"
         environment:
             POSTGRES_USER: "postgres" 
             POSTGRES_PASSWORD: "password"
             PGDATA: "/data/postgres"
         volumes:
-            - issues-tracker-postgres:/data/postgres
+            - dev-issues-tracker-postgres:/data/postgres
             - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_int.sql
         ports:
             - "15432:5432"
-        restart: unless-stopped
-
-    pgadmin:
-        container_name: pgadmin 
-        image: "dpage/pgadmin4"
-        environment:
-            PGADMIN_DEFAULT_EMAIL: admin@fake.com
-            PGADMIN_DEFAULT_PASSWORD: admin
-            PGADMIN_CONFIG_SERVER_MODE: "False"
-            PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
-        volumes:
-            - issues-tracker-pgadmin:/var/lib/pgadmin 
-            - ./docker_pgadmin_servers.json:/pgadmin4/servers.json 
-        ports:
-            - "15433:80"
-        entrypoint:
-            - "/bin/sh"
-            - "-c"
-            - "/bin/echo 'postgres:5432:*:postgres:password' > /tmp/pgpassfile && chmod 600 /tmp/pgpassfile && /entrypoint.sh"
         restart: unless-stopped
 

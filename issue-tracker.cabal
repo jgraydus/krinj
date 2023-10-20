@@ -77,39 +77,21 @@ library
         wai
 
 -- http server - backend of the issue-tracker application
-executable web
+executable api
     import: shared-properties
     build-depends:
         issue-tracker,
         postgresql-simple,
         warp
-    hs-source-dirs: app
-    main-is:        IssueTracker/App/Web.hs
+    hs-source-dirs: app/api
+    main-is:        Main.hs
     ghc-options:
         -threaded
         -rtsopts
         -with-rtsopts=-N
-        -main-is IssueTracker.App.Web
+        -main-is Main
 
----- code generator - produces javascript functions to make requests to backend rest end points
---executable generate-js-bindings
---    import: shared-properties
---    build-depends:
---        issue-tracker
---    hs-source-dirs: app
---    main-is:        IssueTracker/App/GenerateJsBindings.hs
---    ghc-options:    -Wall -threaded -main-is IssueTracker.App.GenerateJsBindings
---
----- utility for testing - prints out a valid auth token for a randomly generated user id
---executable make-auth-token
---    import: shared-properties
---    build-depends:
---        issue-tracker
---    hs-source-dirs: app
---    main-is:        IssueTracker/App/MakeAuthToken.hs
---    ghc-options:    -Wall -threaded -main-is IssueTracker.App.MakeAuthToken
-
--- initialize the database, etc.
+-- delete all data and re-initialize
 executable init
     import: shared-properties
     build-depends:
@@ -117,9 +99,32 @@ executable init
         postgresql-migration,
         postgresql-simple,
         text
-    hs-source-dirs: app
-    main-is:        IssueTracker/App/Init.hs
-    ghc-options:    -Wall -threaded -main-is IssueTracker.App.Init
+    hs-source-dirs: app/init
+    main-is:        Main.hs
+    ghc-options:    -Wall -threaded -main-is Main
+
+-- execute sql migration scripts
+executable migrate
+    import: shared-properties
+    build-depends:
+        issue-tracker,
+        optparse-applicative,
+        postgresql-migration,
+        postgresql-simple,
+        text
+    other-modules:
+        CommandLineArgs
+    hs-source-dirs: app/migrate
+    main-is:        Main.hs
+    ghc-options:    -Wall -threaded -main-is Main
+
+executable admin
+    import: shared-properties
+    build-depends:
+        issue-tracker,
+    hs-source-dirs: app/admin
+    main-is:        Main.hs
+    ghc-options:    -Wall -threaded -main-is Main
 
 executable dev-server
     import: shared-properties

@@ -1,16 +1,13 @@
-module IssueTracker.App.Init where
+module Main where
 
 import Data.Int (Int64)
 import Database.PostgreSQL.Simple
   (connect, ConnectInfo(..), defaultConnectInfo, execute, Only(..), query)
 import Database.PostgreSQL.Simple.Types (Identifier(..))
 import Database.PostgreSQL.Simple.Migration
-         (defaultOptions, MigrationCommand(..), runMigration, runMigrations, ScriptName)
+  (defaultOptions, MigrationCommand(..), runMigration)
 import Data.Text (pack)
 import System.Exit (exitSuccess)
-
-initScripts :: [(ScriptName, FilePath)]
-initScripts = [("entity-service init", "./entity-service/model.sql")]
 
 getConnectInfo :: IO ConnectInfo
 getConnectInfo = pure $ defaultConnectInfo
@@ -72,11 +69,6 @@ main = do
 
     putStrLn "> creating migration metadata table <"
     _ <- runMigration conn defaultOptions MigrationInitialization
-    putStrLn "done"
-
-    putStrLn "> running intialization scripts <"
-    let commands = uncurry MigrationFile <$> initScripts
-    _ <- runMigrations conn defaultOptions commands
     putStrLn "done"
 
     exitSuccess

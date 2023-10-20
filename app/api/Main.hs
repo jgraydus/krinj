@@ -1,4 +1,4 @@
-module IssueTracker.App.Web where
+module Main where
 
 import Data.Coerce (coerce)
 import Database.PostgreSQL.Simple (ConnectInfo(..), defaultConnectInfo)
