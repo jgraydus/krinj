@@ -1,12 +1,12 @@
 {-# LANGUAGE UndecidableInstances #-}
-module IssueTracker.Web.RouteHandler where
+module Krinj.Web.RouteHandler where
 
 import Control.Monad.Except (MonadError)
 import Control.Monad.Reader (MonadReader)
 import EntityService
-import IssueTracker.Config (ApplicationConfig)
-import IssueTracker.Web.Routes.Site.Bundles (SiteBundles)
 import GHC.Records (HasField)
+import Krinj.Config (ApplicationConfig)
+import Krinj.Web.Routes.Site.Bundles (SiteBundles)
 import Servant
 
 -- | RouteHandler

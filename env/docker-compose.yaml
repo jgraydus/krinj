@@ -1,18 +1,18 @@
 version: '3.7'
 
 volumes:
-    dev-issues-tracker-postgres:
+    dev-krinj-postgres:
 
 services: 
     postgres:
-        container_name: dev-issues-tracker-postgres 
+        container_name: dev-krinj-postgres 
         image: "postgres:14.2-alpine"
         environment:
             POSTGRES_USER: "postgres" 
             POSTGRES_PASSWORD: "password"
             PGDATA: "/data/postgres"
         volumes:
-            - dev-issues-tracker-postgres:/data/postgres
+            - dev-krinj-postgres:/data/postgres
             - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_int.sql
         ports:
             - "15432:5432"

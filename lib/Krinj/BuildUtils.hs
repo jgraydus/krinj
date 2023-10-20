@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
-module IssueTracker.BuildUtils where
+module Krinj.BuildUtils where
 
-import IssueTracker.TH (commitHashQ)
+import Krinj.TH (commitHashQ)
 import Data.Text (Text)
 
 -- the commit hash at the time the executable was built

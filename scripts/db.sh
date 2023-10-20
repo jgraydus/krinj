@@ -1,4 +1,4 @@
 #!/bin/sh
 
-docker exec -it dev-issues-tracker-postgres psql --username=postgres --dbname=main
+docker exec -it dev-krinj-postgres psql --username=postgres --dbname=main
 

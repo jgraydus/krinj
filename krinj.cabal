@@ -1,5 +1,5 @@
 cabal-version:      3.8
-name:               issue-tracker
+name:               krinj
 version:            0.1.0.0
 
 common shared-properties
@@ -24,23 +24,23 @@ library
     import: shared-properties
     hs-source-dirs:  lib
     exposed-modules:
-        IssueTracker.BuildUtils,
-        IssueTracker.Config,
-        IssueTracker.DatabaseConnectionPool,
-        IssueTracker.Logger,
-        IssueTracker.Options,
-        IssueTracker.Web.Application
+        Krinj.BuildUtils,
+        Krinj.Config,
+        Krinj.DatabaseConnectionPool,
+        Krinj.Logger,
+        Krinj.Options,
+        Krinj.Web.Application
     other-modules:
-        IssueTracker.TH,
-        IssueTracker.Web.ContentTypes,
-        IssueTracker.Web.Routes,
-        IssueTracker.Web.Routes.Attributes,
-        IssueTracker.Web.Routes.Entities,
-        IssueTracker.Web.Routes.EntityTypes,
-        IssueTracker.Web.Routes.Projects,
-        IssueTracker.Web.Routes.Site,
-        IssueTracker.Web.Routes.Site.Bundles,
-        IssueTracker.Web.RouteHandler
+        Krinj.TH,
+        Krinj.Web.ContentTypes,
+        Krinj.Web.Routes,
+        Krinj.Web.Routes.Attributes,
+        Krinj.Web.Routes.Entities,
+        Krinj.Web.Routes.EntityTypes,
+        Krinj.Web.Routes.Projects,
+        Krinj.Web.Routes.Site,
+        Krinj.Web.Routes.Site.Bundles,
+        Krinj.Web.RouteHandler
     build-depends:
         aeson,
         AesonBson,
@@ -76,11 +76,11 @@ library
         uuid,
         wai
 
--- http server - backend of the issue-tracker application
+-- http server - backend of the krinj application
 executable api
     import: shared-properties
     build-depends:
-        issue-tracker,
+        krinj,
         postgresql-simple,
         warp
     hs-source-dirs: app/api
@@ -95,7 +95,7 @@ executable api
 executable init
     import: shared-properties
     build-depends:
-        issue-tracker,
+        krinj,
         postgresql-migration,
         postgresql-simple,
         text
@@ -107,7 +107,7 @@ executable init
 executable migrate
     import: shared-properties
     build-depends:
-        issue-tracker,
+        krinj,
         optparse-applicative,
         postgresql-migration,
         postgresql-simple,
@@ -121,7 +121,7 @@ executable migrate
 executable admin
     import: shared-properties
     build-depends:
-        issue-tracker,
+        krinj,
     hs-source-dirs: app/admin
     main-is:        Main.hs
     ghc-options:    -Wall -threaded -main-is Main

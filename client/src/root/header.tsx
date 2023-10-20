@@ -26,7 +26,7 @@ const Link = ({ to, children }: { to: string, children: ReactNode }) =>
 export default () =>
   <Root>
     <Link to="/projects">
-      <Title>Issue Tracker</Title>
+      <Title>Krinj</Title>
     </Link>
   </Root>
 

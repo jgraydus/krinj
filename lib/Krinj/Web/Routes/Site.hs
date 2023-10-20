@@ -1,16 +1,16 @@
-module IssueTracker.Web.Routes.Site (
+module Krinj.Web.Routes.Site (
     Site, siteHandler
 ) where
 
 import Control.Monad.Reader (asks)
 import Data.Text (pack, Text)
-import IssueTracker.BuildUtils (commitHash)
-import IssueTracker.Config (ApplicationConfig(..), HttpServerConfig(..),
-                            PortNumber(..), Protocol(..), HostName(..))
-import IssueTracker.Web.ContentTypes (CSS, HTML, JavaScript)
-import IssueTracker.Web.Routes.Site.Bundles qualified as Bundles
-import IssueTracker.Web.RouteHandler
 import GHC.Records (getField)
+import Krinj.BuildUtils (commitHash)
+import Krinj.Config (ApplicationConfig(..), HttpServerConfig(..),
+                     PortNumber(..), Protocol(..), HostName(..))
+import Krinj.Web.ContentTypes (CSS, HTML, JavaScript)
+import Krinj.Web.Routes.Site.Bundles qualified as Bundles
+import Krinj.Web.RouteHandler
 import NeatInterpolation (text)
 import Servant.API
 
@@ -40,7 +40,7 @@ index _ = do
         <title>Issue Tracker</title>
         <link rel="stylesheet" href="${path}.css">
         <script>
-          window.IssueTracker = { commitHash: "${commitHash}" }
+          window.Krinj = { commitHash: "${commitHash}" }
         </script>
       </head>
       <body>

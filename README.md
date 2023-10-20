@@ -1,4 +1,6 @@
-## Issue Tracker
+## Krinj
+
+Krinj is not Jira.
 
 This is a work in progress.
 

@@ -1,5 +1,5 @@
 {-# LANGUAGE UndecidableInstances #-}
-module IssueTracker.Logger (
+module Krinj.Logger (
     Logger,
     LogLevel(..),
     LogStr,

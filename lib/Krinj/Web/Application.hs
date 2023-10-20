@@ -1,4 +1,4 @@
-module IssueTracker.Web.Application (
+module Krinj.Web.Application (
     app
 ) where
 
@@ -10,9 +10,9 @@ import Data.UUID qualified as UUID
 import Data.UUID.V4 qualified as UUID
 import Data.Pool (Pool)
 import Database.PostgreSQL.Simple (Connection)
-import IssueTracker.Config (ApplicationConfig(..))
-import IssueTracker.Logger (Logger, LogLevel(INFO), LogStr, toLogStr)
-import IssueTracker.Web.Routes
+import Krinj.Config (ApplicationConfig(..))
+import Krinj.Logger (Logger, LogLevel(INFO), LogStr, toLogStr)
+import Krinj.Web.Routes
 import Network.Wai (Application, rawQueryString, rawPathInfo, Request, requestMethod)
 import Servant (Context(..), Handler(..), ServerError, serveWithContextT)
 import System.Clock (Clock(Monotonic), diffTimeSpec, getTime, TimeSpec, toNanoSecs)

@@ -1,4 +1,4 @@
-module IssueTracker.DatabaseConnectionPool (
+module Krinj.DatabaseConnectionPool (
     create, DatabaseConnectionPoolConfig(..), defaultConfig
 ) where 
 

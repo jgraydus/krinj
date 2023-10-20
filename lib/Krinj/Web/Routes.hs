@@ -1,11 +1,11 @@
-module IssueTracker.Web.Routes where
+module Krinj.Web.Routes where
 
-import IssueTracker.Web.Routes.Attributes
-import IssueTracker.Web.Routes.Entities
-import IssueTracker.Web.Routes.EntityTypes
-import IssueTracker.Web.Routes.Projects
-import IssueTracker.Web.Routes.Site
-import IssueTracker.Web.RouteHandler
+import Krinj.Web.Routes.Attributes
+import Krinj.Web.Routes.Entities
+import Krinj.Web.Routes.EntityTypes
+import Krinj.Web.Routes.Projects
+import Krinj.Web.Routes.Site
+import Krinj.Web.RouteHandler
 import Servant
 
 type API = "api" :> (

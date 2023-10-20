@@ -1,4 +1,4 @@
-module IssueTracker.Web.Routes.Projects where
+module Krinj.Web.Routes.Projects where
 
 import Control.Monad (forM_)
 import Control.Monad.Except (ExceptT(..), runExceptT)
@@ -12,7 +12,7 @@ import Data.Time.Clock (UTCTime)
 import EntityService
 import GHC.Generics (Generic)
 import GHC.Records (getField)
-import IssueTracker.Web.RouteHandler
+import Krinj.Web.RouteHandler
 import Servant
 
 type ProjectsApi =

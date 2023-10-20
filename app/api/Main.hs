@@ -2,11 +2,11 @@ module Main where
 
 import Data.Coerce (coerce)
 import Database.PostgreSQL.Simple (ConnectInfo(..), defaultConnectInfo)
-import IssueTracker.Logger (LogLevel(INFO), newLogger, toLogStr)
-import IssueTracker.Config (ApplicationConfig(..), HttpServerConfig(..), PortNumber(..), readConfig)
-import IssueTracker.DatabaseConnectionPool
-import IssueTracker.Options (env, Options(..), parseOptions)
-import IssueTracker.Web.Application (app)
+import Krinj.Logger (LogLevel(INFO), newLogger, toLogStr)
+import Krinj.Config (ApplicationConfig(..), HttpServerConfig(..), PortNumber(..), readConfig)
+import Krinj.DatabaseConnectionPool
+import Krinj.Options (env, Options(..), parseOptions)
+import Krinj.Web.Application (app)
 import Network.Wai.Handler.Warp qualified as Warp
 import System.Exit (ExitCode(ExitFailure), exitSuccess, exitWith)
 

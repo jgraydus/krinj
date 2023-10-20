@@ -1,5 +1,5 @@
 {-# LANGUAGE UndecidableInstances #-}
-module IssueTracker.Web.Routes.Site.Bundles (
+module Krinj.Web.Routes.Site.Bundles (
     SiteBundles(..)
 ) where
 

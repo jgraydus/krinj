@@ -5,7 +5,7 @@ import Data.Text (Text)
 import Data.Text.IO qualified as Text
 import Database.PostgreSQL.Simple
 import Database.PostgreSQL.Simple.Migration
-import IssueTracker.Config (readConfig)
+import Krinj.Config (readConfig)
 import System.Exit (exitFailure)
 
 connectInfo :: ConnectInfo

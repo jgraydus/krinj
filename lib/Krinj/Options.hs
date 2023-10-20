@@ -1,4 +1,4 @@
-module IssueTracker.Options (
+module Krinj.Options (
     env,
     Mode(..),
     Options(..),

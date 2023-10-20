@@ -1,4 +1,4 @@
-module IssueTracker.Web.Routes.Entities (
+module Krinj.Web.Routes.Entities (
     EntitiesApi, entitiesApiHandler
 ) where
 
@@ -16,7 +16,7 @@ import Data.Time.Clock (UTCTime)
 import EntityService
 import GHC.Generics (Generic)
 import GHC.Records (getField)
-import IssueTracker.Web.RouteHandler
+import Krinj.Web.RouteHandler
 import Servant
 
 type EntitiesApi =

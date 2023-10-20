@@ -1,11 +1,11 @@
-module IssueTracker.Web.Routes.Attributes (
+module Krinj.Web.Routes.Attributes (
     AttributesApi, attributesApiHandler
 ) where
 
 import Control.Monad.Except (ExceptT(..), runExceptT)
 import Data.Map.Strict qualified as Map
 import EntityService
-import IssueTracker.Web.RouteHandler
+import Krinj.Web.RouteHandler
 import Servant
 
 type AttributesApi =

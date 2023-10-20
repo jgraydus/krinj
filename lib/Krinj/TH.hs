@@ -1,4 +1,4 @@
-module IssueTracker.TH where
+module Krinj.TH where
 
 import Data.Text (pack)
 import Language.Haskell.TH.Syntax (Exp, lift, Q, runIO)

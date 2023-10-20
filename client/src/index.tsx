@@ -6,7 +6,7 @@ import { store } from './redux'
 
 declare global {
     interface Window {
-        IssueTracker: {
+        Krinj: {
             commitHash: String
         }
     }

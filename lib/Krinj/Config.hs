@@ -1,10 +1,10 @@
-module IssueTracker.Config where
+module Krinj.Config where
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Text (Text)
 import GHC.Generics (Generic)
-import IssueTracker.Logger (LogLevel(..))
 import JsonConfig qualified
+import Krinj.Logger (LogLevel(..))
 
 newtype HostName = HostName Text
   deriving stock (Generic)

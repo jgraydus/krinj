@@ -1,4 +1,4 @@
-module IssueTracker.Web.ContentTypes (
+module Krinj.Web.ContentTypes (
     CSS, HTML, JavaScript
 ) where
 

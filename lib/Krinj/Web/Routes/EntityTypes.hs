@@ -1,4 +1,4 @@
-module IssueTracker.Web.Routes.EntityTypes (
+module Krinj.Web.Routes.EntityTypes (
     EntityTypesApi, entityTypesApiHandler
 ) where
 
@@ -6,7 +6,7 @@ import Data.Aeson (FromJSON, ToJSON)
 import Data.Map.Strict qualified as Map
 import EntityService
 import GHC.Generics (Generic)
-import IssueTracker.Web.RouteHandler
+import Krinj.Web.RouteHandler
 import Servant
 
 type EntityTypesApi =

@@ -9,5 +9,5 @@ const Root = styled.div`
   justify-content: flex-end;
 `
 
-export default () => <Root>{window.IssueTracker.commitHash}</Root>
+export default () => <Root>{window.Krinj.commitHash}</Root>
 
