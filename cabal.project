@@ -1,6 +1,8 @@
 packages:
   ./krinj.cabal
+  ./common-types/common-types.cabal
   ./entity-service/entity-service.cabal
+  ./test-util/test-util.cabal
   ./user-service/user-service.cabal
 
 source-repository-package

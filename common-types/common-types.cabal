@@ -1,0 +1,30 @@
+cabal-version:      3.4
+name:               common-types
+version:            0.1.0.0
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall
+
+library
+    import:           warnings
+    exposed-modules:
+        Krinj.Config
+        Krinj.Logger.Types
+    other-modules:
+        Krinj.Config.DatabaseConfig
+        Krinj.Config.Newtypes
+    build-depends:
+        aeson,
+        base ^>=4.17.2.0,
+        fast-logger,
+        json-config,
+        postgresql-simple,
+        text
+    hs-source-dirs:   src
+    default-language: GHC2021
+    default-extensions:
+        DeriveAnyClass,
+        DerivingStrategies,
+        DuplicateRecordFields,
+        RecordWildCards

@@ -2,7 +2,7 @@ module Main where
 
 import Data.Coerce (coerce)
 import Krinj.Logger (LogLevel(INFO), newLogger, toLogStr)
-import Krinj.Config (ApplicationConfig(..), HttpServerConfig(..), makeConnectInfo, PortNumber(..), readConfig)
+import Krinj.Config (ApplicationConfig(..), HttpServerConfig(..), makePostgresqlConnectInfo, PortNumber(..), readConfig)
 import Krinj.DatabaseConnectionPool
 import Krinj.Options (env, Options(..), parseOptions)
 import Krinj.Web.Application (app)
@@ -29,7 +29,7 @@ main = do
       logger INFO (toLogStr (show applicationConfig))
 
       databaseConnectionPoolConfig <- defaultConfig
-      connectInfo <- makeConnectInfo databaseConfig
+      let connectInfo = makePostgresqlConnectInfo databaseConfig
       databaseConnectionPool <- create databaseConnectionPoolConfig connectInfo
 
       logger INFO (toLogStr $ "server listening on port " <> show port)

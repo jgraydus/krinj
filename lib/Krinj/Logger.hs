@@ -15,20 +15,10 @@ import Control.Monad.Reader (asks, MonadReader)
 import Data.Aeson (FromJSON)
 import GHC.Generics (Generic)
 import GHC.Records (getField, HasField)
+import Krinj.Logger.Types
 import Prelude hiding (log)
 import System.Log.FastLogger (LogType'(LogStdout), LogStr, newTimeCache,
                               newTimedFastLogger, simpleTimeFormat', ToLogStr(..))
-
-data LogLevel = TRACE | DEBUG | INFO | WARN | ERROR
-  deriving (Eq, Generic, Ord, Show)
-
-instance FromJSON LogLevel
-
-instance ToLogStr LogLevel where
-  toLogStr = toLogStr . show
-
-type Logger = LogLevel -> LogStr -> IO ()
-type LoggerCleanup = IO ()
 
 -- this character string tells the terminal to render the text in green
 green :: LogStr

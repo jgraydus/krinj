@@ -12,7 +12,7 @@ import GHC.Generics (Generic)
 import JsonConfig qualified
 import Krinj.Config.DatabaseConfig
 import Krinj.Config.Newtypes
-import Krinj.Logger (LogLevel(..))
+import Krinj.Logger.Types (LogLevel(..))
 
 data HttpServerConfig = HttpServerConfig
   { host :: HostName

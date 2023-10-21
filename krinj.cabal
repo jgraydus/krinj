@@ -25,14 +25,11 @@ library
     hs-source-dirs:  lib
     exposed-modules:
         Krinj.BuildUtils,
-        Krinj.Config,
         Krinj.DatabaseConnectionPool,
         Krinj.Logger,
         Krinj.Options,
         Krinj.Web.Application
     other-modules:
-        Krinj.Config.DatabaseConfig,
-        Krinj.Config.Newtypes,
         Krinj.TH,
         Krinj.Web.Auth,
         Krinj.Web.ContentTypes,
@@ -50,6 +47,7 @@ library
         bson,
         bytestring,
         clock,
+        common-types,
         containers,
         cookie,
         entity-service,
@@ -85,6 +83,8 @@ library
 executable api
     import: shared-properties
     build-depends:
+        base,
+        common-types,
         krinj,
         postgresql-simple,
         warp
@@ -100,6 +100,8 @@ executable api
 executable init
     import: shared-properties
     build-depends:
+        base,
+        common-types,
         krinj,
         optparse-applicative,
         postgresql-migration,
@@ -115,6 +117,8 @@ executable init
 executable migrate
     import: shared-properties
     build-depends:
+        base,
+        common-types,
         krinj,
         optparse-applicative,
         postgresql-migration,
@@ -129,7 +133,8 @@ executable migrate
 executable admin
     import: shared-properties
     build-depends:
-        krinj,
+        base,
+        krinj
     hs-source-dirs: app/admin
     main-is:        Main.hs
     ghc-options:    -Wall -threaded -main-is Main
@@ -137,6 +142,7 @@ executable admin
 executable dev-server
     import: shared-properties
     build-depends:
+        base,
         dev-server
     hs-source-dirs: app/dev-server
     main-is:        Main.hs

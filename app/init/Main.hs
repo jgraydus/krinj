@@ -8,7 +8,7 @@ import Database.PostgreSQL.Simple.Types (Identifier(..))
 import Database.PostgreSQL.Simple.Migration
   (defaultOptions, MigrationCommand(..), runMigration)
 import Data.Text (pack)
-import Krinj.Config (ApplicationConfig(..), makeConnectInfo, readConfig)
+import Krinj.Config (ApplicationConfig(..), makePostgresqlConnectInfo, readConfig)
 import System.Exit (exitFailure, exitSuccess)
 
 deleteDatabase :: ConnectInfo -> IO ()
@@ -59,7 +59,7 @@ main = do
 
     Right _config -> do
       let ApplicationConfig {..} = _config
-      connectInfo <- makeConnectInfo databaseConfig
+          connectInfo = makePostgresqlConnectInfo databaseConfig
       print $ connectInfo { connectPassword = "*********" }
       putStrLn ""
 

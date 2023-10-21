@@ -1,5 +1,5 @@
 module Krinj.Config.DatabaseConfig (
-    DatabaseConfig(..), makeConnectInfo
+    DatabaseConfig(..), makePostgresqlConnectInfo
 ) where
 
 import Data.Aeson (FromJSON)
@@ -18,8 +18,8 @@ data DatabaseConfig = DatabaseConfig
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON)
 
-makeConnectInfo :: DatabaseConfig -> IO ConnectInfo
-makeConnectInfo DatabaseConfig {..} = pure $ defaultConnectInfo
+makePostgresqlConnectInfo :: DatabaseConfig -> ConnectInfo
+makePostgresqlConnectInfo DatabaseConfig {..} = defaultConnectInfo
   { connectPort = fromIntegral . (coerce @PortNumber @Int) $ port
   , connectUser = unpack user
   , connectPassword = unpack . coerce $ password

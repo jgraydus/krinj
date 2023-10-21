@@ -5,7 +5,7 @@ import Data.Text (Text)
 import Data.Text.IO qualified as Text
 import Database.PostgreSQL.Simple
 import Database.PostgreSQL.Simple.Migration
-import Krinj.Config (ApplicationConfig(..), makeConnectInfo, readConfig)
+import Krinj.Config (ApplicationConfig(..), makePostgresqlConnectInfo, readConfig)
 import System.Exit (exitFailure)
 
 migrationDirs :: [FilePath]
@@ -36,7 +36,7 @@ main = do
 
     Right _config -> do
       let ApplicationConfig {..} = _config
-      connectInfo <- makeConnectInfo databaseConfig
+          connectInfo = makePostgresqlConnectInfo databaseConfig
       print $ connectInfo { connectPassword = "*********" }
       conn <- connect connectInfo
 

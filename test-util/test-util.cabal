@@ -1,0 +1,32 @@
+cabal-version:      3.4
+name:               test-util
+version:            0.1.0.0
+
+library
+    exposed-modules:
+        Krinj.Test.Util
+    other-modules:
+        Krinj.Test.Util.Minio,
+        Krinj.Test.Util.PostgreSQL,
+        Krinj.Test.Util.Redis
+    build-depends:
+        base,
+        common-types,
+        hedis,
+        http-client,
+        http-client-tls,
+        json-config,
+        minio-hs,
+        postgresql-migration,
+        postgresql-simple,
+        random,
+        resource-pool,
+        text,
+        uuid
+    hs-source-dirs:   src
+    default-language: GHC2021
+    default-extensions:
+        OverloadedStrings,
+        RecordWildCards,
+        ScopedTypeVariables
+

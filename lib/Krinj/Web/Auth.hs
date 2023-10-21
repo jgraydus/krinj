@@ -10,7 +10,7 @@ import Data.Text.Encoding (encodeUtf8)
 import Jose.Jwa (JwsAlg(HS256))
 import Jose.Jws qualified as Jws
 import Jose.Jwt (Jwt(..))
-import Krinj.Config.Newtypes (JwtKey(..))
+import Krinj.Config (JwtKey(..))
 import Network.HTTP.Types (hCookie)
 import Network.HTTP.Types.Header (Header)
 import Network.Wai (Request, requestHeaders)
