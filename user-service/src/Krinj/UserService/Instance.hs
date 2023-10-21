@@ -7,6 +7,7 @@ import Control.Monad.Reader (asks, MonadReader)
 import Data.Pool (Pool, withResource)
 import Database.PostgreSQL.Simple (Connection)
 import GHC.Records (getField, HasField)
+import Krinj.Config (Password, Salt)
 import Krinj.UserService.Class
 import Krinj.UserService.Types
 import Krinj.UserService.Command qualified as Command
@@ -16,6 +17,7 @@ type Reqs r m = ( Monad m
                 , MonadIO m
                 , MonadReader r m
                 , HasField "databaseConnectionPool" r (Pool Connection)
+                , HasField "salt" r Salt
                 )
 
 withConnection :: Reqs r m => (Connection -> IO a) -> m a
@@ -26,14 +28,18 @@ withConnection action = do
 instance Reqs r m => UserService m where
 
   createUser :: EmailAddress -> Password -> m (Maybe User)
-  createUser emailAddress password = withConnection $ \conn ->
-    Command.createUser conn emailAddress password
+  createUser emailAddress password = do
+    salt <- asks (getField @"salt")
+    withConnection $ \conn ->
+      Command.createUser conn emailAddress password salt
 
   findUserById :: UserId -> m (Maybe User)
   findUserById userId = withConnection $ \conn ->
     Query.findUserById conn userId
 
   findUserByCredentials :: EmailAddress -> Password -> m (Maybe User)
-  findUserByCredentials emailAddress password = withConnection $ \conn ->
-    Query.findUserByCredentials conn emailAddress password
+  findUserByCredentials emailAddress password = do
+    salt <- asks (getField @"salt")
+    withConnection $ \conn ->
+      Query.findUserByCredentials conn emailAddress password salt
   

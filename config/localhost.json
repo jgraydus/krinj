@@ -11,6 +11,7 @@
         "port": 8080,
         "jwtKey": "this is a secret key"
     },
-    "logLevel": "DEBUG"
+    "logLevel": "DEBUG",
+    "salt": "塩塩塩塩塩塩塩塩塩塩塩"
 }
 

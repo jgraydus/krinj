@@ -5,7 +5,6 @@ import Data.UUID (UUID)
 import GHC.Generics (Generic)
 
 type EmailAddress = Text
-type Password = Text
 type UserId = UUID
 
 data User =

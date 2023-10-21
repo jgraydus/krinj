@@ -11,6 +11,7 @@
         "port": {{HTTP_PORT || 80}},
         "protocol": {{HTTP_PROTOCOL || "http"}}
     },
-    "logLevel": "{{LOG_LEVEL}}"
+    "logLevel": "{{LOG_LEVEL}}",
+    "salt": "{{SALT}}"
 }
 

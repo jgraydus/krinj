@@ -27,6 +27,7 @@ data ApplicationConfig = ApplicationConfig
   { databaseConfig :: DatabaseConfig
   , httpServerConfig :: HttpServerConfig
   , logLevel :: LogLevel
+  , salt :: Salt
   }
   deriving stock (Generic, Show)
   deriving anyclass (FromJSON)

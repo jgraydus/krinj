@@ -1,5 +1,6 @@
 module Krinj.UserService.Class where
 
+import Krinj.Config (Password)
 import Krinj.UserService.Types
 
 class Monad m => UserService m where

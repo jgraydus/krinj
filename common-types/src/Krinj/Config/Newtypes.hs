@@ -30,3 +30,7 @@ newtype Password = Password Text
 instance Show Password where
   show = const "************"
 
+newtype Salt = Salt Text
+  deriving stock (Generic, Show)
+  deriving newtype (Eq, FromJSON, Ord, ToJSON)
+

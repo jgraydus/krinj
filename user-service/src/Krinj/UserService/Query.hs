@@ -3,6 +3,7 @@ module Krinj.UserService.Query (
 ) where
 
 import Data.Maybe (listToMaybe)
+import Krinj.Config (Password(), Salt())
 import Krinj.UserService.Hash
 import Krinj.UserService.Model
 import Krinj.UserService.Types
@@ -19,9 +20,9 @@ findUserById conn userId = fmap toUser $ runSelect conn $ do
        .&& row.isDeleted .== toFields False
   pure (row.userId, row.emailAddress)
 
-findUserByCredentials :: Connection -> EmailAddress -> Password -> IO (Maybe User)
-findUserByCredentials conn emailAddress password = do
-  p <- hashPassword password
+findUserByCredentials :: Connection -> EmailAddress -> Password -> Salt -> IO (Maybe User)
+findUserByCredentials conn emailAddress password salt = do
+  let p = hashPassword password salt
   fmap toUser $ runSelect conn $ do
     usersRow <- selectTable usersTable
     credentialsRow <- selectTable credentialsTable

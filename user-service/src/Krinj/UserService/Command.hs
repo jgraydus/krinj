@@ -4,6 +4,7 @@ module Krinj.UserService.Command (
 
 import Data.Maybe (listToMaybe)
 import Database.PostgreSQL.Simple (Connection, withTransaction)
+import Krinj.Config (Password(..), Salt(..))
 import Krinj.UserService.Types
 import Krinj.UserService.Model (CredentialsRow(..), credentialsTable, UsersRow(..), usersTable)
 import Krinj.UserService.Hash (hashPassword)
@@ -13,8 +14,8 @@ import Opaleye.Exists (exists)
 toUser :: [(UserId,EmailAddress)] -> Maybe User
 toUser = fmap (uncurry User) . listToMaybe
 
-createUser :: Connection -> EmailAddress -> Password -> IO (Maybe User)
-createUser conn emailAddress password = withTransaction conn $ do
+createUser :: Connection -> EmailAddress -> Password -> Salt -> IO (Maybe User)
+createUser conn emailAddress password salt = withTransaction conn $ do
   [emailAddressIsUsed] :: [Bool] <- runSelect conn $ exists $ do
     row <- selectTable usersTable
     where_ $ row.emailAddress .== toFields emailAddress
@@ -37,7 +38,7 @@ createUser conn emailAddress password = withTransaction conn $ do
     case result of
       Nothing -> pure Nothing
       Just user -> do
-        p <- hashPassword password
+        let p = hashPassword password salt
         _ <- runInsert conn $
           Insert
           { iTable = credentialsTable
