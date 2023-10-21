@@ -8,8 +8,8 @@ import Data.Text (Text)
 import Database.PostgreSQL.Simple qualified as P
 import Database.PostgreSQL.Simple (query, Only(..))
 import Database.PostgreSQL.Simple.SqlQQ (sql)
-import Krinj.Config (Password(..), Salt(..))
 import Krinj.UserService
+import Krinj.UserService.Types (Password(..), Salt(..), User(..))
 import Krinj.Test.Util (getConnectInfo, withTestDatabase)
 import Test.Hspec
 
@@ -25,7 +25,7 @@ main = do
 
   let withTestContext :: (TestContext -> IO a) -> IO a
       withTestContext action = withTestDatabase connectInfo $ \databaseConnectionPool ->
-        action (TestContext { databaseConnectionPool, salt = Salt "塩" })
+        action (TestContext { databaseConnectionPool, salt = "塩" })
 
   hspec $ parallel $ do
 
@@ -36,7 +36,7 @@ main = do
         withTestContext $ \ctx -> do
           let emailAddress = "user@user.com"
 
-          result <- flip runReaderT ctx $ createUser emailAddress (Password "password")
+          result <- flip runReaderT ctx $ createUser emailAddress "password"
 
           result `shouldSatisfy` isJust
           let user = fromJust result
@@ -48,8 +48,8 @@ main = do
           let emailAddress = "user@user.com"
 
           result <- flip runReaderT ctx $ do
-            _ <- createUser emailAddress (Password "password")
-            createUser emailAddress (Password "passthisword")
+            _ <- createUser emailAddress "password"
+            createUser emailAddress "passthisword"
 
           result `shouldSatisfy` isNothing
 
@@ -58,7 +58,7 @@ main = do
         withTestContext $ \ctx -> do
           let emailAddress = "user@user.com"
 
-          Just (User {userId}) <- flip runReaderT ctx $ createUser emailAddress (Password "password")
+          Just (User {userId}) <- flip runReaderT ctx $ createUser emailAddress "password"
           result <- flip runReaderT ctx $ findUserById userId
 
           result `shouldSatisfy` isJust
@@ -70,7 +70,7 @@ main = do
       it "finds a user by credentials" $
         withTestContext $ \ctx -> do
           let emailAddress = "user@user.com"
-              password = Password "password"
+              password = "password"
 
           Just (User {userId}) <- flip runReaderT ctx $ createUser emailAddress password
           result <- flip runReaderT ctx $ findUserByCredentials emailAddress password
@@ -84,10 +84,10 @@ main = do
       it "does NOT find a user by credentials if credentials are wrong" $
         withTestContext $ \ctx -> do
           let emailAddress = "user@user.com"
-              password = Password "password"
+              password = "password"
 
           _ <- flip runReaderT ctx $ createUser emailAddress password
-          result <- flip runReaderT ctx $ findUserByCredentials emailAddress (Password "wrong password")
+          result <- flip runReaderT ctx $ findUserByCredentials emailAddress "wrong password"
 
           result `shouldSatisfy` isNothing
 
@@ -96,7 +96,7 @@ main = do
         withTestContext $ \ctx -> do
           let TestContext { databaseConnectionPool } = ctx
               emailAddress = "user@user.com"
-              password = (Password "password")
+              password = "password"
 
           Just (User {userId}) <- flip runReaderT ctx $ createUser emailAddress password
 

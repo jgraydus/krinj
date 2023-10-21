@@ -12,8 +12,6 @@ module Krinj.Logger (
 import Control.Monad (when)
 import Control.Monad.IO.Class (liftIO, MonadIO)
 import Control.Monad.Reader (asks, MonadReader)
-import Data.Aeson (FromJSON)
-import GHC.Generics (Generic)
 import GHC.Records (getField, HasField)
 import Krinj.Logger.Types
 import Prelude hiding (log)

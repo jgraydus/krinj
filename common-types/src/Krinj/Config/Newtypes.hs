@@ -23,14 +23,3 @@ newtype JwtKey = JwtKey Text
 instance Show JwtKey where
   show = const "************"
 
-newtype Password = Password Text
-  deriving stock (Generic)
-  deriving newtype (Eq, FromJSON, Ord, ToJSON)
-
-instance Show Password where
-  show = const "************"
-
-newtype Salt = Salt Text
-  deriving stock (Generic, Show)
-  deriving newtype (Eq, FromJSON, Ord, ToJSON)
-

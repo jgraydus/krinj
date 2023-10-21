@@ -7,7 +7,8 @@ import Data.Coerce (coerce)
 import Data.Text (Text, unpack)
 import Database.PostgreSQL.Simple (ConnectInfo(..), defaultConnectInfo)
 import GHC.Generics (Generic)
-import Krinj.Config.Newtypes (Password(..), PortNumber(..))
+import Krinj.Config.Newtypes (PortNumber(..))
+import Krinj.UserService.Types (Password(..))
 
 data DatabaseConfig = DatabaseConfig
   { database :: Text

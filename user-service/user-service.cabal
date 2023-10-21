@@ -18,7 +18,6 @@ library
         Krinj.UserService.Model
         Krinj.UserService.Model.Credentials
         Krinj.UserService.Model.Users
-        Krinj.UserService.Types
         Krinj.UserService.Query
     build-depends:
         base ^>=4.17.2.0,

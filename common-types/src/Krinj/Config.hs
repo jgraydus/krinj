@@ -13,6 +13,7 @@ import JsonConfig qualified
 import Krinj.Config.DatabaseConfig
 import Krinj.Config.Newtypes
 import Krinj.Logger.Types (LogLevel(..))
+import Krinj.UserService.Types (Salt)
 
 data HttpServerConfig = HttpServerConfig
   { host :: HostName

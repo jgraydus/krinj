@@ -3,10 +3,9 @@ module Krinj.UserService.Query (
 ) where
 
 import Data.Maybe (listToMaybe)
-import Krinj.Config (Password(), Salt())
 import Krinj.UserService.Hash
 import Krinj.UserService.Model
-import Krinj.UserService.Types
+import Krinj.UserService.Types (EmailAddress(..), Password, Salt, User(..), UserId)
 import Database.PostgreSQL.Simple (Connection)
 import Opaleye ((.==), (.===), (.&&), nullableToMaybeFields, runSelect, selectTable, toFields, where_)
 
@@ -21,7 +20,7 @@ findUserById conn userId = fmap toUser $ runSelect conn $ do
   pure (row.userId, row.emailAddress)
 
 findUserByCredentials :: Connection -> EmailAddress -> Password -> Salt -> IO (Maybe User)
-findUserByCredentials conn emailAddress password salt = do
+findUserByCredentials conn (EmailAddress emailAddress) password salt = do
   let p = hashPassword password salt
   fmap toUser $ runSelect conn $ do
     usersRow <- selectTable usersTable

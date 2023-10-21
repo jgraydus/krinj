@@ -3,7 +3,7 @@ module Krinj.UserService.Hash where
 import Crypto.Hash (Digest, hash, SHA3_512)
 import Data.Text (pack, Text)
 import Data.Text.Encoding (encodeUtf8)
-import Krinj.Config (Password(..), Salt(..))
+import Krinj.UserService.Types (Password(..), Salt(..))
 
 hashPassword :: Password -> Salt -> Text
 hashPassword (Password password) (Salt salt) =

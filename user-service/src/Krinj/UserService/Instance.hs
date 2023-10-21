@@ -7,9 +7,8 @@ import Control.Monad.Reader (asks, MonadReader)
 import Data.Pool (Pool, withResource)
 import Database.PostgreSQL.Simple (Connection)
 import GHC.Records (getField, HasField)
-import Krinj.Config (Password, Salt)
 import Krinj.UserService.Class
-import Krinj.UserService.Types
+import Krinj.UserService.Types (EmailAddress, Password, Salt, User, UserId)
 import Krinj.UserService.Command qualified as Command
 import Krinj.UserService.Query qualified as Query
 

@@ -1,7 +1,6 @@
 module Krinj.UserService.Class where
 
-import Krinj.Config (Password)
-import Krinj.UserService.Types
+import Krinj.UserService.Types (EmailAddress, Password, User, UserId)
 
 class Monad m => UserService m where
   createUser            :: EmailAddress -> Password -> m (Maybe User)

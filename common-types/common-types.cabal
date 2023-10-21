@@ -9,22 +9,27 @@ common warnings
 library
     import:           warnings
     exposed-modules:
-        Krinj.Config
-        Krinj.Logger.Types
+        Krinj.Config,
+        Krinj.Logger.Types,
+        Krinj.UserService.Types
     other-modules:
-        Krinj.Config.DatabaseConfig
-        Krinj.Config.Newtypes
+        Krinj.Config.DatabaseConfig,
+        Krinj.Config.Newtypes,
     build-depends:
         aeson,
         base ^>=4.17.2.0,
         fast-logger,
         json-config,
+        opaleye,
         postgresql-simple,
-        text
+        text,
+        uuid
     hs-source-dirs:   src
     default-language: GHC2021
     default-extensions:
         DeriveAnyClass,
         DerivingStrategies,
         DuplicateRecordFields,
+        OverloadedStrings,
         RecordWildCards
+
