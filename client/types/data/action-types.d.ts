@@ -1,0 +1,9 @@
+export declare const LOAD_PROJECT = "projects/LOAD_PROJECT";
+export declare const LOAD_PROJECTS = "projects/LOAD_PROJECTS";
+export declare const CREATE_PROJECT = "projects/CREATE_PROJECT";
+export declare const DELETE_PROJECT = "projects/DELETE_PROJECT";
+export declare const LOAD_ENTITIES = "issues/LOAD_ENTITIES";
+export declare const LOAD_ENTITY = "issues/LOAD_ENTITY";
+export declare const CREATE_ENTITY = "issues/CREATE_ENTITY";
+export declare const DELETE_ENTITY = "issues/DELETE_ENTITY";
+export declare const LOAD_ATTRIBUTE = "attributes/LOAD_ATTRIBUTE";

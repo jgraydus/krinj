@@ -2,8 +2,6 @@ import { ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Spacer from '../components/spacer'
-
 const Root = styled.div`
   display: flex;
   flex-flow: row nowrap;

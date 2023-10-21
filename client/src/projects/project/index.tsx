@@ -1,12 +1,11 @@
 import * as R from 'ramda'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Loading from '../../components/loading'
 import DetailsTab from './details-tab'
 import IssuesTab from './issues-tab'
-import { deleteProject, loadProject, selectProject, useDispatch, useSelector } from '../../data'
+import { deleteProject, loadProject, selectProject, useDispatch, useSelector } from 'data'
 
 const Root = styled.div`
   box-sizing: border-box;
@@ -86,6 +85,7 @@ const View = ({ selectedTab }: { selectedTab: ProjectPageTab } ) => {
     if (selectedTab === ProjectPageTab.Issues) {
       return <IssuesTab project={project} />
     }
+    return null;
   })()
 
   return (

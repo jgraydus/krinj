@@ -4,9 +4,6 @@ import styled from 'styled-components'
 import Footer from './footer'
 import Header from './header'
 
-const FooterStyles = styled.div`
-  padding: 5px;
-`
 const Root = styled.div`
   position: absolute;
   top: 0;

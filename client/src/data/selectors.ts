@@ -17,7 +17,7 @@ export const selectProject: (state: RootState, projectId: ProjectId) => Project 
 = createSelector(
     [
         selectProjectsById,
-        (state: RootState, projectId: ProjectId) => projectId
+        (_state: RootState, projectId: ProjectId) => projectId
     ],
     (projects: ProjectsById, projectId) => projects[projectId] || null
 );

@@ -1,10 +1,8 @@
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import InlineEdit from '../components/inline-edit'
-import Modal from '../components/modal'
-import Spacer from '../components/spacer'
-import { createProject, useDispatch } from '../data'
+import { InlineEdit, Modal, Spacer } from 'components'
+import { createProject, useDispatch } from 'data'
 
 const Root = styled.div`
   width: 100%;

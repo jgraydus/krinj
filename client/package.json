@@ -4,9 +4,7 @@
   "private": true,
   "main": "src/index.tsx",
   "scripts": {
-    "_build": "esbuild src/index.tsx --bundle --outfile=build/bundle.js",
-    "build": "tsc && esbuild src/index.tsx --bundle --outfile=build/bundle.js",
-    "build-prod": "esbuild src/index.tsx --bundle --minify --outfile=build/bundle.js",
+    "build": "webpack build",
     "reinstall": "rm -rf node_modules && npm install",
     "ci-check": "npm run lint && npm run tsc && npm run test",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
@@ -42,10 +40,13 @@
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "5.22.0",
     "@typescript-eslint/parser": "5.22.0",
-    "esbuild": "^0.15.3",
+    "css-loader": "^6.8.1",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "8.5.0",
-    "eslint-config-react-app": "^7.0.1"
+    "eslint-config-react-app": "^7.0.1",
+    "ts-loader": "^9.5.0",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   },
   "browserslist": {
     "production": [

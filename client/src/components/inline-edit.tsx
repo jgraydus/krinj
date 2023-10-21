@@ -71,13 +71,11 @@ const Edit = ({ save, value, setValue }: any) => {
 interface InlineEditParams {
     initialValue?: string,
     onSave?: (onSave: string) => any,
-    onChange?: (onChange: string) => any,
 }
 
 export default ({ 
     initialValue = '',
     onSave,
-    onChange,
 }: InlineEditParams) => {
     const [mode, setMode] = useState(InlineEditMode.VIEW);
     const [value, setValue] = useState(initialValue);

@@ -20,7 +20,7 @@ const projectsReducer = {
     [A.LOAD_PROJECT]: (state: RootState, action: AnyAction) =>
         R.over(
             projectsLens,
-            R.mergeLeft({ [action.payload.projectId]: action.payload }),
+            R.mergeLeft({ [action['payload'].projectId]: action['payload'] }),
             state
         ),
     [A.DELETE_PROJECT]: (state: RootState, { payload: projectId }: { payload: ProjectId }) =>
@@ -37,7 +37,7 @@ const indexByEntityId = (entities: Array<Entity>) => R.indexBy(R.prop('entityId'
 const entitiesReducer = {
     [A.LOAD_ENTITIES]: (
         state: RootState,
-        { payload: { projectId, entities } }: { payload: { projectId : ProjectId, entities: Array<Entity> }}
+        { payload: { entities } }: { payload: { entities: Array<Entity> }}
     ) => R.set(
              entitiesLens,
              indexByEntityId(entities),
@@ -51,7 +51,7 @@ const entitiesReducer = {
         ),
     [A.DELETE_ENTITY]: (
         state: RootState,
-        { payload: { projectId, entityId } }: { payload: { projectId: ProjectId, entityId: EntityId } }
+        { payload: { entityId } }: { payload: { entityId: EntityId } }
     ) => R.over(
              entitiesLens,
              R.omit([entityId]),

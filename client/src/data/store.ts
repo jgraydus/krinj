@@ -1,4 +1,4 @@
-import { AnyAction, applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk'
 import api from '../api'
 import { debugLogReducer } from './reducer'

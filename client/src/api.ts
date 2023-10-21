@@ -50,7 +50,7 @@ const getEntityTypes = (): Promise<Array<EntityType>> =>
         .then(x => x.data);
 
 const getEntityType = (entityTypeId: EntityTypeId): Promise<EntityType> =>
-    axios.get(`/api/entity-types/$[entityTypeId}`)
+    axios.get(`/api/entity-types/${entityTypeId}`)
         .then(x => x.data);
 
 const createEntityType = (

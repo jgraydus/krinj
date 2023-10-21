@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
-import { EditText, EditTextarea } from 'react-edit-text'
+import { useCallback } from 'react'
+import { EditText } from 'react-edit-text'
 import 'react-edit-text/dist/index.css'
 import styled from 'styled-components'
-
-import Loading from '../../components/loading'
-import MdEditor from '../../components/md-editor'
-import { loadProject, selectProject, useDispatch, updateProject, useSelector } from '../../data'
+import { Loading, MdEditor } from 'components'
+import { selectProject, useDispatch, updateProject, useSelector } from 'data'
 
 const Root = styled.div`
   box-sizing: border-box;

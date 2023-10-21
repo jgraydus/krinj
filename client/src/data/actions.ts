@@ -15,7 +15,7 @@ export const loadProjects: AppAction<void>
 }
 
 export const loadProject: (projectId: ProjectId) => AppAction<void>
-= projectId => async (dispatch, getState, api) => {
+= projectId => async (dispatch, _getState, api) => {
   const project = await api.getProject(projectId);
   dispatch({ type: A.LOAD_PROJECT, payload: project });
 }
@@ -88,22 +88,24 @@ export const createEntity: (
 
 export const updateEntity: (entityId: EntityId, updates: any) => AppAction<void>
 = (entityId, update) => async (_dispatch, _getState, _api) => {
+    entityId; update;
     // TODO
 }
 
 export const deleteEntity: (entityId: EntityId) => AppAction<void>
 = entityId => async (_dipatch, _getState, _api) => {
+    entityId;
     // TODO
 }
 
 // --------------------------------------------------------------------------------------------
 // attributes
 
-const loadAttributes = ""
+export const loadAttributes = ""
 
-const loadAttribute = ""
+export const loadAttribute = ""
 
-const createAttribute = ""
+export const createAttribute = ""
 
 export const updateAttribute: (
     entityId: EntityId,
@@ -114,5 +116,5 @@ export const updateAttribute: (
     dispatch({ type: A.LOAD_ATTRIBUTE, payload: attribute });
 }
 
-const deleteAttribute = ""
+export const deleteAttribute = ""
 

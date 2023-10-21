@@ -1,12 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import ReactModal from 'react-modal'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import api from '../api'
-import Loading from '../components/loading'
+import { Loading } from 'components'
 import NewProject from './new-project'
 import Table from './table'
-import { loadProjects, selectProjects, useDispatch, useSelector } from '../data'
+import { loadProjects, selectProjects, useDispatch, useSelector } from 'data'
 
 const Root = styled.div`
   box-sizing: border-box;

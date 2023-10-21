@@ -1,10 +1,8 @@
 import * as R from 'ramda'
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import api from '../../../api'
-import Modal from '../../../components/modal'
-import InlineEdit from '../../../components/inline-edit'
-import { createEntity, useDispatch } from '../../../data'
+import { InlineEdit, Modal } from 'components'
+import { createEntity, useDispatch } from 'data'
 
 const Root = styled.div`
   height: 100%;
@@ -32,6 +30,10 @@ export default ({ close, isOpen, project }: { close: any, isOpen: boolean, proje
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [entityType, setEntityType] = useState(project.entityTypes[0]);
+
+  if (!entityType) {
+    throw new Error('entityType is missing');
+  }
 
   const newIssue = useCallback(async () => {
     const args = {

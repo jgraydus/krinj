@@ -1,4 +1,4 @@
-import { Link, Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 import Issue from './projects/project/issues/issue'
 import { Project, Issues } from './projects/project'
