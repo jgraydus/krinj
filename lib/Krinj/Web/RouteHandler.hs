@@ -6,6 +6,7 @@ import Control.Monad.Reader (MonadReader)
 import EntityService
 import GHC.Records (HasField)
 import Krinj.Config (ApplicationConfig)
+import Krinj.UserService
 import Krinj.Web.Routes.Site.Bundles (SiteBundles)
 import Servant
 
@@ -27,5 +28,6 @@ type Constraints r m =
   , HasField "applicationConfig" r ApplicationConfig
   , EntityService m
   , SiteBundles m
+  , UserService m
   )
 

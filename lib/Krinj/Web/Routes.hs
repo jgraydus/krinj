@@ -1,5 +1,6 @@
 module Krinj.Web.Routes where
 
+import Krinj.Web.Routes.Authentication
 import Krinj.Web.Routes.Attributes
 import Krinj.Web.Routes.Entities
 import Krinj.Web.Routes.EntityTypes
@@ -13,6 +14,7 @@ type API = "api" :> (
   :<|> EntitiesApi
   :<|> EntityTypesApi
   :<|> ProjectsApi
+  :<|> AuthenticationApi
   )
 
 apiHandler :: RouteHandler API
@@ -21,6 +23,7 @@ apiHandler =
   :<|> entitiesApiHandler
   :<|> entityTypesApiHandler
   :<|> projectsApiHandler
+  :<|> authenticationApiHandler
 
 type APIAndSite = API :<|> Site
 

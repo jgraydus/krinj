@@ -34,7 +34,7 @@ library
         Krinj.Web.Auth,
         Krinj.Web.ContentTypes,
         Krinj.Web.Routes,
-        Krinj.Web.Routes.Auth,
+        Krinj.Web.Routes.Authentication,
         Krinj.Web.Routes.Attributes,
         Krinj.Web.Routes.Entities,
         Krinj.Web.Routes.EntityTypes,
