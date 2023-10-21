@@ -2,30 +2,33 @@
 module Main (main) where
 
 import Control.Monad.Reader (runReaderT)
+import Data.Either (fromRight)
 import Data.Maybe (fromJust, isJust, isNothing)
 import Data.Pool
 import Data.Text (Text)
 import Database.PostgreSQL.Simple qualified as P
 import Database.PostgreSQL.Simple (query, Only(..))
 import Database.PostgreSQL.Simple.SqlQQ (sql)
+import Krinj.Config (ApplicationConfig, readConfig)
 import Krinj.UserService
-import Krinj.UserService.Types (Password(..), Salt(..), User(..))
+import Krinj.UserService.Types (Password(..), User(..))
 import Krinj.Test.Util (getConnectInfo, withTestDatabase)
 import Test.Hspec
 
 data TestContext =
   TestContext
   { databaseConnectionPool :: Pool P.Connection
-  , salt :: Salt
+  , applicationConfig :: ApplicationConfig
   }
 
 main :: IO ()
 main = do
+  applicationConfig <- fromRight (error "failed to read config") <$> readConfig "../config" "localhost"
   connectInfo <- getConnectInfo
 
   let withTestContext :: (TestContext -> IO a) -> IO a
       withTestContext action = withTestDatabase connectInfo $ \databaseConnectionPool ->
-        action (TestContext { databaseConnectionPool, salt = "塩" })
+        action (TestContext { databaseConnectionPool, applicationConfig })
 
   hspec $ parallel $ do
 
