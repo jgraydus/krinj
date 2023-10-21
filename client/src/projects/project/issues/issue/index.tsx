@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import InlineEdit from '../../../../components/inline-edit'
 import Loading from '../../../../components/loading'
 import MdEditor from '../../../../components/md-editor'
-import { loadEntity, selectEntity, updateAttribute, useDispatch, useSelector } from '../../../../redux'
+import { loadEntity, selectEntity, updateAttribute, useDispatch, useSelector } from '../../../../data'
 
 const Root = styled.div`
   box-sizing: border-box;

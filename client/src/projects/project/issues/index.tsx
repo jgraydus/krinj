@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import Loading from '../../../components/loading'
-import { loadEntities, selectEntitiesForProject, useDispatch, useSelector } from '../../../redux'
+import { loadEntities, selectEntitiesForProject, useDispatch, useSelector } from '../../../data'
 import Table from './table'
 
 const NoIssues = styled(({ className }) => <div className={className}>No Issues</div>)`

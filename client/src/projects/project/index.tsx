@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import Loading from '../../components/loading'
 import DetailsTab from './details-tab'
 import IssuesTab from './issues-tab'
-import { deleteProject, loadProject, selectProject, useDispatch, useSelector } from '../../redux'
+import { deleteProject, loadProject, selectProject, useDispatch, useSelector } from '../../data'
 
 const Root = styled.div`
   box-sizing: border-box;

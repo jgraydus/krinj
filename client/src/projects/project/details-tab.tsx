@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import Loading from '../../components/loading'
 import MdEditor from '../../components/md-editor'
-import { loadProject, selectProject, useDispatch, updateProject, useSelector } from '../../redux'
+import { loadProject, selectProject, useDispatch, updateProject, useSelector } from '../../data'
 
 const Root = styled.div`
   box-sizing: border-box;

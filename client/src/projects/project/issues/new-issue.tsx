@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import api from '../../../api'
 import Modal from '../../../components/modal'
 import InlineEdit from '../../../components/inline-edit'
-import { createEntity, useDispatch } from '../../../redux'
+import { createEntity, useDispatch } from '../../../data'
 
 const Root = styled.div`
   height: 100%;

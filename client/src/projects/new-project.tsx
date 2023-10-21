@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import InlineEdit from '../components/inline-edit'
 import Modal from '../components/modal'
 import Spacer from '../components/spacer'
-import { createProject, useDispatch } from '../redux'
+import { createProject, useDispatch } from '../data'
 
 const Root = styled.div`
   width: 100%;

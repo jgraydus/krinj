@@ -6,7 +6,7 @@ import api from '../api'
 import Loading from '../components/loading'
 import NewProject from './new-project'
 import Table from './table'
-import { loadProjects, selectProjects, useDispatch, useSelector } from '../redux'
+import { loadProjects, selectProjects, useDispatch, useSelector } from '../data'
 
 const Root = styled.div`
   box-sizing: border-box;
