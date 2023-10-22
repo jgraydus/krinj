@@ -50,7 +50,7 @@ instance Default ToFields ProjectDescription (Field SqlText) where
 
 newtype EntityTypeId = EntityTypeId UUID
   deriving stock (Generic)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToField, ToJSON)
 
 instance Show EntityTypeId where
   show (EntityTypeId x) = toString x
@@ -73,14 +73,14 @@ instance Default ToFields EntityTypeName (Field SqlText) where
 
 newtype EntityTypeDescriptor = EntityTypeDescriptor Value
   deriving stock (Generic)
-  deriving newtype (DefaultFromField SqlJson, Eq, FromJSON, Ord, Show, ToJSON)
+  deriving newtype (DefaultFromField SqlJson, Eq, FromJSON, IsString, Ord, Show, ToJSON)
 
 instance Default ToFields EntityTypeDescriptor (Field SqlJson) where
   def = toToFields (sqlValueJSON @Value . coerce)
 
 newtype EntityId = EntityId UUID
   deriving stock (Generic)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToField, ToJSON)
 
 instance Show EntityId where
   show (EntityId x) = toString x

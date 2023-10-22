@@ -67,8 +67,10 @@ test-suite entity-service-test
     hs-source-dirs:   test
     main-is:          Main.hs
     build-depends:
+        aeson,
         base ^>=4.17.0.0,
         common-types,
+        containers,
         entity-service,
         hspec,
         mtl,
