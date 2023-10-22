@@ -68,5 +68,19 @@ test-suite entity-service-test
     main-is:          Main.hs
     build-depends:
         base ^>=4.17.0.0,
-        entity-service
+        common-types,
+        entity-service,
+        hspec,
+        mtl,
+        postgresql-simple,
+        resource-pool,
+        test-util,
+        text
+    default-extensions:
+        DataKinds,
+        DuplicateRecordFields,
+        LambdaCase,
+        OverloadedRecordDot,
+        OverloadedStrings,
+        RecordWildCards
 
