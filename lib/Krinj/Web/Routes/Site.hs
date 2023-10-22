@@ -39,6 +39,9 @@ index _ = do
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Krinj</title>
         <link rel="stylesheet" href="${path}.css">
+        <style>
+          body * { box-sizing: border-box; }
+        </style>
         <script>
           window.Krinj = { commitHash: "${commitHash}" }
         </script>
