@@ -4,7 +4,7 @@ module Main (main) where
 
 import Data.Aeson (Value)
 import Control.Monad.Reader (runReaderT)
-import Data.Either (fromRight, isRight)
+import Data.Either (fromRight, isLeft, isRight)
 import Data.Int (Int64)
 import Data.List (sort)
 import Data.Map qualified as Map
@@ -343,13 +343,216 @@ main = do
 
             actual `shouldBe` expected
 
-{-
-  createEntity :: ProjectId -> EntityTypeId -> m (Result Entity)
-  updateEntity :: EntityId -> Maybe ProjectId -> Maybe EntityTypeId -> m (Result Entity)
-  deleteEntity :: EntityId -> m (Result ())
-  getEntity    :: EntityId -> m (Result Entity)
-  getEntities  :: ProjectId -> m (Result [Entity])
+      -----------------------------------------------------------------------------------
+      describe "entities" $ do
 
+        it "creates an entity" $
+          withTestContext $ \ctx -> do
+            let TestContext { databaseConnectionPool } = ctx
+
+            (projectId, entityTypeId) <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              Right entityType <- createEntityType project.projectId "name" "descriptor"
+              pure (project.projectId, entityType.entityTypeId)
+
+            result <- flip runReaderT ctx $ createEntity projectId entityTypeId
+
+            result `shouldSatisfy` isRight
+            let Right entity = result
+            entity.projectId `shouldBe` projectId
+
+            -- verify entity was written to database
+            record :: Maybe (ProjectId, EntityTypeId) <- fmap listToMaybe $
+              withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT project_id, entity_type_id
+                                FROM entities
+                                WHERE entity_id = ?|]
+                      (Only entity.entityId)
+            record `shouldBe` Just (projectId, entityTypeId)
+
+        it "updates an entity's entity type id" $
+          withTestContext $ \ctx -> do
+            let TestContext { databaseConnectionPool } = ctx
+
+            (entity, entityType2) <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              Right entityType1 <- createEntityType project.projectId "name1" "descriptor"
+              Right entityType2 <- createEntityType project.projectId "name2" "descriptor"
+              Right entity <- createEntity project.projectId entityType1.entityTypeId
+              pure (entity, entityType2)
+
+            result <- flip runReaderT ctx $
+                        updateEntity entity.entityId
+                                     Nothing
+                                     (Just entityType2.entityTypeId)
+
+            result `shouldSatisfy` isRight
+
+            let Right entityAfterUpdate = result
+            entityAfterUpdate.projectId `shouldBe` entity.projectId
+            entityAfterUpdate.entityTypeId `shouldBe` entityType2.entityTypeId
+
+            -- verify entity was written to database
+            record :: Maybe (ProjectId, EntityTypeId) <- fmap listToMaybe $
+              withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT project_id, entity_type_id
+                                FROM entities
+                                WHERE entity_id = ?|]
+                      (Only entity.entityId)
+            record `shouldBe` Just (entity.projectId, entityType2.entityTypeId)
+
+        it "updates an entity's project id and entity type id" $
+          withTestContext $ \ctx -> do
+            let TestContext { databaseConnectionPool } = ctx
+
+            Right entity <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              Right entityType <- createEntityType project.projectId "name" "descriptor"
+              createEntity project.projectId entityType.entityTypeId
+
+            (projectId, entityTypeId) <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              Right entityType <- createEntityType project.projectId "name" "descriptor"
+              pure (project.projectId, entityType.entityTypeId)
+
+            result <- flip runReaderT ctx $ updateEntity entity.entityId (Just projectId) (Just entityTypeId)
+
+            result `shouldSatisfy` isRight
+
+            let Right entityAfterUpdate = result
+            entityAfterUpdate.projectId `shouldBe` projectId
+            entityAfterUpdate.entityTypeId `shouldBe` entityTypeId
+
+            -- verify entity was written to database
+            record :: Maybe (ProjectId, EntityTypeId) <- fmap listToMaybe $
+              withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT project_id, entity_type_id
+                                FROM entities
+                                WHERE entity_id = ?|]
+                      (Only entity.entityId)
+            record `shouldBe` Just (projectId, entityTypeId)
+
+        describe "does NOT update entity when entity type does not belong to project" $ do
+          it "when updating project id" $
+            withTestContext $ \ctx -> do
+
+              (entity, project2Id) <- flip runReaderT ctx $ do
+                Right project1 <- createProject "name" "description"
+                Right project2 <- createProject "name" "description"
+                Right entityType <- createEntityType project1.projectId "name" "descriptor"
+                Right entity <- createEntity project1.projectId entityType.entityTypeId
+                pure (entity, project2.projectId)
+
+              result <- flip runReaderT ctx $
+                          updateEntity entity.entityId
+                                       (Just project2Id)
+                                       Nothing
+
+              result `shouldSatisfy` isLeft
+
+          it "when updating entity type id" $
+            withTestContext $ \ctx -> do
+
+              Right entity <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                Right entityType <- createEntityType project.projectId "name" "descriptor"
+                createEntity project.projectId entityType.entityTypeId
+
+              Right differentProjectEntityType  <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                createEntityType project.projectId "name" "descriptor"
+
+              result <- flip runReaderT ctx $
+                          updateEntity entity.entityId
+                                       Nothing
+                                       (Just differentProjectEntityType.entityTypeId)
+
+              result `shouldSatisfy` isLeft
+
+          it "when updating project id and entity type id" $
+            withTestContext $ \ctx -> do
+
+              Right entity <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                Right entityType <- createEntityType project.projectId "name" "descriptor"
+                createEntity project.projectId entityType.entityTypeId
+
+              (projectId, differentProjectEntityTypeId)  <- flip runReaderT ctx $ do
+                Right project1 <- createProject "name" "description"
+                Right project2 <- createProject "name" "description"
+                Right entityType <- createEntityType project2.projectId "name" "descriptor"
+                pure (project1.projectId, entityType.entityTypeId)
+
+              result <- flip runReaderT ctx $
+                          updateEntity entity.entityId
+                                       (Just projectId)
+                                       (Just differentProjectEntityTypeId)
+
+              result `shouldSatisfy` isLeft
+
+        it "deletes an entity" $
+          withTestContext $ \ctx -> do
+            let TestContext { databaseConnectionPool } = ctx
+
+            Right entity <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              Right entityType <- createEntityType project.projectId "name" "descriptor"
+              createEntity project.projectId entityType.entityTypeId
+
+            Just (Only countBeforeDelete) :: Maybe (Only Int64) <- fmap listToMaybe $
+              withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT count(*) FROM entities WHERE entity_id = ?|]
+                      (Only entity.entityId)
+            countBeforeDelete `shouldBe` 1
+
+            result <- flip runReaderT ctx $ deleteEntity entity.entityId
+            result `shouldSatisfy` isRight
+
+            Just (Only countAfterDelete) :: Maybe (Only Int64) <- fmap listToMaybe $
+              withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT count(*) FROM entities WHERE entity_id = ?|]
+                      (Only entity.entityId)
+            countAfterDelete `shouldBe` 0
+
+        it "finds an entity by id" $
+          withTestContext $ \ctx -> do
+            Right entity <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              Right entityType <- createEntityType project.projectId "name" "descriptor"
+              createEntity project.projectId entityType.entityTypeId
+
+            result <- flip runReaderT ctx $ getEntity entity.entityId
+
+            result `shouldSatisfy` isRight
+            let Right entity' = result
+            entity'.projectId `shouldBe` entity.projectId
+            entity'.entityTypeId `shouldBe` entity.entityTypeId
+
+        it "finds all entities for a project" $
+          withTestContext $ \ctx -> do
+            let toSet = Set.fromList . fmap (\x -> x.entityId)
+
+            (projectId, expected) <- flip runReaderT ctx $ do
+              Right project1 <- createProject "name" "description"
+              Right entityType1 <- createEntityType project1.projectId "name1" "descriptor"
+              Right entity1 <- createEntity project1.projectId entityType1.entityTypeId
+              Right entity2 <- createEntity project1.projectId entityType1.entityTypeId
+              Right entity3 <- createEntity project1.projectId entityType1.entityTypeId
+              Right project2 <- createProject "name" "description"
+              Right entityType2 <- createEntityType project2.projectId "name1" "descriptor"
+              _ <- createEntity project2.projectId entityType2.entityTypeId
+              _ <- createEntity project2.projectId entityType2.entityTypeId
+              _ <- createEntity project2.projectId entityType2.entityTypeId
+              pure (project1.projectId, toSet [entity1, entity2, entity3])
+
+            result <- flip runReaderT ctx $ getEntities projectId 
+
+            result `shouldSatisfy` isRight
+            let Right tmp = result
+                actual = toSet tmp
+            actual `shouldBe` expected
+
+{-
   createAttributes :: EntityId -> [(AttributeName, AttributeValue)] -> m (Result [Attribute])
   updateAttribute  :: EntityId -> AttributeName -> AttributeValue -> m (Result Attribute)
   deleteAttribute  :: EntityId -> AttributeName -> m (Result ())

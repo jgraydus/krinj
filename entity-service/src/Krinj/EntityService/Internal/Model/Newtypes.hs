@@ -6,6 +6,7 @@ import Data.Profunctor.Product.Default (Default(..))
 import Data.String (IsString(..))
 import Data.Text (pack, Text, unpack)
 import Data.UUID (toString, UUID)
+import Database.PostgreSQL.Simple.FromField (FromField)
 import Database.PostgreSQL.Simple.ToField (ToField)
 import GHC.Generics (Generic)
 import Opaleye (DefaultFromField, Field, sqlValueJSON, SqlJson, sqlStrictText, SqlText,
@@ -14,7 +15,7 @@ import Web.Internal.HttpApiData (FromHttpApiData)
 
 newtype ProjectId = ProjectId UUID
   deriving stock (Generic)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToField, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromField, FromJSON, Ord, ToField, ToJSON)
 
 instance Show ProjectId where
   show (ProjectId x) = toString x
@@ -50,7 +51,7 @@ instance Default ToFields ProjectDescription (Field SqlText) where
 
 newtype EntityTypeId = EntityTypeId UUID
   deriving stock (Generic)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToField, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromField, FromJSON, Ord, ToField, ToJSON)
 
 instance Show EntityTypeId where
   show (EntityTypeId x) = toString x
