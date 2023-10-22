@@ -9,9 +9,9 @@ import Data.List.NonEmpty (NonEmpty(..))
 import Data.List.NonEmpty qualified as NonEmpty
 import Data.Map.Strict qualified as Map
 import Data.Time.Clock (UTCTime)
-import EntityService
 import GHC.Generics (Generic)
 import GHC.Records (getField)
+import Krinj.EntityService
 import Krinj.Web.RouteHandler
 import Servant
 

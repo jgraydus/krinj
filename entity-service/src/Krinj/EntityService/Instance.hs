@@ -1,18 +1,18 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE UndecidableInstances #-}
-module EntityService.Instance where
+module Krinj.EntityService.Instance where
 
 import Control.Monad.IO.Class (liftIO, MonadIO)
 import Control.Monad.Reader (asks, MonadReader)
 import Data.Map (Map)
 import Data.Pool (Pool, withResource)
 import Database.PostgreSQL.Simple (Connection)
-import EntityService.Class
-import EntityService.Internal
-import EntityService.Internal.Command qualified as Command
-import EntityService.Internal.Model
-import EntityService.Internal.Query qualified as Query
 import GHC.Records (getField, HasField)
+import Krinj.EntityService.Class
+import Krinj.EntityService.Internal
+import Krinj.EntityService.Internal.Command qualified as Command
+import Krinj.EntityService.Internal.Model
+import Krinj.EntityService.Internal.Query qualified as Query
 
 type Reqs r m = ( Monad m
                 , MonadIO m

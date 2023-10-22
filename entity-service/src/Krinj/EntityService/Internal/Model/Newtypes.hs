@@ -1,5 +1,4 @@
-{-# LANGUAGE DerivingVia #-}
-module EntityService.Internal.Model.Newtypes where
+module Krinj.EntityService.Internal.Model.Newtypes where
 
 import Data.Aeson (FromJSON, ToJSON, ToJSONKey, Value)
 import Data.Coerce (coerce)

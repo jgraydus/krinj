@@ -1,5 +1,4 @@
-{-# LANGUAGE DerivingVia, DeriveAnyClass #-}
-module EntityService.Internal where
+module Krinj.EntityService.Internal where
 
 import Data.Aeson (FromJSON, ToJSON)
 import GHC.Generics (Generic)

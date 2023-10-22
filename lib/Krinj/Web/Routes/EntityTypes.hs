@@ -4,8 +4,8 @@ module Krinj.Web.Routes.EntityTypes (
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Map.Strict qualified as Map
-import EntityService
 import GHC.Generics (Generic)
+import Krinj.EntityService
 import Krinj.Web.RouteHandler
 import Servant
 

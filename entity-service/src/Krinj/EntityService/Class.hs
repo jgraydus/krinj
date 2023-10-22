@@ -1,8 +1,8 @@
-module EntityService.Class where
+module Krinj.EntityService.Class where
 
 import Data.Map (Map)
-import EntityService.Internal
-import EntityService.Internal.Model
+import Krinj.EntityService.Internal
+import Krinj.EntityService.Internal.Model
 
 class Monad m => EntityService m where
   createProject :: ProjectName -> ProjectDescription -> m (Result Project)

@@ -13,9 +13,9 @@ import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
 import Data.Maybe (catMaybes, mapMaybe)
 import Data.Time.Clock (UTCTime)
-import EntityService
 import GHC.Generics (Generic)
 import GHC.Records (getField)
+import Krinj.EntityService
 import Krinj.Web.RouteHandler
 import Servant
 

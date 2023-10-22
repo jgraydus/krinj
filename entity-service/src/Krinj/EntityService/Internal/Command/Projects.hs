@@ -1,11 +1,11 @@
-module EntityService.Internal.Command.Projects (
+module Krinj.EntityService.Internal.Command.Projects (
     createProject, updateProject, deleteProject
 ) where
 
 import Database.PostgreSQL.Simple (Connection)
-import EntityService.Internal
-import EntityService.Internal.Model
 import GHC.Records (getField)
+import Krinj.EntityService.Internal
+import Krinj.EntityService.Internal.Model
 import Opaleye
 
 -- |

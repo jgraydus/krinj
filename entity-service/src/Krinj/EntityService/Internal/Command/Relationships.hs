@@ -1,11 +1,11 @@
-module EntityService.Internal.Command.Relationships (
+module Krinj.EntityService.Internal.Command.Relationships (
     createRelationship, deleteRelationship
 ) where
 
 import Database.PostgreSQL.Simple (Connection)
-import EntityService.Internal
-import EntityService.Internal.Model
 import GHC.Records (getField)
+import Krinj.EntityService.Internal
+import Krinj.EntityService.Internal.Model
 import Opaleye
 
 -- |

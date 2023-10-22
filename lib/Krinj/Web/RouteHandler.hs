@@ -3,9 +3,9 @@ module Krinj.Web.RouteHandler where
 
 import Control.Monad.Except (MonadError)
 import Control.Monad.Reader (MonadReader)
-import EntityService
 import GHC.Records (HasField)
 import Krinj.Config (ApplicationConfig)
+import Krinj.EntityService
 import Krinj.UserService
 import Krinj.Web.Routes.Site.Bundles (SiteBundles)
 import Servant

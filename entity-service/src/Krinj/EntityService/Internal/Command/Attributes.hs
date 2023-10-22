@@ -1,11 +1,11 @@
-module EntityService.Internal.Command.Attributes (
+module Krinj.EntityService.Internal.Command.Attributes (
     createAttributes, updateAttribute, deleteAttribute
 ) where
 
 import Database.PostgreSQL.Simple (Connection)
-import EntityService.Internal
-import EntityService.Internal.Model
 import GHC.Records (getField)
+import Krinj.EntityService.Internal
+import Krinj.EntityService.Internal.Model
 import Opaleye
 import Opaleye.Exists
 

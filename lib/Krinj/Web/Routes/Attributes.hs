@@ -4,7 +4,7 @@ module Krinj.Web.Routes.Attributes (
 
 import Control.Monad.Except (ExceptT(..), runExceptT)
 import Data.Map.Strict qualified as Map
-import EntityService
+import Krinj.EntityService
 import Krinj.Web.RouteHandler
 import Servant
 

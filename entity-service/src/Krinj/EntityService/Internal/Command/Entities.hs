@@ -1,11 +1,11 @@
-module EntityService.Internal.Command.Entities (
+module Krinj.EntityService.Internal.Command.Entities (
     createEntity, updateEntity, deleteEntity
 ) where
 
 import Database.PostgreSQL.Simple (Connection)
-import EntityService.Internal
-import EntityService.Internal.Model
 import GHC.Records (getField)
+import Krinj.EntityService.Internal
+import Krinj.EntityService.Internal.Model
 import Opaleye
 
 createEntity :: Connection -> ProjectId -> EntityTypeId -> IO (Result Entity)

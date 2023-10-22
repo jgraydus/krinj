@@ -1,13 +1,13 @@
-module EntityService.Internal.Query.Attributes (
+module Krinj.EntityService.Internal.Query.Attributes (
     getAttribute, getAttributes
 ) where
 
 import Data.Map.Strict (Map)
 import Database.PostgreSQL.Simple (Connection)
-import EntityService.Internal
-import EntityService.Internal.Model
-import EntityService.Internal.Util
 import GHC.Records (getField)
+import Krinj.EntityService.Internal
+import Krinj.EntityService.Internal.Model
+import Krinj.EntityService.Internal.Util
 import Opaleye hiding (groupBy)
 
 -- |

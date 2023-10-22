@@ -1,10 +1,10 @@
 {-# LANGUAGE DerivingVia, DeriveAnyClass, TemplateHaskell #-}
-module EntityService.Internal.Model.EntityTypes where
+module Krinj.EntityService.Internal.Model.EntityTypes where
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Profunctor.Product.TH
-import EntityService.Internal.Model.Newtypes
 import GHC.Generics (Generic)
+import Krinj.EntityService.Internal.Model.Newtypes
 import Opaleye
 
 data EntityTypesRowT a b c d = EntityTypesRowT

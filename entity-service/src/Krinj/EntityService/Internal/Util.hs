@@ -1,4 +1,4 @@
-module EntityService.Internal.Util (
+module Krinj.EntityService.Internal.Util (
     groupBy, indexBy
 ) where
 

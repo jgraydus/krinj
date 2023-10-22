@@ -1,13 +1,13 @@
-module EntityService.Internal.Query.EntityTypes (
+module Krinj.EntityService.Internal.Query.EntityTypes (
     getEntityType, getEntityTypes
 ) where
 
 import Data.Map.Strict (Map)
 import Database.PostgreSQL.Simple (Connection)
-import EntityService.Internal
-import EntityService.Internal.Model
-import EntityService.Internal.Util (groupBy)
 import GHC.Records (getField)
+import Krinj.EntityService.Internal
+import Krinj.EntityService.Internal.Model
+import Krinj.EntityService.Internal.Util (groupBy)
 import Opaleye hiding (groupBy)
 
 -- |

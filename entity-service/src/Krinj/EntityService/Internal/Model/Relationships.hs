@@ -1,8 +1,8 @@
 {-# LANGUAGE TemplateHaskell #-}
-module EntityService.Internal.Model.Relationships where
+module Krinj.EntityService.Internal.Model.Relationships where
 
 import Data.Profunctor.Product.TH
-import EntityService.Internal.Model.Newtypes
+import Krinj.EntityService.Internal.Model.Newtypes
 import Opaleye
 
 data RelationshipsRowT a b c d = RelationshipsRowT
