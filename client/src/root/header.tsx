@@ -1,11 +1,14 @@
 import { ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
+import UserWidget from './user-widget'
 
 const Root = styled.div`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  justify-content: space-between;
+  padding: 5px;
   a { text-decoration: none; }
 `
 const Title = styled.div`
@@ -13,7 +16,6 @@ const Title = styled.div`
   font-style: bold; 
 `
 const NavItem = styled.div`
-  padding: 5px;
   color: black;
 `
 const Link = ({ to, children }: { to: string, children: ReactNode }) =>
@@ -26,5 +28,6 @@ export default () =>
     <Link to="/projects">
       <Title>Krinj</Title>
     </Link>
+    <UserWidget />
   </Root>
 
