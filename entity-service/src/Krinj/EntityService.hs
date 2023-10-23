@@ -4,6 +4,7 @@ module Krinj.EntityService (
   , Entity, EntityId, EntitiesRowT(..)
   , EntityType, EntityTypeId, EntityTypeName, EntityTypeDescriptor, EntityTypesRowT(..)
   , Project, ProjectId, ProjectName, ProjectDescription, ProjectsRowT(..)
+  , Relationship, RelationshipId, RelationshipType, RelationshipsRowT(..)
   , Error(..), Result,
 
   module Krinj.EntityService.Instance,

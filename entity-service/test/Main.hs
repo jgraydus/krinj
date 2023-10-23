@@ -729,10 +729,105 @@ main = do
 
             actual `shouldBe` expected
 
+      -----------------------------------------------------------------------------------
+      describe "relationships" $ do
 
-{-
-  createRelationship :: EntityId -> EntityId -> RelationshipType -> m (Result Relationship)
-  deleteRelationship :: RelationshipId -> m (Result ())
-  getRelationship :: RelationshipId -> m (Result Relationship)
-  getRelationships :: EntityId -> m (Result [Relationship])
--}
+        it "creates a new relationship" $
+          withTestContext $ \ctx -> do
+            let TestContext { databaseConnectionPool } = ctx
+
+            (entity1Id, entity2Id) <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              let projectId = project.projectId
+              Right entityType <- createEntityType projectId "name" "descriptor"
+              let entityTypeId = entityType.entityTypeId
+              Right entity1 <- createEntity projectId entityTypeId
+              Right entity2 <- createEntity projectId entityTypeId
+              pure (entity1.entityId, entity2.entityId)
+
+            result <- flip runReaderT ctx $ createRelationship entity1Id entity2Id "relationship type"
+
+            result `shouldSatisfy` isRight
+            let Right (relationship :: Relationship) = result
+            relationship.subjectId `shouldBe` entity1Id
+            relationship.objectId `shouldBe` entity2Id
+            relationship.relationshipType `shouldBe` "relationship type"
+
+            record :: [Only Text] <- withResource databaseConnectionPool $ \conn ->
+              query conn [sql|SELECT relationship_type
+                              FROM relationships
+                              WHERE subject_id = ? AND object_id = ?|]
+                         (entity1Id, entity2Id)
+            record `shouldBe` [Only "relationship type"]
+
+        it "deletes a relationship" $
+          withTestContext $ \ctx -> do
+            let TestContext { databaseConnectionPool } = ctx
+
+            relationshipId <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              let projectId = project.projectId
+              Right entityType <- createEntityType projectId "name" "descriptor"
+              let entityTypeId = entityType.entityTypeId
+              Right entity1 <- createEntity projectId entityTypeId
+              Right entity2 <- createEntity projectId entityTypeId
+              Right relationship <- createRelationship entity1.entityId entity2.entityId "relationship type"
+              pure relationship.relationshipId
+
+            Just (Only countBeforeDelete) :: Maybe (Only Int64) <- fmap listToMaybe $
+              withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT count(*) FROM relationships WHERE relationship_id = ?|]
+                           (Only relationshipId)
+            countBeforeDelete `shouldBe` 1
+
+            result <- flip runReaderT ctx $ deleteRelationship relationshipId
+            result `shouldSatisfy` isRight
+
+            Just (Only countAfterDelete) :: Maybe (Only Int64) <- fmap listToMaybe $
+              withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT count(*) FROM relationships WHERE relationship_id = ?|]
+                           (Only relationshipId)
+            countAfterDelete `shouldBe` 0
+
+        it "finds a relationship" $
+          withTestContext $ \ctx -> do
+            (relationshipId, subjectId, objectId) <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              let projectId = project.projectId
+              Right entityType <- createEntityType projectId "name" "descriptor"
+              let entityTypeId = entityType.entityTypeId
+              Right entity1 <- createEntity projectId entityTypeId
+              Right entity2 <- createEntity projectId entityTypeId
+              Right relationship <- createRelationship entity1.entityId entity2.entityId "relationship type"
+              pure (relationship.relationshipId, entity1.entityId, entity2.entityId)
+
+            result <- flip runReaderT ctx $ getRelationship relationshipId
+
+            result `shouldSatisfy` isRight
+            let Right relationship = result
+            relationship.subjectId `shouldBe` subjectId
+            relationship.objectId `shouldBe` objectId
+            relationship.relationshipType `shouldBe` "relationship type"
+
+        it "finds all relationship for an entity" $
+          withTestContext $ \ctx -> do
+            entityId <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              let projectId = project.projectId
+              Right entityType <- createEntityType projectId "name" "descriptor"
+              let entityTypeId = entityType.entityTypeId
+              Right entity1 <- createEntity projectId entityTypeId
+              Right entity2 <- createEntity projectId entityTypeId
+              Right entity3 <- createEntity projectId entityTypeId
+              Right entity4 <- createEntity projectId entityTypeId
+              _ <- createRelationship entity1.entityId entity2.entityId "relationship type"
+              _ <- createRelationship entity1.entityId entity3.entityId "relationship type"
+              _ <- createRelationship entity4.entityId entity1.entityId "relationship type"
+              pure entity1.entityId
+
+            result <- flip runReaderT ctx $ getRelationships entityId
+
+            result `shouldSatisfy` isRight
+            let Right relationships = result
+            length relationships `shouldBe` 3
+

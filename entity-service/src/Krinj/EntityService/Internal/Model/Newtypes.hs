@@ -111,7 +111,7 @@ instance Default ToFields AttributeValue (Field SqlJson) where
 
 newtype RelationshipId = RelationshipId UUID
   deriving stock (Generic)
-  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToJSON)
+  deriving newtype (DefaultFromField SqlUuid, Eq, FromHttpApiData, FromJSON, Ord, ToField, ToJSON)
 
 instance Show RelationshipId where
   show (RelationshipId x) = toString x
