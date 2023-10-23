@@ -60,68 +60,70 @@ main = do
                       (Only project.projectId)
             record `shouldBe` Just ("name", "description")
 
-        it "updates a project name" $
-          withTestContext $ \ctx -> do
-            let TestContext { databaseConnectionPool } = ctx
+        describe "updates a project" $ do
 
-            result <- flip runReaderT ctx $ do
-              Right project <- createProject "name" "description"
-              updateProject project.projectId (Just "new name") Nothing
+          it "project name" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
 
-            -- verify that the returned object is correct
-            result `shouldSatisfy` isRight
-            let Right project = result
-            project.name `shouldBe` "new name"
-            project.description `shouldBe` "description"
+              result <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                updateProject project.projectId (Just "new name") Nothing
 
-            -- verify that the database was updated
-            record :: Maybe (Text, Text) <- fmap listToMaybe $
-              withResource databaseConnectionPool $ \conn ->
-                query conn [sql|SELECT name, description FROM projects WHERE project_id = ?|]
-                      (Only project.projectId)
-            record `shouldBe` Just ("new name", "description")
+              -- verify that the returned object is correct
+              result `shouldSatisfy` isRight
+              let Right project = result
+              project.name `shouldBe` "new name"
+              project.description `shouldBe` "description"
 
-        it "updates a project description" $
-          withTestContext $ \ctx -> do
-            let TestContext { databaseConnectionPool } = ctx
+              -- verify that the database was updated
+              record :: Maybe (Text, Text) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                  query conn [sql|SELECT name, description FROM projects WHERE project_id = ?|]
+                        (Only project.projectId)
+              record `shouldBe` Just ("new name", "description")
 
-            result <- flip runReaderT ctx $ do
-              Right project <- createProject "name" "description"
-              updateProject project.projectId Nothing (Just "new description")
+          it "project description" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
 
-            -- verify that the returned object is correct
-            result `shouldSatisfy` isRight
-            let Right project = result
-            project.name `shouldBe` "name"
-            project.description `shouldBe` "new description"
+              result <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                updateProject project.projectId Nothing (Just "new description")
 
-            -- verify that the database was updated
-            record :: Maybe (Text, Text) <- fmap listToMaybe $
-              withResource databaseConnectionPool $ \conn ->
-                query conn [sql|SELECT name, description FROM projects WHERE project_id = ?|]
-                      (Only project.projectId)
-            record `shouldBe` Just ("name", "new description")
+              -- verify that the returned object is correct
+              result `shouldSatisfy` isRight
+              let Right project = result
+              project.name `shouldBe` "name"
+              project.description `shouldBe` "new description"
 
-        it "updates a project name and description" $
-          withTestContext $ \ctx -> do
-            let TestContext { databaseConnectionPool } = ctx
+              -- verify that the database was updated
+              record :: Maybe (Text, Text) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                  query conn [sql|SELECT name, description FROM projects WHERE project_id = ?|]
+                        (Only project.projectId)
+              record `shouldBe` Just ("name", "new description")
 
-            result <- flip runReaderT ctx $ do
-              Right project <- createProject "name" "description"
-              updateProject project.projectId (Just "new name") (Just "new description")
+          it "project name and description" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
 
-            -- verify that the returned object is correct
-            result `shouldSatisfy` isRight
-            let Right project = result
-            project.name `shouldBe` "new name"
-            project.description `shouldBe` "new description"
+              result <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                updateProject project.projectId (Just "new name") (Just "new description")
 
-            -- verify that the database was updated
-            record :: Maybe (Text, Text) <- fmap listToMaybe $
-              withResource databaseConnectionPool $ \conn ->
-                query conn [sql|SELECT name, description FROM projects WHERE project_id = ?|]
-                      (Only project.projectId)
-            record `shouldBe` Just ("new name", "new description")
+              -- verify that the returned object is correct
+              result `shouldSatisfy` isRight
+              let Right project = result
+              project.name `shouldBe` "new name"
+              project.description `shouldBe` "new description"
+
+              -- verify that the database was updated
+              record :: Maybe (Text, Text) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                  query conn [sql|SELECT name, description FROM projects WHERE project_id = ?|]
+                        (Only project.projectId)
+              record `shouldBe` Just ("new name", "new description")
 
         it "deletes a project" $
           withTestContext $ \ctx -> do
@@ -196,83 +198,85 @@ main = do
                       (Only entityType.entityTypeId)
             record `shouldBe` Just ("entity type name", "entity type descriptor")
 
-        it "updates entity type name" $
-          withTestContext $ \ctx -> do
-            let TestContext { databaseConnectionPool } = ctx
+        describe "updates an entity type" $ do
 
-            Right entityType <- flip runReaderT ctx $ do
-              Right project <- createProject "name" "description"
-              createEntityType project.projectId "entity type name" "entity type descriptor"
+          it "entity type name" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
 
-            result <- flip runReaderT ctx $
-              updateEntityType entityType.entityTypeId (Just "new name") Nothing
+              Right entityType <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                createEntityType project.projectId "entity type name" "entity type descriptor"
 
-            -- verify that the result value is correct
-            result `shouldSatisfy` isRight
-            let Right afterUpdate = result
-            afterUpdate.name `shouldBe` "new name"
-            afterUpdate.descriptor `shouldBe` "entity type descriptor"
+              result <- flip runReaderT ctx $
+                updateEntityType entityType.entityTypeId (Just "new name") Nothing
 
-            -- verify that the database was updated
-            record :: Maybe (Text, Value) <- fmap listToMaybe $
-              withResource databaseConnectionPool $ \conn ->
-                query conn [sql|SELECT name, descriptor
-                                FROM entity_types
-                                WHERE entity_type_id = ?|]
-                      (Only entityType.entityTypeId)
-            record `shouldBe` Just ("new name", "entity type descriptor")
+              -- verify that the result value is correct
+              result `shouldSatisfy` isRight
+              let Right afterUpdate = result
+              afterUpdate.name `shouldBe` "new name"
+              afterUpdate.descriptor `shouldBe` "entity type descriptor"
 
-        it "updates entity type descriptor" $
-          withTestContext $ \ctx -> do
-            let TestContext { databaseConnectionPool } = ctx
+              -- verify that the database was updated
+              record :: Maybe (Text, Value) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                  query conn [sql|SELECT name, descriptor
+                                  FROM entity_types
+                                  WHERE entity_type_id = ?|]
+                        (Only entityType.entityTypeId)
+              record `shouldBe` Just ("new name", "entity type descriptor")
 
-            Right entityType <- flip runReaderT ctx $ do
-              Right project <- createProject "name" "description"
-              createEntityType project.projectId "entity type name" "entity type descriptor"
+          it "entity type descriptor" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
 
-            result <- flip runReaderT ctx $
-              updateEntityType entityType.entityTypeId Nothing (Just "new descriptor")
+              Right entityType <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                createEntityType project.projectId "entity type name" "entity type descriptor"
 
-            -- verify that the result value is correct
-            result `shouldSatisfy` isRight
-            let Right afterUpdate = result
-            afterUpdate.name `shouldBe` "entity type name"
-            afterUpdate.descriptor `shouldBe` "new descriptor"
+              result <- flip runReaderT ctx $
+                updateEntityType entityType.entityTypeId Nothing (Just "new descriptor")
 
-            -- verify that the database was updated
-            record :: Maybe (Text, Value) <- fmap listToMaybe $
-              withResource databaseConnectionPool $ \conn ->
-                query conn [sql|SELECT name, descriptor
-                                FROM entity_types
-                                WHERE entity_type_id = ?|]
-                      (Only entityType.entityTypeId)
-            record `shouldBe` Just ("entity type name", "new descriptor")
+              -- verify that the result value is correct
+              result `shouldSatisfy` isRight
+              let Right afterUpdate = result
+              afterUpdate.name `shouldBe` "entity type name"
+              afterUpdate.descriptor `shouldBe` "new descriptor"
 
-        it "updates entity type name and descriptor" $
-          withTestContext $ \ctx -> do
-            let TestContext { databaseConnectionPool } = ctx
+              -- verify that the database was updated
+              record :: Maybe (Text, Value) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                  query conn [sql|SELECT name, descriptor
+                                  FROM entity_types
+                                  WHERE entity_type_id = ?|]
+                        (Only entityType.entityTypeId)
+              record `shouldBe` Just ("entity type name", "new descriptor")
 
-            Right entityType <- flip runReaderT ctx $ do
-              Right project <- createProject "name" "description"
-              createEntityType project.projectId "entity type name" "entity type descriptor"
+          it "entity type name and descriptor" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
 
-            result <- flip runReaderT ctx $
-              updateEntityType entityType.entityTypeId (Just "new name") (Just "new descriptor")
+              Right entityType <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                createEntityType project.projectId "entity type name" "entity type descriptor"
 
-            -- verify that the result value is correct
-            result `shouldSatisfy` isRight
-            let Right afterUpdate = result
-            afterUpdate.name `shouldBe` "new name"
-            afterUpdate.descriptor `shouldBe` "new descriptor"
+              result <- flip runReaderT ctx $
+                updateEntityType entityType.entityTypeId (Just "new name") (Just "new descriptor")
 
-            -- verify that the database was updated
-            record :: Maybe (Text, Value) <- fmap listToMaybe $
-              withResource databaseConnectionPool $ \conn ->
-                query conn [sql|SELECT name, descriptor
-                                FROM entity_types
-                                WHERE entity_type_id = ?|]
-                      (Only entityType.entityTypeId)
-            record `shouldBe` Just ("new name", "new descriptor")
+              -- verify that the result value is correct
+              result `shouldSatisfy` isRight
+              let Right afterUpdate = result
+              afterUpdate.name `shouldBe` "new name"
+              afterUpdate.descriptor `shouldBe` "new descriptor"
+
+              -- verify that the database was updated
+              record :: Maybe (Text, Value) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                  query conn [sql|SELECT name, descriptor
+                                  FROM entity_types
+                                  WHERE entity_type_id = ?|]
+                        (Only entityType.entityTypeId)
+              record `shouldBe` Just ("new name", "new descriptor")
 
         it "deletes an entity type" $
           withTestContext $ \ctx -> do
@@ -370,69 +374,72 @@ main = do
                       (Only entity.entityId)
             record `shouldBe` Just (projectId, entityTypeId)
 
-        it "updates an entity's entity type id" $
-          withTestContext $ \ctx -> do
-            let TestContext { databaseConnectionPool } = ctx
+        describe "updates an entity" $ do
 
-            (entity, entityType2) <- flip runReaderT ctx $ do
-              Right project <- createProject "name" "description"
-              Right entityType1 <- createEntityType project.projectId "name1" "descriptor"
-              Right entityType2 <- createEntityType project.projectId "name2" "descriptor"
-              Right entity <- createEntity project.projectId entityType1.entityTypeId
-              pure (entity, entityType2)
+          it "entity type id" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
 
-            result <- flip runReaderT ctx $
-                        updateEntity entity.entityId
-                                     Nothing
-                                     (Just entityType2.entityTypeId)
+              (entity, entityType2) <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                Right entityType1 <- createEntityType project.projectId "name1" "descriptor"
+                Right entityType2 <- createEntityType project.projectId "name2" "descriptor"
+                Right entity <- createEntity project.projectId entityType1.entityTypeId
+                pure (entity, entityType2)
 
-            result `shouldSatisfy` isRight
+              result <- flip runReaderT ctx $
+                          updateEntity entity.entityId
+                                       Nothing
+                                       (Just entityType2.entityTypeId)
 
-            let Right entityAfterUpdate = result
-            entityAfterUpdate.projectId `shouldBe` entity.projectId
-            entityAfterUpdate.entityTypeId `shouldBe` entityType2.entityTypeId
+              result `shouldSatisfy` isRight
 
-            -- verify entity was written to database
-            record :: Maybe (ProjectId, EntityTypeId) <- fmap listToMaybe $
-              withResource databaseConnectionPool $ \conn ->
-                query conn [sql|SELECT project_id, entity_type_id
-                                FROM entities
-                                WHERE entity_id = ?|]
-                      (Only entity.entityId)
-            record `shouldBe` Just (entity.projectId, entityType2.entityTypeId)
+              let Right entityAfterUpdate = result
+              entityAfterUpdate.projectId `shouldBe` entity.projectId
+              entityAfterUpdate.entityTypeId `shouldBe` entityType2.entityTypeId
 
-        it "updates an entity's project id and entity type id" $
-          withTestContext $ \ctx -> do
-            let TestContext { databaseConnectionPool } = ctx
+              -- verify entity was written to database
+              record :: Maybe (ProjectId, EntityTypeId) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                  query conn [sql|SELECT project_id, entity_type_id
+                                  FROM entities
+                                  WHERE entity_id = ?|]
+                        (Only entity.entityId)
+              record `shouldBe` Just (entity.projectId, entityType2.entityTypeId)
 
-            Right entity <- flip runReaderT ctx $ do
-              Right project <- createProject "name" "description"
-              Right entityType <- createEntityType project.projectId "name" "descriptor"
-              createEntity project.projectId entityType.entityTypeId
+          it "project id and entity type id" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
 
-            (projectId, entityTypeId) <- flip runReaderT ctx $ do
-              Right project <- createProject "name" "description"
-              Right entityType <- createEntityType project.projectId "name" "descriptor"
-              pure (project.projectId, entityType.entityTypeId)
+              Right entity <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                Right entityType <- createEntityType project.projectId "name" "descriptor"
+                createEntity project.projectId entityType.entityTypeId
 
-            result <- flip runReaderT ctx $ updateEntity entity.entityId (Just projectId) (Just entityTypeId)
+              (projectId, entityTypeId) <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                Right entityType <- createEntityType project.projectId "name" "descriptor"
+                pure (project.projectId, entityType.entityTypeId)
 
-            result `shouldSatisfy` isRight
+              result <- flip runReaderT ctx $ updateEntity entity.entityId (Just projectId) (Just entityTypeId)
 
-            let Right entityAfterUpdate = result
-            entityAfterUpdate.projectId `shouldBe` projectId
-            entityAfterUpdate.entityTypeId `shouldBe` entityTypeId
+              result `shouldSatisfy` isRight
 
-            -- verify entity was written to database
-            record :: Maybe (ProjectId, EntityTypeId) <- fmap listToMaybe $
-              withResource databaseConnectionPool $ \conn ->
-                query conn [sql|SELECT project_id, entity_type_id
-                                FROM entities
-                                WHERE entity_id = ?|]
-                      (Only entity.entityId)
-            record `shouldBe` Just (projectId, entityTypeId)
+              let Right entityAfterUpdate = result
+              entityAfterUpdate.projectId `shouldBe` projectId
+              entityAfterUpdate.entityTypeId `shouldBe` entityTypeId
+
+              -- verify entity was written to database
+              record :: Maybe (ProjectId, EntityTypeId) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                  query conn [sql|SELECT project_id, entity_type_id
+                                  FROM entities
+                                  WHERE entity_id = ?|]
+                        (Only entity.entityId)
+              record `shouldBe` Just (projectId, entityTypeId)
 
         describe "does NOT update entity when entity type does not belong to project" $ do
+
           it "when updating project id" $
             withTestContext $ \ctx -> do
 
