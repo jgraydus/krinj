@@ -6,7 +6,7 @@ import Data.Aeson (Value)
 import Control.Monad.Reader (runReaderT)
 import Data.Either (fromRight, isLeft, isRight)
 import Data.Int (Int64)
-import Data.List (sort)
+import Data.List (sort, sortOn)
 import Data.Map qualified as Map
 import Data.Maybe (listToMaybe)
 import Data.Pool
@@ -545,20 +545,192 @@ main = do
               _ <- createEntity project2.projectId entityType2.entityTypeId
               pure (project1.projectId, toSet [entity1, entity2, entity3])
 
-            result <- flip runReaderT ctx $ getEntities projectId 
+            result <- flip runReaderT ctx $ getEntities projectId
 
             result `shouldSatisfy` isRight
             let Right tmp = result
                 actual = toSet tmp
             actual `shouldBe` expected
 
-{-
-  createAttributes :: EntityId -> [(AttributeName, AttributeValue)] -> m (Result [Attribute])
-  updateAttribute  :: EntityId -> AttributeName -> AttributeValue -> m (Result Attribute)
-  deleteAttribute  :: EntityId -> AttributeName -> m (Result ())
-  getAttribute     :: EntityId -> AttributeName -> m (Result Attribute)
-  getAttributes    :: [EntityId] -> m (Result (Map EntityId [Attribute]))
+      -----------------------------------------------------------------------------------
+      describe "attributes" $ do
 
+        it "creates attributes" $
+          withTestContext $ \ctx -> do
+            let TestContext { databaseConnectionPool } = ctx
+
+            (result, entityId) <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              let projectId = project.projectId
+              Right entityType <- createEntityType projectId "name" "descriptor"
+              Right entity <- createEntity projectId entityType.entityTypeId
+              result <- createAttributes entity.entityId [("name1", "value1"), ("name2", "value2")]
+              pure (result, entity.entityId)
+
+            -- verify the correct result
+            result `shouldSatisfy` isRight
+            let Right attributes = result
+            let fields = sortOn (\(_,x,_) -> x) $ fmap (\x -> (x.entityId, x.name, x.value)) attributes
+            fields `shouldBe` [(entityId, "name1", "value1"), (entityId, "name2", "value2")]
+
+            -- verify attributes written to database
+            records :: [(Text, Value)] <- withResource databaseConnectionPool $ \conn ->
+              query conn [sql|SELECT name, value
+                              FROM attributes
+                              WHERE entity_id = ?
+                              ORDER BY name ASC|]
+                    (Only entityId)
+            records `shouldBe` [("name1", "value1"), ("name2", "value2")]
+
+        describe "does NOT allow multiple attributes with the same name for an entity" $ do
+
+          it "when the duplicates are in the same command" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
+
+              (result, entityId) <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                let projectId = project.projectId
+                Right entityType <- createEntityType projectId "name" "descriptor"
+                Right entity <- createEntity projectId entityType.entityTypeId
+                result <- createAttributes entity.entityId [("name", "value1"), ("name", "value2")]
+                pure (result, entity.entityId)
+
+              result `shouldSatisfy` isLeft
+
+              -- verify attributes NOT written to database
+              Just (Only count) :: Maybe (Only Int64) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT count(*) FROM attributes WHERE entity_id = ?|]
+                      (Only entityId)
+              count `shouldBe` 0
+
+          it "when the attribute already exists" $
+            withTestContext $ \ctx -> do
+              let TestContext { databaseConnectionPool } = ctx
+
+              entityId <- flip runReaderT ctx $ do
+                Right project <- createProject "name" "description"
+                let projectId = project.projectId
+                Right entityType <- createEntityType projectId "name" "descriptor"
+                Right entity <- createEntity projectId entityType.entityTypeId
+                _ <- createAttributes entity.entityId [("name", "value1")]
+                pure entity.entityId
+
+              result <- flip runReaderT ctx $ createAttributes entityId [("name", "value1")]
+              result `shouldSatisfy` isLeft
+
+              -- verify attribute1 NOT written to database
+              Just (Only count) :: Maybe (Only Int64) <- fmap listToMaybe $
+                withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT count(*) FROM attributes WHERE entity_id = ?|]
+                      (Only entityId)
+              count `shouldBe` 1
+
+        it "updates an attribute" $
+          withTestContext $ \ctx -> do
+            let TestContext { databaseConnectionPool } = ctx
+
+            (entityId, attribute) <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              let projectId = project.projectId
+              Right entityType <- createEntityType projectId "name" "descriptor"
+              Right entity <- createEntity projectId entityType.entityTypeId
+              let entityId = entity.entityId
+              Right [attribute] <- createAttributes entityId [("name", "value")]
+              return (entityId, attribute)
+
+            result <- flip runReaderT ctx $ updateAttribute entityId attribute.name "new value"
+
+            result `shouldSatisfy` isRight
+            let Right attributeAfterUpdate = result
+
+            attributeAfterUpdate.entityId `shouldBe` entityId
+            attributeAfterUpdate.name `shouldBe` "name"
+            attributeAfterUpdate.value `shouldBe` "new value"
+
+            record :: Maybe (Only Value) <- fmap listToMaybe $
+              withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT value
+                                FROM attributes
+                                WHERE entity_id = ? AND name = ?|]
+                           (entityId, "name" :: AttributeName)
+            record `shouldBe` Just (Only "new value")
+
+        it "deletes an attribute" $
+          withTestContext $ \ctx -> do
+            let TestContext { databaseConnectionPool } = ctx
+
+            entityId <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              let projectId = project.projectId
+              Right entityType <- createEntityType projectId "name" "descriptor"
+              Right entity <- createEntity projectId entityType.entityTypeId
+              _ <- createAttributes entity.entityId [("name1", "value1"), ("name2", "value2")]
+              pure entity.entityId
+
+            Just (Only countBeforeDelete) :: Maybe (Only Int64) <- fmap listToMaybe $
+              withResource databaseConnectionPool $ \conn ->
+                query conn [sql|SELECT count(*) FROM attributes WHERE entity_id = ?|]
+                           (Only entityId)
+            countBeforeDelete `shouldBe` 2
+
+            result <- flip runReaderT ctx $ deleteAttribute entityId "name1"
+            result `shouldSatisfy` isRight
+
+            records :: [Only Text] <- withResource databaseConnectionPool $ \conn ->
+              query conn [sql|SELECT name FROM attributes WHERE entity_id = ?|]
+                         (Only entityId)
+            records `shouldBe` [Only "name2"]
+
+        it "finds an attribute" $
+          withTestContext $ \ctx -> do
+
+            entityId <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              let projectId = project.projectId
+              Right entityType <- createEntityType projectId "name" "descriptor"
+              Right entity <- createEntity projectId entityType.entityTypeId
+              _ <- createAttributes entity.entityId [("name1", "value1"), ("name2", "value2")]
+              pure entity.entityId
+
+            result <- flip runReaderT ctx $ getAttribute entityId "name1"
+
+            result `shouldSatisfy` isRight
+            let Right attribute = result
+
+            attribute.entityId `shouldBe` entityId
+            attribute.name `shouldBe` "name1"
+            attribute.value `shouldBe` "value1"
+
+        it "finds attributes by entity ids" $
+          withTestContext $ \ctx -> do
+
+            (entity1Id, entity1Attributes, entity3Id, entity3Attributes) <- flip runReaderT ctx $ do
+              Right project <- createProject "name" "description"
+              let projectId = project.projectId
+              Right entityType <- createEntityType projectId "name" "descriptor"
+              let entityTypeId = entityType.entityTypeId
+              Right entity1 <- createEntity projectId entityTypeId
+              Right entity1Attributes <- createAttributes entity1.entityId [("name1", "value1"), ("name2", "value2")]
+              Right entity2 <- createEntity projectId entityTypeId
+              _ <- createAttributes entity2.entityId [("name3", "value1"), ("name4", "value2")]
+              Right entity3 <- createEntity projectId entityTypeId
+              Right entity3Attributes <- createAttributes entity3.entityId [("name5", "value1"), ("name6", "value2")]
+              pure (entity1.entityId, entity1Attributes, entity3.entityId, entity3Attributes)
+
+            result <- flip runReaderT ctx $ getAttributes [entity1Id, entity3Id]
+            result `shouldSatisfy` isRight
+
+            let toSet = Set.fromList . fmap (\x -> x.name)
+                Right attributes = result
+                actual = fmap toSet attributes
+                expected = Map.fromList [(entity1Id, toSet entity1Attributes), (entity3Id, toSet entity3Attributes)]
+
+            actual `shouldBe` expected
+
+
+{-
   createRelationship :: EntityId -> EntityId -> RelationshipType -> m (Result Relationship)
   deleteRelationship :: RelationshipId -> m (Result ())
   getRelationship :: RelationshipId -> m (Result Relationship)

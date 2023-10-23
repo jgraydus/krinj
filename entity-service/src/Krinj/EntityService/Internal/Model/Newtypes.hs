@@ -91,7 +91,7 @@ instance Default ToFields EntityId (Field SqlUuid) where
 
 newtype AttributeName = AttributeName Text
   deriving stock (Generic)
-  deriving newtype (DefaultFromField SqlText, Eq, FromHttpApiData, FromJSON, Ord, ToJSON, ToJSONKey)
+  deriving newtype (DefaultFromField SqlText, Eq, FromHttpApiData, FromJSON, Ord, ToField, ToJSON, ToJSONKey)
 
 instance Show AttributeName where
   show (AttributeName x) = unpack x
@@ -104,7 +104,7 @@ instance Default ToFields AttributeName (Field SqlText) where
 
 newtype AttributeValue = AttributeValue Value
   deriving stock (Generic)
-  deriving newtype (DefaultFromField SqlJson, Eq, FromJSON, Ord, Show, ToJSON)
+  deriving newtype (DefaultFromField SqlJson, Eq, FromJSON, IsString, Ord, Show, ToJSON)
 
 instance Default ToFields AttributeValue (Field SqlJson) where
   def = toToFields (sqlValueJSON @Value . coerce)

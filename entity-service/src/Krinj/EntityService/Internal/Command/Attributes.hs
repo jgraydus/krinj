@@ -2,7 +2,8 @@ module Krinj.EntityService.Internal.Command.Attributes (
     createAttributes, updateAttribute, deleteAttribute
 ) where
 
-import Database.PostgreSQL.Simple (Connection)
+import Control.Exception (catch, SomeException)
+import Database.PostgreSQL.Simple (Connection, withTransaction)
 import GHC.Records (getField)
 import Krinj.EntityService.Internal
 import Krinj.EntityService.Internal.Model
@@ -10,7 +11,10 @@ import Opaleye
 import Opaleye.Exists
 
 createAttributes :: Connection -> EntityId -> [(AttributeName, AttributeValue)] -> IO (Result [Attribute])
-createAttributes conn entityId args = Right <$> runInsert conn insert
+createAttributes conn entityId args =
+  (withTransaction conn $ Right <$> runInsert conn insert)
+  `catch`
+  handleError
   where
     toRow (name, value) = AttributesRowT (toFields entityId) (toFields name) (toFields value) Nothing Nothing
     insert = Insert
@@ -19,6 +23,8 @@ createAttributes conn entityId args = Right <$> runInsert conn insert
       , iReturning = rReturning id
       , iOnConflict = Nothing
       }
+    handleError :: SomeException -> IO (Result [Attribute])
+    handleError _ = pure $ Left InsertFailed
 
 updateAttribute :: Connection -> EntityId -> AttributeName -> AttributeValue -> IO (Result Attribute)
 updateAttribute conn entityId' attributeName' attributeValue' = do
