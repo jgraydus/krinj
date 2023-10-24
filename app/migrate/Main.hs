@@ -11,6 +11,7 @@ import System.Exit (exitFailure)
 migrationDirs :: [FilePath]
 migrationDirs = [
     "./entity-service/migrations"
+  , "./user-service/migrations"
   ]
 
 logger :: Either Text Text -> IO ()
