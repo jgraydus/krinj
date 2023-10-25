@@ -11,19 +11,19 @@ import Data.Time.Format.ISO8601 (iso8601ParseM)
 import GHC.Generics (Generic)
 import GHC.Records (getField)
 import Krinj.Config (ApplicationConfig(..), HttpServerConfig(..))
-import Krinj.UserService (createUser, findUserByCredentials)
+import Krinj.UserService (createUser, findUserByCredentials, findUserById)
 import Krinj.UserService.Types (EmailAddress, Password, User(..))
-import Krinj.Web.Auth (makeAuthTokenCookie)
+import Krinj.Web.Auth (AuthRequired, makeAuthTokenCookie)
 import Krinj.Web.RouteHandler
 import Servant.API
-import Servant.Server (err403)
+import Servant.Server (err403, err404)
 import Web.Cookie (defaultSetCookie, sameSiteStrict, SetCookie(..))
 
 -----------------------------------------------------------------------------------------
-type AuthenticationApi = LogIn :<|> LogOut :<|> SignUp
+type AuthenticationApi = LogIn :<|> LogOut :<|> SignUp :<|> Me
 
 authenticationApiHandler :: RouteHandler AuthenticationApi
-authenticationApiHandler = logInHandler :<|> logOutHandler :<|> signUpHandler
+authenticationApiHandler = logInHandler :<|> logOutHandler :<|> signUpHandler :<|> meHandler
 
 -----------------------------------------------------------------------------------------
 -- POST /login
@@ -99,4 +99,16 @@ signUpHandler SignUpBody { emailAddress, password } = do
       ApplicationConfig { httpServerConfig } <- asks (getField @"applicationConfig")
       let cookie = makeAuthTokenCookie httpServerConfig.jwtKey user.userId
       pure $ addHeader cookie user
+
+-----------------------------------------------------------------------------------------
+-- GET /me
+
+type Me = AuthRequired :> "me" :> Get '[JSON] User
+
+meHandler :: RouteHandler Me
+meHandler userId = do
+  userMaybe <- findUserById userId
+  case userMaybe of
+    Nothing -> throwError err404
+    Just user -> pure user
 

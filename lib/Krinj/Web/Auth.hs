@@ -1,54 +1,42 @@
-module Krinj.Web.Auth where
+module Krinj.Web.Auth (
+    AuthRequired,
+    getFromRequest,
+    makeAuthTokenCookie
+) where
 
-import Control.Monad ((<=<))
-import Control.Exception (throw)
-import Data.Aeson (decode', encode, FromJSON, ToJSON)
-import Data.ByteString (ByteString)
-import Data.ByteString.Lazy qualified as LBS
-import Data.List (find)
-import Data.Text.Encoding (encodeUtf8)
-import Jose.Jwa (JwsAlg(HS256))
-import Jose.Jws qualified as Jws
-import Jose.Jwt (Jwt(..))
-import Krinj.Config (JwtKey(..))
-import Network.HTTP.Types (hCookie)
-import Network.HTTP.Types.Header (Header)
-import Network.Wai (Request, requestHeaders)
-import Web.Cookie
+import Krinj.Config
+import Krinj.UserService.Types (UserId)
+import Krinj.Web.Auth.Token
+import Krinj.Web.RequestContext
+import Servant
+import Servant.Server.Internal.Delayed (addAuthCheck)
+import Servant.Server.Internal.DelayedIO (delayedFailFatal, DelayedIO, withRequest)
 
-isCookie :: Header -> Bool
-isCookie = (== hCookie) . fst
+authorize :: RequestContext -> DelayedIO UserId
+authorize reqCxt = withRequest $ \req -> do
+  let RequestContext { applicationConfig } = reqCxt
+      ApplicationConfig { httpServerConfig } = applicationConfig
+      HttpServerConfig { jwtKey } = httpServerConfig
+      userIdMaybe :: Maybe UserId = getFromRequest jwtKey req
+  case userIdMaybe of
+    Nothing -> delayedFailFatal err401
+    Just userId -> pure userId
 
-getCookies :: Request -> Cookies
-getCookies = parseCookies <=< (map snd . filter isCookie . requestHeaders)
+data AuthRequired
 
-isAuthCookie :: (ByteString, ByteString) -> Bool
-isAuthCookie = (=="authorization") . fst
+instance
+  (HasServer api cxt, HasContextEntry cxt RequestContext)
+  => HasServer (AuthRequired :> api) cxt
+  where
 
-getAuthCookie :: Request -> Maybe ByteString
-getAuthCookie = fmap snd . find isAuthCookie . getCookies
+  type ServerT (AuthRequired :> api) m = UserId -> ServerT api m
 
--- | parse the authorization token out of the request and convert it into the type a
-getFromRequest :: FromJSON a => JwtKey -> Request -> Maybe a
-getFromRequest (JwtKey key) req = do
-  authCookie <- getAuthCookie req
-  case Jws.hmacDecode (encodeUtf8 key) authCookie of
-    Left _ -> Nothing
-    Right (_, decodedTokenBS) -> decode' (LBS.fromStrict decodedTokenBS)
+  route _ ctx s =
+    let reqCtx = getContextEntry ctx
+        p :: Proxy api = Proxy
+    in  route p ctx (addAuthCheck s $ authorize reqCtx)
 
-encodeStrict :: ToJSON a => a -> ByteString
-encodeStrict = LBS.toStrict . encode
-
--- | encode the given value of type a into an authorization cookie
-makeAuthTokenCookie :: ToJSON a => JwtKey -> a -> SetCookie
-makeAuthTokenCookie (JwtKey key) token = 
-  case Jws.hmacEncode HS256 (encodeUtf8 key) (encodeStrict token) of
-    Right (Jwt jwt) -> defaultSetCookie
-                       { setCookieName = "authorization"
-                       , setCookieValue = jwt
-                       , setCookieHttpOnly = True
-                       , setCookieSameSite = Just sameSiteStrict
-                       -- TODO , setCookieSecure = True
-                       }
-    Left _ -> throw $ userError "failed to generate auth token for cookie"
+  hoistServerWithContext _ p2 nt s =
+    let p1 :: Proxy api = Proxy
+    in  hoistServerWithContext p1 p2 nt . s
 

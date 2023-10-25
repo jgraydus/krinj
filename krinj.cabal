@@ -32,7 +32,9 @@ library
     other-modules:
         Krinj.TH,
         Krinj.Web.Auth,
+        Krinj.Web.Auth.Token,
         Krinj.Web.ContentTypes,
+        Krinj.Web.RequestContext,
         Krinj.Web.Routes,
         Krinj.Web.Routes.Authentication,
         Krinj.Web.Routes.Attributes,

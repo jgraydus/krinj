@@ -5,13 +5,13 @@ module Krinj.Web.Application (
 import Control.Monad.Except (ExceptT)
 import Control.Monad.Reader (ReaderT, runReaderT)
 import Data.Proxy (Proxy(..))
-import Data.UUID (UUID)
 import Data.UUID qualified as UUID
 import Data.UUID.V4 qualified as UUID
 import Data.Pool (Pool)
 import Database.PostgreSQL.Simple (Connection)
 import Krinj.Config (ApplicationConfig(..))
 import Krinj.Logger (Logger, LogLevel(INFO), LogStr, toLogStr)
+import Krinj.Web.RequestContext
 import Krinj.Web.Routes
 import Network.Wai (Application, rawQueryString, rawPathInfo, Request, requestMethod)
 import Servant (Context(..), Handler(..), ServerError, serveWithContextT)
@@ -45,15 +45,6 @@ pathLogStr req =
   <> toLogStr (rawPathInfo req)
   <> toLogStr (rawQueryString req)
 
-type RequestId = UUID
-
-data RequestContext = RequestContext
-  { requestId :: RequestId
-  , applicationConfig :: ApplicationConfig
-  , logger :: Logger
-  , databaseConnectionPool :: Pool Connection
-  }
-
 p :: Proxy APIAndSite
 p = Proxy
 
@@ -65,8 +56,9 @@ app databaseConnectionPool applicationConfig l req res = do
   requestId <- UUID.nextRandom
 
   let logger = withReqId l requestId
+      reqCxt = RequestContext {..}
   _ <- logger INFO (pathLogStr req)
 
   withLoggedDuration logger $
-    serveWithContextT p EmptyContext (toHandler RequestContext {..}) apiAndSiteHandler req res
+    serveWithContextT p (reqCxt :. EmptyContext) (toHandler reqCxt) apiAndSiteHandler req res
 
