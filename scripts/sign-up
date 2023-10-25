@@ -1,0 +1,8 @@
+#!/bin/sh
+
+curl -v \
+  localhost:8080/api/signup \
+  -X POST \
+  -d '{ "emailAddress": "test@test.com", "password": "test" }' \
+  -H "Content-Type: application/json" \
+

@@ -11,7 +11,7 @@ import Data.Time.Format.ISO8601 (iso8601ParseM)
 import GHC.Generics (Generic)
 import GHC.Records (getField)
 import Krinj.Config (ApplicationConfig(..), HttpServerConfig(..))
-import Krinj.UserService (findUserByCredentials)
+import Krinj.UserService (createUser, findUserByCredentials)
 import Krinj.UserService.Types (EmailAddress, Password, User(..))
 import Krinj.Web.Auth (makeAuthTokenCookie)
 import Krinj.Web.RouteHandler
@@ -20,10 +20,10 @@ import Servant.Server (err403)
 import Web.Cookie (defaultSetCookie, sameSiteStrict, SetCookie(..))
 
 -----------------------------------------------------------------------------------------
-type AuthenticationApi = LogIn :<|> LogOut
+type AuthenticationApi = LogIn :<|> LogOut :<|> SignUp
 
 authenticationApiHandler :: RouteHandler AuthenticationApi
-authenticationApiHandler = logInHandler :<|> logOutHandler
+authenticationApiHandler = logInHandler :<|> logOutHandler :<|> signUpHandler
 
 -----------------------------------------------------------------------------------------
 -- POST /login
@@ -73,4 +73,30 @@ logOutHandler = pure $ addHeader cookie ()
              , setCookieExpires = Just expiration
              -- TODO , setCookieSecure = True
              }
+
+-----------------------------------------------------------------------------------------
+-- POST /signup
+
+data SignUpBody =
+  SignUpBody
+  { emailAddress :: EmailAddress
+  , password :: Password
+  }
+  deriving stock (Generic, Show)
+  deriving anyclass (FromJSON)
+
+type SignUp =
+     "signup"
+  :> ReqBody '[JSON] SignUpBody
+  :> Post '[JSON] (Headers '[Header "Set-Cookie" SetCookie] User)
+
+signUpHandler :: RouteHandler SignUp
+signUpHandler SignUpBody { emailAddress, password } = do
+  userMaybe <- createUser emailAddress password
+  case userMaybe of
+    Nothing -> throwError err403
+    Just user -> do
+      ApplicationConfig { httpServerConfig } <- asks (getField @"applicationConfig")
+      let cookie = makeAuthTokenCookie httpServerConfig.jwtKey user.userId
+      pure $ addHeader cookie user
 
