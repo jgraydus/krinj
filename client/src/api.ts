@@ -152,10 +152,27 @@ const deleteAttribute = (entityId: EntityId, attributeName: AttributeName): Prom
         .delete(`/api/entities/${entityId}/attributes?name=${attributeName}`)
         .then(x => x.data);
 
+const logIn = (emailAddress: string, password: string): Promise<string | null> =>
+    axios
+        .post('/api/login', { emailAddress, password })
+        .then(() => null)
+        .catch(e => e.toString());
+
+const logOut = (): Promise<void> =>
+    axios
+        .post('/api/logout');
+
+const me = (): Promise<User> =>
+    axios
+        .get('/api/me')
+        .then(x => x.data)
+        .catch(() => null);
+
 export default {
     getAttributes, getAttribute, createAttribute, updateAttribute, deleteAttribute,
     getEntities, getEntity, createEntity, updateEntity, deleteEntity,
     getEntityType, getEntityTypes, createEntityType, updateEntityType, deleteEntityType,
     getProjects, getProject, createProject, updateProject, deleteProject,
+    logIn, logOut, me
 };
 

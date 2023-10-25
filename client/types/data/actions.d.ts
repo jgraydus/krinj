@@ -30,4 +30,12 @@ export declare const updateAttribute: (entityId: EntityId, args: {
     attributeValue: AttributeValue;
 }) => AppAction<void>;
 export declare const deleteAttribute = "";
+export declare const logIn: (args: {
+    emailAddress: string;
+    password: string;
+}) => AppAction<string | null>;
+export declare const logOut: () => AppAction<void>;
+export declare const me: () => AppAction<void>;
+export declare const showLogInView: () => AppAction<void>;
+export declare const hideLogInView: () => AppAction<void>;
 export {};

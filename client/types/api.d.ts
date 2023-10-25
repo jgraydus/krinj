@@ -51,5 +51,8 @@ declare const _default: {
         projectDescription: string;
     }) => Promise<Project>;
     deleteProject: (projectId: string) => Promise<void>;
+    logIn: (emailAddress: string, password: string) => Promise<string | null>;
+    logOut: () => Promise<void>;
+    me: () => Promise<User>;
 };
 export default _default;

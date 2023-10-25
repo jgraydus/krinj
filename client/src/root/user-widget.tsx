@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import {  useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
+import { logOut, meSelector, showLogInView, useDispatch, useSelector } from 'data'
 
 const Root = styled.div`
   height: 40px;
@@ -27,8 +28,13 @@ const MenuRoot = styled.div`
 const Menu = ({ children }: { children: ReactNode }) => {
   return <MenuRoot>{children}</MenuRoot>
 }
-const MenuItem = styled(({ children, className }: { children: ReactNode, className?: string }) => {
-  return <div className={className}>{children}</div>
+const MenuItem = styled(
+  ({ children, className, onClick }: { children: ReactNode, className?: string, onClick?: () => void }) => {
+  return (
+    <div className={className} onClick={onClick}>
+      {children}
+    </div>
+  );
 })`
    height: 30px;
    width: 100%;
@@ -36,20 +42,41 @@ const MenuItem = styled(({ children, className }: { children: ReactNode, classNa
    align-items: center;
    padding-left: 5px;
 `
+const LogInLink = styled.div`
+  height: 30px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid black;
+`
 export default () => {
+  const dispatch = useDispatch();
+  const me = useSelector(meSelector);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggle = useCallback(() => {
     setIsMenuOpen(!isMenuOpen)
   }, [isMenuOpen]);
 
+  const doLogOut = useCallback(() => {
+    dispatch(logOut());
+  }, []);
+
+  if (!me) {
+    return (
+      <LogInLink onClick={() => dispatch(showLogInView())}>Log In</LogInLink>
+    );
+  }
+
   return (
-      <Root> 
+      <Root>
          <Handle onClick={toggle} />
          {isMenuOpen && (
            <Menu>
-             <MenuItem>Log Out</MenuItem>
              <MenuItem>Settings</MenuItem>
+             <MenuItem onClick={doLogOut}>Log Out</MenuItem>
            </Menu>
          )}
       </Root>

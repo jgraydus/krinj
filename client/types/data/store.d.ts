@@ -52,5 +52,8 @@ export declare const store: import("redux").Store<{}, import("redux").Action<any
             projectDescription: string;
         }) => Promise<Project>;
         deleteProject: (projectId: string) => Promise<void>;
+        logIn: (emailAddress: string, password: string) => Promise<string | null>;
+        logOut: () => Promise<void>;
+        me: () => Promise<User>;
     }, import("redux").AnyAction>;
 };

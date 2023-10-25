@@ -118,3 +118,42 @@ export const updateAttribute: (
 
 export const deleteAttribute = ""
 
+// --------------------------------------------------------------------------------------------
+// auth
+
+export const logIn: (
+  args: { emailAddress: string, password: string }
+) => AppAction<string | null>
+= ({ emailAddress, password }) => async (dispatch, _getState, api) => {
+  const error = await api.logIn(emailAddress, password);
+  if (!error) {
+    const me = await api.me();
+    dispatch({ type: A.LOG_IN, payload: me });
+  }
+  return error;
+}
+
+export const logOut: () => AppAction<void>
+= () => async (dispatch, _getState, api) => {
+  await api.logOut();
+  dispatch({ type: A.LOG_OUT });
+}
+
+export const me: () => AppAction<void>
+= () => async (dispatch, _getState, api) => {
+  const result = await api.me();
+  dispatch({ type: A.ME, payload: result })
+}
+
+// --------------------------------------------------------------------------------------------
+// views
+
+export const showLogInView: () => AppAction<void> = () => async (dispatch, _getState, _api) => {
+    dispatch({ type: A.SHOW_LOGIN_VIEW });
+}
+
+export const hideLogInView: () => AppAction<void> = () => async (dispatch, _getState, _api) => {
+    dispatch({ type: A.HIDE_LOGIN_VIEW });
+}
+
+

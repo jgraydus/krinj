@@ -1,8 +1,10 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import styled from 'styled-components'
+import { me, showLogInViewSelector, useDispatch, useSelector } from 'data'
 
 import Footer from './footer'
 import Header from './header'
+import LogIn from './login'
 
 const Root = styled.div`
   position: absolute;
@@ -34,12 +36,25 @@ const Content = styled.div`
   flex-grow: 1;
 `
 
-export default ({ children }: { children: ReactNode }) =>
-  <Root>
-    <ContentArea>
-      <Header />
-      <Content>{children}</Content>
-      <Footer />
-    </ContentArea>
-  </Root>
+export default ({ children }: { children: ReactNode }) => {
+  const dispatch = useDispatch();
+  const showLogInView = useSelector(showLogInViewSelector);
 
+  useEffect(() => {
+    dispatch(me());
+  }, []);
+
+  if (showLogInView) {
+    return <Root><LogIn /></Root>;
+  }
+
+  return (
+    <Root>
+      <ContentArea>
+        <Header />
+        <Content>{children}</Content>
+        <Footer />
+      </ContentArea>
+    </Root>
+  );
+}

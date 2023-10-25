@@ -60,3 +60,12 @@ export const selectEntity: (state: RootState, entityId: EntityId) => Entity | nu
     (entitiesById: EntitiesById, entityId: EntityId) => entitiesById[entityId] || null
 );
 
+export const showLogInViewSelector: (state: RootState) => boolean
+= createSelector(
+   (state: RootState) => state.views,
+   (views: ViewsState) => views.login
+);
+
+export const meSelector: (state: RootState) => User | null
+= state => state.me
+

@@ -1,3 +1,10 @@
+type UserId = string
+
+interface User {
+  emailAddress: string,
+  userId: UserId
+}
+
 type ProjectId = string
 type ProjectName = string
 type ProjectDescription = string
@@ -47,13 +54,17 @@ interface Entity {
 type Issue = Entity
 type IssueId = EntityId
 
-
-
 type ProjectsById = { [projectId: ProjectId]: Project }
 type EntitiesById = { [entityId: EntityId]: Entity }
 
+interface ViewsState {
+  login: boolean,
+}
+
 interface RootState {
     projects: ProjectsById,
-    entities: EntitiesById
+    entities: EntitiesById,
+    me: User | null,
+    views: ViewsState
 }
 

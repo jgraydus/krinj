@@ -1,10 +1,14 @@
-import { type AnyAction } from 'redux'
+import type { AnyAction } from 'redux'
 import * as R from 'ramda'
 import * as A from './action-types'
 
 const init: RootState = {
     projects: {},
     entities: {},
+    me: null,
+    views: {
+      login: false,
+    }
 }
 
 const projectsLens = R.lensProp<RootState, 'projects'>('projects');
@@ -67,6 +71,29 @@ const attributesReducer = {
         )(state)
 }
 
+const viewsReducer = {
+    [A.SHOW_LOGIN_VIEW]: (state: RootState) => R.set(R.lensPath(['views', 'login']), true, state),
+    [A.HIDE_LOGIN_VIEW]: (state: RootState) => R.set(R.lensPath(['views', 'login']), false, state)
+}
+
+const authReducer = {
+    [A.LOG_IN]: (state: RootState, { payload }: { payload: User }) => ({
+       ...state,
+       me: payload,
+       views: {
+         login: false,
+       },       
+    }),
+    [A.LOG_OUT]: (state: RootState) => ({
+       ...state,
+       me: null,
+    }),
+    [A.ME]: (state: RootState, { payload }: { payload: User }) => ({
+       ...state,
+       me: payload,
+    })
+}
+
 const reducer = (state: RootState = init, action: AnyAction) => R.pathOr(
   (state: RootState, action: AnyAction) => {
       if (action.type.startsWith('@@redux/INIT')) {
@@ -79,7 +106,9 @@ const reducer = (state: RootState = init, action: AnyAction) => R.pathOr(
   {
       ...projectsReducer,
       ...entitiesReducer,
-      ...attributesReducer
+      ...attributesReducer,
+      ...viewsReducer,
+      ...authReducer
   }
 )(state, action)
 

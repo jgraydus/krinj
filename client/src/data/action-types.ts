@@ -10,3 +10,10 @@ export const DELETE_ENTITY = 'issues/DELETE_ENTITY';
 
 export const LOAD_ATTRIBUTE = 'attributes/LOAD_ATTRIBUTE';
 
+export const SHOW_LOGIN_VIEW = 'views/SHOW_LOGIN_VIEW';
+export const HIDE_LOGIN_VIEW = 'views/HIDE_LOGIN_VIEW';
+
+export const LOG_IN = 'auth/LOG_IN';
+export const LOG_OUT = 'auth/LOG_OUT';
+export const ME = 'auth/ME';
+
