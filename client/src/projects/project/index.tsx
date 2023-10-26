@@ -16,7 +16,7 @@ const Root = styled.div`
 `
 const Tabs = styled.div`
   width: 100%;
-  height: 20px;
+  height: 22px;
   display: flex;
   flex-flow: row nowrap;
   border-bottom: 1px solid gray;
@@ -27,10 +27,14 @@ const Tab = styled.div<{ isSelected: boolean }>`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  border-radius: 8px 8px 0 0;
   :hover {
-    background-color: white;
+    background-color: rgba(255,255,255,0.5);
   }
-  background-color: ${props => props.isSelected ? 'rgba(255,255,255,0.5)' : ''};
+  border-left: ${props => props.isSelected ? '1px solid gray' : '0'};
+  border-top: ${props => props.isSelected ? '1px solid gray' : '0'};
+  border-right: ${props => props.isSelected ? '1px solid gray' : '0'};
+  border-bottom: ${props => props.isSelected ? '1px solid #BFCFCF' : '0'};
 `
 const enum ProjectPageTab { Details, Issues }
 
