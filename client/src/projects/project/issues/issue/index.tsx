@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { InlineEdit, Loading, MdEditor } from 'components'
+import { Button, InlineEdit, Loading, MdEditor } from 'components'
 import { loadEntity, selectEntity, updateAttribute, useDispatch, useSelector } from 'data'
 
 const Root = styled.div`
@@ -52,7 +52,7 @@ const BigCell = styled.div`
 `
 const BackButton = styled(({ className, onClick }) =>
   <div className={className}>
-    <button onClick={onClick}>Back</button>
+    <Button onClick={onClick}>Back</Button>
   </div>
 )`
   padding-bottom: 5px;

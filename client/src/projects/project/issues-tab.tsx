@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
-
+import { Button } from 'components'
 import IssuesTable from './issues'
 import NewIssueModal from './issues/new-issue'
 
@@ -13,7 +13,7 @@ const Root = styled.div`
 `
 const NewIssueButton = styled(({ className, onClick }) => 
   <div className={className}>
-    <button onClick={onClick}>New Issue</button>
+    <Button onClick={onClick}>New Issue</Button>
   </div>)`
  display: flex;
  flex-flow: row-reverse nowrap;

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { InlineEdit, Modal, Spacer } from 'components'
+import { Button, InlineEdit, Modal, Spacer } from 'components'
 import { createProject, useDispatch } from 'data'
 
 const Root = styled.div`
@@ -57,13 +57,13 @@ export default ({ isOpen, close }: { isOpen: boolean, close: any }) => {
          />
         </Content>
         <Footer>
-          <button onClick={close}>Cancel</button>
-          <button
+          <Button onClick={close}>Cancel</Button>
+          <Button
             disabled={!projectName}
             onClick={submit}
           >
             Submit
-          </button>
+          </Button>
         </Footer>
       </Root>
     </Modal>

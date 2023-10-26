@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { InlineEdit, Modal } from 'components'
+import { Button, InlineEdit, Modal } from 'components'
 import { createEntity, useDispatch } from 'data'
 
 const Root = styled.div`
@@ -73,13 +73,13 @@ export default ({ close, isOpen, project }: { close: any, isOpen: boolean, proje
           </select>
         </Content>
         <Footer>
-          <button onClick={close}>Cancel</button>
-          <button
+          <Button onClick={close}>Cancel</Button>
+          <Button
             disabled={name.length === 0}
             onClick={newIssue}
           >
             Submit
-          </button>
+          </Button>
         </Footer>
       </Root>
     </Modal>

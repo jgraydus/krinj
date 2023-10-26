@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
+import { Button } from 'components'
 import DetailsTab from './details-tab'
 import IssuesTab from './issues-tab'
 import { deleteProject, loadProject, selectProject, useDispatch, useSelector } from 'data'
@@ -49,7 +49,7 @@ const DeleteProjectButton = ({ projectId }: { projectId: ProjectId }) => {
     navigate('/projects');
   }, [projectId]);
 
-  return <button onClick={_deleteProject}>Delete Project</button>
+  return <Button onClick={_deleteProject}>Delete Project</Button>
 }
 
 const HeaderRow = styled(({ className, projectId, projectName }) =>
@@ -58,7 +58,7 @@ const HeaderRow = styled(({ className, projectId, projectName }) =>
     <DeleteProjectButton projectId={projectId} />
   </div>
 )`
-  height: 30px;
+  height: 40px;
   padding: 5px;
   display: flex;
   flex-flow: row nowrap;

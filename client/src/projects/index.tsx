@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Loading } from 'components'
+import { Button, Loading } from 'components'
 import NewProject from './new-project'
 import Table from './table'
 import { loadProjects, selectProjects, useDispatch, useSelector } from 'data'
@@ -57,9 +57,9 @@ const Projects = ({
   <Root>
     <HeaderRow>
       <Header>Projects</Header>
-      <button onClick={openModal}>
+      <Button onClick={openModal}>
         New Project
-      </button>
+      </Button>
     </HeaderRow>
     <Content projects={projects}/>
     <NewProject isOpen={modalIsOpen} close={closeModal} />
