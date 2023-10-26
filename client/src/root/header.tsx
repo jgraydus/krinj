@@ -13,7 +13,8 @@ const Root = styled.div`
 `
 const Title = styled.div`
   font-size: 24px;
-  font-style: bold; 
+  font-style: bold;
+  color: #506060;
 `
 const NavItem = styled.div`
   color: black;

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { hideLogInView, logIn, useDispatch } from 'data'
 import styled from 'styled-components'
 import { Button, Input, Spinner } from 'components'
@@ -71,6 +71,15 @@ const LogInForm = styled(
         }
       });
     }, [emailAddress, isLoading, password])
+
+    const keypressHandler = useCallback((evt: KeyboardEvent) => {
+        if (evt.key === "Enter") { doSubmit() }
+    }, [doSubmit])
+
+    useEffect(() => {
+        window.addEventListener('keypress', keypressHandler, false);
+        return () => window.removeEventListener('keypress', keypressHandler, false);
+    }, [keypressHandler])
 
     if (isLoading) {
       return <Spinner />

@@ -1,28 +1,39 @@
 import type { ReactNode } from 'react'
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { Button } from 'components'
+import { CarotIcon } from 'components'
 import { logOut, meSelector, showLogInView, useDispatch, useSelector } from 'data'
 
 const Root = styled.div`
-  height: 40px;
-  width: 40px;
+  height: 30px;
+  width: 30px;
   position: relative;
+`
+const LogInLink = styled.div`
+  color: #506060;
+  cursor: pointer;
+  font-size: 16px;
+  :hover { color: #809090; }
 `
 const Handle = styled.div`
   cursor: pointer;
-  height: 40px;
-  width: 40px;
-  border: 1px solid red;
+  height: 30px;
+  width: 30px;
+  border: 1px solid black;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 const MenuRoot = styled.div`
   cursor: pointer;
-  width: 100px;
-  border: 1px solid red;
-  background-color: white;
+  width: 120px;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: #B6C6C6;
   position: absolute;
   right: 0;
-  top: 40px;
+  top: 30px;
   display: flex;
   flex-direction: column;
 `
@@ -37,11 +48,16 @@ const MenuItem = styled(
     </div>
   );
 })`
-   height: 30px;
-   width: 100%;
-   display: flex;
-   align-items: center;
-   padding-left: 5px;
+  height: 30px;
+  width: 100%;
+  display: flex;
+  border-radius: 4px;
+  align-items: center;
+  padding-left: 5px;
+  background-color: #DFEFEF;
+  :hover {
+    background-color: #BFCFCF;
+  }
 `
 export default () => {
   const dispatch = useDispatch();
@@ -58,13 +74,15 @@ export default () => {
 
   if (!me) {
     return (
-      <Button onClick={() => dispatch(showLogInView())}>Log In</Button>
+      <LogInLink onClick={() => dispatch(showLogInView())}>log in</LogInLink>
     );
   }
 
   return (
       <Root>
-         <Handle onClick={toggle} />
+         <Handle onClick={toggle}>
+           <CarotIcon size={20} direction={isMenuOpen ? 'down' : 'up'} color="#506060"/>
+         </Handle>
          {isMenuOpen && (
            <Menu>
              <MenuItem>Settings</MenuItem>
