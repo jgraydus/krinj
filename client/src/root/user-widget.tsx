@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { useCallback, useState } from 'react'
 import styled from 'styled-components'
+import { Button } from 'components'
 import { logOut, meSelector, showLogInView, useDispatch, useSelector } from 'data'
 
 const Root = styled.div`
@@ -42,15 +43,6 @@ const MenuItem = styled(
    align-items: center;
    padding-left: 5px;
 `
-const LogInLink = styled.div`
-  height: 30px;
-  width: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 1px solid black;
-`
 export default () => {
   const dispatch = useDispatch();
   const me = useSelector(meSelector);
@@ -66,7 +58,7 @@ export default () => {
 
   if (!me) {
     return (
-      <LogInLink onClick={() => dispatch(showLogInView())}>Log In</LogInLink>
+      <Button onClick={() => dispatch(showLogInView())}>Log In</Button>
     );
   }
 
