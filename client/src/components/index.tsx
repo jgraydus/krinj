@@ -1,4 +1,5 @@
 import Button from './button'
+import { CarotIcon } from './icons'
 import InlineEdit from './inline-edit'
 import Input from './input'
 import Loading from './loading'
@@ -9,6 +10,7 @@ import Spinner from './spinner'
 
 export {
   Button,
+  CarotIcon,
   InlineEdit,
   Input,
   Loading,
