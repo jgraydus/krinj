@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 const Button = styled.button`
+    height: 28px !important;
     padding: 5px;
     border-radius: 6px;
     border-style: solid;
@@ -9,20 +10,20 @@ const Button = styled.button`
 
     &:enabled {
         border-color: black;
-        background-color: #111;
+        background-color: #BFCFCF
         color: #DDD !important;
         cursor: pointer;
         &:focus { outline: thin dashed white; }
-        &:hover { background-color: #333; }
-        &:active { background-color: #666; }
+        &:hover { background-color: #B6C6C6; }
+        &:active { background-color: #B0C0C0; }
     }
 
     &:disabled {
         border-color: #444;
-        background-color: #111;
+        background-color: #BFCFCF;
         color: #444 !important;
         cursor: not-allowed;
-        &:hover { background-color: #111; }
+        &:hover { background-color: #B6C6C6; }
     }
 `
 
