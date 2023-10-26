@@ -1,8 +1,6 @@
 import { useCallback } from 'react'
-import { EditText } from 'react-edit-text'
-import 'react-edit-text/dist/index.css'
 import styled from 'styled-components'
-import { Loading, MdEditor } from 'components'
+import { InlineEdit, Loading, MdEditor } from 'components'
 import { selectProject, useDispatch, updateProject, useSelector } from 'data'
 
 const Root = styled.div`
@@ -14,27 +12,22 @@ const Root = styled.div`
   grid-template-columns: 100px auto;
   grid-template-rows: auto 1fr;
   gap: 5px;
-
-  ._4GdcU, input {
-    box-sizing: border-box;
-    height: 30px;
-    width: 100%;
-    display: block;
-    margin: 3px 0;
-    scrollbar-width: thin;
-    border: 1px solid #AAA;
-  }
+`
+const Label = styled.div`
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
 `
 const View = ({ project, saveDescription, saveTitle }: { project: Project, saveDescription: any, saveTitle: any }) =>
   <Root>
-    <div>Title</div>
-    <EditText
-      name="ProjectTitle"
-      defaultValue={project.name}
+    <Label>Title</Label>
+    <InlineEdit
+      initialValue={project.name}
       onSave={saveTitle}
     />
 
-    <div>Description</div>
+    <Label>Description</Label>
     <MdEditor
       initialValue={project.description}
       onSave={saveDescription}
@@ -46,7 +39,7 @@ export default ({ projectId }: { projectId: ProjectId }) => {
   const project = useSelector(state => selectProject(state, projectId));
 
   const saveTitle = useCallback(
-      ({ value }: { value: string }) => {
+      (value: string) => {
           dispatch(updateProject(projectId, { projectName: value || 'ProjectTitle' }));
       },
       [projectId]
