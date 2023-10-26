@@ -45,17 +45,31 @@ const Title = styled(
   font-size: 24px;
   line-height: 30px;
 `
+const LogInError = styled(
+  ({ className }) => <div className={className}>log in failed</div>
+)`
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  color: red;
+  font-size: 20px;
+`
 const LogInForm = styled(
   ({ className }) => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
+    const [logInError, setLogInError] = useState(false);
     const [emailAddress, setEmailAddress] = useState('');
     const [password, setPassword] = useState('');
 
     const doSubmit = useCallback(() => {
       setIsLoading(true);
-      console.log(emailAddress, password);
-      dispatch(logIn({ emailAddress, password })).then(result => console.log(result));
+      dispatch(logIn({ emailAddress, password })).then(result => {
+        if (result) {
+          setLogInError(true);
+          setIsLoading(false);
+        }
+      });
     }, [emailAddress, isLoading, password])
 
     if (isLoading) {
@@ -74,10 +88,12 @@ const LogInForm = styled(
            value={password}
            onChange={evt => setPassword(evt.target.value)}/>
         <Button id="submitButton" onClick={doSubmit}>submit</Button>
+        {logInError && <LogInError />}
       </div>
     );
   }
 )`
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
